@@ -1,0 +1,35 @@
+# Source files
+src/
+.storybook/
+stories/
+
+# Development files
+*.stories.tsx
+*.stories.ts
+*.test.tsx
+*.test.ts
+*.spec.tsx
+*.spec.ts
+
+# Configuration files
+.eslintrc.json
+.prettierrc
+tsconfig.json
+tsup.config.ts
+vite.config.ts
+
+# Documentation
+README.md
+CHANGELOG.md
+
+# Git
+.gitignore
+.git/
+
+# Build tools
+node_modules/
+storybook-static/
+
+# Development
+.env*
+*.log
