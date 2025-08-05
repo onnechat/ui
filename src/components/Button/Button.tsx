@@ -2,10 +2,10 @@ import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import { AnimatePresence, motion, type HTMLMotionProps } from 'motion/react';
+import { motion, type HTMLMotionProps } from 'motion/react';
 
 import { cn } from '@/utils';
-import { Loader2Icon } from 'lucide-react';
+import { Loader } from '../Loader';
 
 const variants = cva(
   cn(
@@ -68,24 +68,6 @@ const Button = ({
   loading = false,
   ...props
 }: ButtonProps) => {
-  const Loader = () => {
-    return (
-      <AnimatePresence mode="wait">
-        {loading && (
-          <motion.div
-            key="loader"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-          >
-            <Loader2Icon className="size-4 animate-spin" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    );
-  };
-
   const p: InternalButtonProps = {
     ...props,
     className: cn(
@@ -98,7 +80,7 @@ const Button = ({
     <Slot data-slot="button">{props.children}</Slot>
   ) : (
     <motion.button {...p}>
-      <Loader />
+      <Loader loading={loading} />
       {props.children}
     </motion.button>
   );
