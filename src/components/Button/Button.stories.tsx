@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from './Button';
+import { ExternalLinkIcon } from 'lucide-react';
 
 const meta = {
   title: 'Components/Button',
@@ -25,6 +26,8 @@ const meta = {
         'primary',
         'secondary',
         'destructive',
+        'success',
+        'warning',
         'ghost',
         'link',
         'outline',
@@ -65,5 +68,35 @@ export default meta;
 export const Default: StoryObj<typeof meta> = {
   args: {
     children: 'Default',
+    asChild: false,
+    loading: false,
+    disabled: false,
   },
+};
+
+export const Loading: StoryObj<typeof meta> = {
+  args: {
+    children: 'Loading',
+    loading: true,
+  },
+};
+
+export const Disabled: StoryObj<typeof meta> = {
+  args: {
+    children: 'Disabled',
+    disabled: true,
+  },
+};
+
+export const AsChild: StoryObj<typeof meta> = {
+  args: {
+    asChild: true,
+  },
+  render: args => (
+    <Button {...args}>
+      <a href="https://shiddo.com.br" target="_blank" rel="noopener noreferrer">
+        Go to Shiddo <ExternalLinkIcon />
+      </a>
+    </Button>
+  ),
 };

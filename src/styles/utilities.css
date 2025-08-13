@@ -1,0 +1,15 @@
+@utility touch-hitbox {
+  position: relative;
+
+  &:before {
+    content: '';
+
+    position: absolute;
+    display: block;
+
+    inset: -0.35rem;
+    border-radius: 0.5rem;
+
+    z-index: 9999;
+  }
+}
