@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Loader } from './Loader';
+import { sizes } from '@/constants/sizes';
 
 const meta: Meta<typeof Loader> = {
   title: 'Components/Loader',
@@ -11,7 +12,17 @@ const meta: Meta<typeof Loader> = {
   argTypes: {
     loading: {
       control: 'boolean',
-      description: 'Whether the loader should be visible',
+      description: 'Whether the loader is loading',
+    },
+    variant: {
+      control: 'select',
+      description: 'The variant of the loader',
+      options: ['loader', 'spinner'],
+    },
+    size: {
+      control: 'select',
+      description: 'The size of the loader',
+      options: sizes,
     },
     className: {
       control: 'text',
@@ -29,22 +40,23 @@ export const Default: Story = {
   },
 };
 
-export const Hidden: Story = {
-  args: {
-    loading: false,
-  },
-};
-
-export const CustomSize: Story = {
+export const MediumSize: Story = {
   args: {
     loading: true,
-    className: 'size-8',
+    size: 'md',
   },
 };
 
 export const LargeSize: Story = {
   args: {
     loading: true,
-    className: 'size-12',
+    size: 'lg',
+  },
+};
+
+export const ExtraLargeSize: Story = {
+  args: {
+    loading: true,
+    size: 'xl',
   },
 };
