@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/react-vite';
 import { withThemeByClassName } from '@storybook/addon-themes';
-import '../src/styles/globals.css';
+
+import '@/styles/globals.css';
 
 const preview: Preview = {
   parameters: {
@@ -13,16 +14,22 @@ const preview: Preview = {
     },
     docs: {
       toc: true,
+      story: {
+        inline: true,
+      },
     },
+    backgrounds: { disable: true },
+    layout: 'fullscreen',
   },
   tags: ['autodocs'],
   decorators: [
     withThemeByClassName({
       themes: {
-        light: 'light',
-        dark: 'dark',
+        Light: 'light',
+        Dark: 'dark',
       },
-      defaultTheme: 'light',
+      defaultTheme: 'Dark',
+      parentSelector: 'body',
     }),
   ],
 };

@@ -18,8 +18,8 @@
   ],
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
-    "storybook": "storybook dev -p 6006",
+    "watch": "tsup --watch",
+    "dev": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
