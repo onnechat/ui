@@ -1,8 +1,5 @@
 'use client'
 
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { cn } from '@/lib/cn'
@@ -24,7 +21,7 @@ export function HeaderActions({
   className?: string
   bottom?: boolean
 }) {
-  const t = useTranslations('header.actions')
+  
   const { me: user, isFetching: loading } = useMe()
   const mounted = useIsClient()
 
@@ -63,13 +60,13 @@ export function HeaderActions({
                 bottom && 'w-full text-base py-4 h-12 lg:h-auto',
               )}
             >
-              <Link href="/workspace" scroll={false}>
-                {t('dashboard')}
+              <a href="/workspace" scroll={false}>
+                {'dashboard'}
                 <Icon
                   name="ChevronRight"
                   className="size-4 translate-x-0.5 group-hover:translate-x-1 transition-transform fill-transparent"
                 />
-              </Link>
+              </a>
             </Button>
           </motion.div>
         ) : !loading ? (
@@ -84,14 +81,14 @@ export function HeaderActions({
             {[
               {
                 variant: 'default',
-                label: t('login'),
+                label: 'login',
                 href: '/auth/login',
                 dataTestId: TEST_ID.BUTTON.LOGIN,
                 className: !bottom ? 'max-md:hidden' : 'w-full',
               },
               {
                 variant: 'primary',
-                label: t('tryNow'),
+                label: 'tryNow',
                 href: '/auth/register',
                 dataTestId: TEST_ID.BUTTON.REGISTER,
                 className: cn(
@@ -111,9 +108,9 @@ export function HeaderActions({
                   className,
                 )}
               >
-                <Link href={href} scroll={false}>
+                <a href={href} scroll={false}>
                   {label}
-                </Link>
+                </a>
               </Button>
             ))}
           </motion.div>

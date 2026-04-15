@@ -5,8 +5,6 @@ import { CheckIcon, ChevronRightIcon } from '@heroicons/react/16/solid'
 
 import * as React from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { cn } from '@/lib/cn'
@@ -141,7 +139,6 @@ function DropdownMenuContent({
   sideOffset?: number
 }) {
   const { trigger } = useHaptics()
-  const t = useTranslations('ui')
 
   const ctx = React.useContext(DropdownMenuContext)
 
@@ -152,7 +149,7 @@ function DropdownMenuContent({
         direction="bottom"
         onOpenChange={ctx.onOpenChange}
       >
-        <DrawerContent title={t('dropdownMenu.title')} showDivider>
+        <DrawerContent title={'dropdownMenu.title'} showDivider>
           <div className="overflow-y-auto overflow-x-hidden p-2 pb-6">
             <AnimatePresence mode="wait">
               {ctx.view ? (
@@ -171,7 +168,7 @@ function DropdownMenuContent({
                     className="flex w-full items-center gap-2 rounded-sm p-4 text-sm font-medium hover:bg-accent text-muted-foreground"
                   >
                     <ChevronRightIcon className="size-4 rotate-180" />
-                    {t('dropdownMenu.back')}
+                    {'dropdownMenu.back'}
                   </button>
 
                   {ctx.view}

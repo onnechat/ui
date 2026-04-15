@@ -2,8 +2,6 @@
 
 import { Fragment, useState } from 'react'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -63,7 +61,7 @@ type SidebarItemProps = {
 
 export const SidebarItem = ({ item, index, level = 0 }: SidebarItemProps) => {
   const { isMobile, toggleSidebar } = useSidebar()
-  const pathname = usePathname()
+  const pathname = "/";
   const { isCalendarRoute, navigateToCalendar } = useCalendarNavigation()
 
   const [open, setOpen] = useState(false)

@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react'
 
-import { usePathname } from 'next/navigation'
 import { useTheme } from 'next-themes'
 
 function getIsSidebarRoute(pathname: string) {
@@ -46,7 +45,7 @@ function applyAlpha(rgb: string, alpha: number) {
 
 export function ThemeColor() {
   const { resolvedTheme } = useTheme()
-  const pathname = usePathname()
+  const pathname = "/";
 
   const isSidebarRoute = getIsSidebarRoute(pathname)
 

@@ -2,22 +2,19 @@
 
 import { useEffect } from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { toast } from 'sonner'
 
 export function ServiceWorkerRegister() {
-  const t = useTranslations('pwaUpdate')
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
 
     navigator.serviceWorker.register('/sw.js').then((registration) => {
       const showUpdateToast = () => {
-        toast(t('title'), {
-          description: t('description'),
+        toast('title', {
+          description: 'description',
           action: {
-            label: t('reload'),
+            label: 'reload',
             onClick: () => {
               registration.waiting?.postMessage({ type: 'SKIP_WAITING' })
               window.location.reload()

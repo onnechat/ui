@@ -2,8 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { toast } from 'sonner'
 
 import { cn } from '@/lib/cn'
@@ -38,7 +36,6 @@ const ImageUpload = ({
   previewClassName,
   id = 'image-upload',
 }: ImageUploadProps) => {
-  const t = useTranslations('components.imageUpload')
 
   const inputRef = useRef<HTMLInputElement>(null)
   const dragCounter = useRef(0)
@@ -65,11 +62,11 @@ const ImageUpload = ({
   const validate = useCallback(
     (file: File): boolean => {
       if (!ACCEPTED_TYPES.includes(file.type)) {
-        toast.error(t('errors.invalidType'))
+        toast.error('errors.invalidType')
         return false
       }
       if (file.size > MAX_SIZE_BYTES) {
-        toast.error(t('errors.tooLarge', { max: MAX_SIZE_MB }))
+        toast.error('errors.tooLarge', { max: MAX_SIZE_MB })
         return false
       }
       return true
@@ -149,7 +146,7 @@ const ImageUpload = ({
         id={id}
         role="button"
         tabIndex={disabled ? -1 : 0}
-        aria-label={t('aria.dropzone')}
+        aria-label={'aria.dropzone'}
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -183,7 +180,7 @@ const ImageUpload = ({
           <div className="relative w-full">
             <img
               src={preview}
-              alt={t('aria.preview')}
+              alt={'aria.preview'}
               className="size-full object-cover rounded-xl max-h-auto"
             />
 
@@ -194,7 +191,7 @@ const ImageUpload = ({
                 variant="destructive"
                 className="absolute top-2 right-2 size-6 rounded-full"
                 onClick={handleRemove}
-                aria-label={t('aria.remove')}
+                aria-label={'aria.remove'}
               >
                 <Icon name="X" className="size-4" />
               </Button>
@@ -204,8 +201,8 @@ const ImageUpload = ({
           <EmptyState
             variant="embeddedFlat"
             icon={isDragging ? 'Upload' : 'Image'}
-            title={isDragging ? t('dropNow') : t('clickOrDrag')}
-            description={t('hint')}
+            title={isDragging ? 'dropNow' : 'clickOrDrag'}
+            description={'hint'}
             classNames={{
               card: 'bg-transparent',
               content: 'p-6',

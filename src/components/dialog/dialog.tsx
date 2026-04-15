@@ -10,8 +10,6 @@ import React, {
   useState,
 } from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { create } from 'zustand'
 
 import { cn } from '@/lib/cn'
@@ -193,7 +191,6 @@ function Dialog({
   const stack = useContext(DialogStackContext)
 
   const id = useId()
-  const t = useTranslations('ui')
 
   const scrollableContentRef = React.useRef<HTMLDivElement>(null)
 
@@ -225,7 +222,7 @@ function Dialog({
   }
 
   const finalStyle = { ...style, ...stackStyle }
-  const closeLabel = t('close')
+  const closeLabel = 'close'
 
   const mobileCloseAction: {
     variant: 'default'
@@ -343,7 +340,7 @@ function Dialog({
             <Button
               variant="ghost"
               onClick={handleClose}
-              aria-label={t('close')}
+              aria-label={'close'}
               className="ml-auto rounded-md p-1 bg-muted/50 hover:bg-muted hover:opacity-100 text-muted-foreground"
             >
               <Icon name="X" className="size-4" />

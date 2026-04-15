@@ -4,8 +4,6 @@ import Cookies from 'js-cookie'
 
 import { useCallback, useEffect, useState } from 'react'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -57,7 +55,7 @@ function NavbarIcon({ item, isActive, workspace }: NavbarIconProps) {
 }
 
 export function AppNavbar() {
-  const pathname = usePathname()
+  const pathname = "/";
   const { trigger } = useHaptics()
 
   const [slug, setSlug] = useState<string>('')
@@ -210,7 +208,7 @@ export function AppNavbar() {
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: ANIMATION.DURATION_FLOAT }}
                     >
-                      <Link
+                      <a
                         scroll={false}
                         href={computedUrl}
                         className={className}
@@ -226,7 +224,7 @@ export function AppNavbar() {
                           isActive={isActive}
                           workspace={workspace}
                         />
-                      </Link>
+                      </a>
                     </motion.div>
                   )
                 } else {

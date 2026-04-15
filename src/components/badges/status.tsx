@@ -1,9 +1,7 @@
-import { useTranslations } from 'next-intl'
 
 import { Badge } from '@/components/ui/badge'
 
 export const StatusBadge = ({ status }: { status: string }) => {
-  const t = useTranslations('statuses')
 
   const variant =
     status === 'PENDING'
@@ -14,5 +12,5 @@ export const StatusBadge = ({ status }: { status: string }) => {
           ? 'destructive'
           : 'outline'
 
-  return <Badge variant={variant}>{t(status)}</Badge>
+  return <Badge variant={variant}>{status}</Badge>
 }

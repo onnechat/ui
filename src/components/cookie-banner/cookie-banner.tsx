@@ -4,9 +4,6 @@ import Cookies from 'js-cookie'
 
 import { useEffect, useState } from 'react'
 
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { Cookie } from 'lucide-react'
@@ -21,7 +18,6 @@ import { Card } from '@/components/card'
 import { Button } from '@/components/ui/button'
 
 export const CookieBanner = () => {
-  const t = useTranslations('cookieBanner')
 
   const [isVisible, setIsVisible] = useState(false)
 
@@ -63,18 +59,18 @@ export const CookieBanner = () => {
               <div className="flex flex-1 flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <Cookie className="size-5 text-primary" />
-                  <h3 className="font-semibold">{t('title')}</h3>
+                  <h3 className="font-semibold">{'title'}</h3>
                 </div>
 
                 <p className="text-sm text-muted-foreground">
                   {t.rich('description', {
                     link: (chunks) => (
-                      <Link
+                      <a
                         href="/legal/cookies"
                         className="text-primary hover:underline"
                       >
                         {chunks}
-                      </Link>
+                      </a>
                     ),
                   })}
                 </p>
@@ -84,7 +80,7 @@ export const CookieBanner = () => {
                 onClick={handleAccept}
                 className="rounded-2xl max-sm:px-5 sm:px-4 py-2.5 h-fit text-sm w-full sm:w-fit"
               >
-                {t('ok')}
+                {'ok'}
               </Button>
             </Card.Content>
           </Card>

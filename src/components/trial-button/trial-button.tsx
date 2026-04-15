@@ -2,9 +2,6 @@
 
 import { TextMorph } from 'torph/react'
 
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-
 import { Trial } from '@/types/trial.type'
 
 import { cn } from '@/lib/cn'
@@ -19,7 +16,6 @@ import { Button } from '@/components/ui/button'
 const FALLBACK_TRIAL_DAYS = 0
 
 export const TrialButton = ({ className }: { className?: string }) => {
-  const t = useTranslations('trialButton')
 
   const mounted = useIsClient()
 
@@ -41,7 +37,7 @@ export const TrialButton = ({ className }: { className?: string }) => {
           className,
         )}
       >
-        <Link
+        <a
           href="/auth/register"
           className="relative flex items-center justify-center"
         >
@@ -52,26 +48,26 @@ export const TrialButton = ({ className }: { className?: string }) => {
               mounted ? 'opacity-0 sr-only' : 'opacity-100',
             )}
           >
-            {t('trialLoading')}
+            {'trialLoading'}
           </span>
 
           <TextMorph as="span" className="absolute">
             {isLoading
-              ? t('trialLoading')
-              : t('trial', { days: data?.trialDays ?? FALLBACK_TRIAL_DAYS })}
+              ? 'trialLoading'
+              : 'trial', { days: data?.trialDays ?? FALLBACK_TRIAL_DAYS }}
           </TextMorph>
-        </Link>
+        </a>
       </Button>
 
       <div className="flex flex-col md:flex-row lg:flex-col items-center lg:items-start gap-4 animate-fade-in">
         {[
           {
             icon: 'CheckCheck',
-            label: t('noCreditCard'),
+            label: 'noCreditCard',
           },
           {
             icon: 'CheckCheck',
-            label: t('noCommitment'),
+            label: 'noCommitment',
           },
         ].map((item) => (
           <div

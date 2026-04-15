@@ -2,9 +2,6 @@
 
 import { type FocusEvent, useCallback, useMemo, useState } from 'react'
 
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
@@ -114,20 +111,20 @@ function TermsCheckbox({
             shaking && 'text-destructive',
           )}
         >
-          {t('terms')}{' '}
-          <Link
+          {'terms'}{' '}
+          <a
             href="/legal/terms"
             className="text-primary hover:text-primary/80 hover:underline underline-offset-4 transition-colors"
           >
-            {t('termsLink')}
-          </Link>
-          , {t('termsAnd')}{' '}
-          <Link
+            {'termsLink'}
+          </a>
+          , {'termsAnd'}{' '}
+          <a
             href="/legal/privacy"
             className="text-primary hover:text-primary/80 hover:underline underline-offset-4 transition-colors"
           >
-            {t('privacyLink')}
-          </Link>
+            {'privacyLink'}
+          </a>
           .
         </Label>
       </div>
@@ -152,8 +149,6 @@ export function RegisterForm({
   headerPortalTarget,
   onStepChange,
 }: RegisterFormProps) {
-  const t = useTranslations('auth.register')
-  const tSchema = useTranslations()
 
   const [step, setStep] = useState<'initial' | 'email'>('initial')
 
@@ -201,7 +196,7 @@ export function RegisterForm({
       ...(!isTwoStep &&
         showTerms && {
           termsAccepted: z.boolean().refine((value) => value, {
-            message: t('termsRequired'),
+            message: 'termsRequired',
           }),
         }),
     })
@@ -273,39 +268,39 @@ export function RegisterForm({
       [
         [
           {
-            label: t('fields.firstName'),
+            label: 'fields.firstName',
             name: 'firstName',
             type: 'text',
-            placeholder: t('placeholders.firstName'),
+            placeholder: 'placeholders.firstName',
           },
           {
-            label: t('fields.lastName'),
+            label: 'fields.lastName',
             name: 'lastName',
             type: 'text',
-            placeholder: t('placeholders.lastName'),
+            placeholder: 'placeholders.lastName',
           },
         ],
         ...(includeEmail || readonlyEmail
           ? [
               {
-                label: t('fields.email'),
+                label: 'fields.email',
                 name: 'email' as const,
                 type: 'email',
-                placeholder: t('placeholders.email'),
+                placeholder: 'placeholders.email',
               },
             ]
           : []),
         {
-          label: t('fields.phone'),
+          label: 'fields.phone',
           name: 'phone' as const,
           type: 'tel',
-          placeholder: t('placeholders.phone'),
+          placeholder: 'placeholders.phone',
         },
         {
-          label: t('fields.password'),
+          label: 'fields.password',
           name: 'password',
           type: 'text',
-          placeholder: t('placeholders.password'),
+          placeholder: 'placeholders.password',
         },
       ] as const,
     [t, includeEmail, readonlyEmail],
@@ -390,7 +385,7 @@ export function RegisterForm({
                     type="button"
                     data-testid={`${name}-toggle-password`}
                     aria-label={
-                      showPassword ? t('hidePassword') : t('showPassword')
+                      showPassword ? 'hidePassword' : 'showPassword'
                     }
                     onClick={() => setShowPassword(!showPassword)}
                     className="flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted-foreground/5 transition-colors cursor-pointer min-w-12 h-12 rounded-r-xl translate-x-2"
@@ -442,7 +437,7 @@ export function RegisterForm({
                           met ? 'text-foreground' : 'text-muted-foreground',
                         )}
                       >
-                        {t(`passwordRequirements.${key}`)}
+                        {`passwordRequirements.${key}`}
                       </span>
                     </li>
                   )
@@ -492,7 +487,7 @@ export function RegisterForm({
 
         <div className="relative flex items-center justify-center gap-4 w-full -my-2 [&:before]:content-[''] [&:before]:absolute [&:before]:w-full [&:before]:h-px [&:before]:bg-border">
           <p className="uppercase text-xs text-muted-foreground/50 font-medium leading-none bg-muted px-4 z-1">
-            {t('or')}
+            {'or'}
           </p>
         </div>
 
@@ -504,7 +499,7 @@ export function RegisterForm({
           className="w-full h-12 rounded-2xl px-6 py-3 text-sm sm:text-base active:scale-[99.35%]"
         >
           <Icon name="Mail" size={18} className="mb-0.5" />
-          {t('withEmail')}
+          {'withEmail'}
         </Button>
 
         <TermsCheckbox
@@ -525,7 +520,7 @@ export function RegisterForm({
       className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors self-start cursor-pointer"
     >
       <Icon name="ArrowLeft" size={15} />
-      {t('backToOptions')}
+      {'backToOptions'}
     </button>
   ) : null
 
@@ -572,20 +567,20 @@ export function RegisterForm({
               htmlFor="termsAccepted"
               className="inline-block text-sm text-balance leading-relaxed cursor-pointer"
             >
-              {t('terms')}{' '}
-              <Link
+              {'terms'}{' '}
+              <a
                 href="/legal/terms"
                 className="text-primary hover:text-primary/80 hover:underline underline-offset-4 transition-colors"
               >
-                {t('termsLink')}
-              </Link>
-              , {t('termsAnd')}{' '}
-              <Link
+                {'termsLink'}
+              </a>
+              , {'termsAnd'}{' '}
+              <a
                 href="/legal/privacy"
                 className="text-primary hover:text-primary/80 hover:underline underline-offset-4 transition-colors"
               >
-                {t('privacyLink')}
-              </Link>
+                {'privacyLink'}
+              </a>
               .
             </Label>
           </div>
@@ -611,7 +606,7 @@ export function RegisterForm({
           isValid ? 'ring-primary/15 bg-primary' : 'ring-transparent',
         )}
       >
-        {submitButtonText || t('submit')}
+        {submitButtonText || 'submit'}
       </Button>
     </form>
   )

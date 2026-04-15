@@ -1,4 +1,3 @@
-import Link from 'next/link'
 
 import { cn } from '@/lib/cn'
 
@@ -28,9 +27,9 @@ export function PageBreadcrumb({ items, className }: PageBreadcrumbProps) {
           variant="secondary"
           className="rounded-lg! text-muted-foreground hover:text-foreground transition-colors"
         >
-          <Link href={penultimate.href}>
+          <a href={penultimate.href}>
             <Icon name="ArrowLeft" className="size-4" />
-          </Link>
+          </a>
         </Button>
       )}
 
@@ -47,7 +46,7 @@ export function PageBreadcrumb({ items, className }: PageBreadcrumbProps) {
                 />
               )}
               {item.href && !isLast ? (
-                <Link
+                <a
                   href={item.href}
                   className={cn(
                     'inline-flex items-center rounded-lg text-muted-foreground hover:text-foreground',
@@ -55,7 +54,7 @@ export function PageBreadcrumb({ items, className }: PageBreadcrumbProps) {
                   )}
                 >
                   {item.label}
-                </Link>
+                </a>
               ) : (
                 <span
                   className={cn(

@@ -2,8 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { env } from '@/lib/env'
@@ -22,7 +20,6 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export const PwaInstallBanner = () => {
-  const t = useTranslations('pwaInstallBanner')
 
   const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null)
   const isDismissedRef = useRef(false)
@@ -97,11 +94,11 @@ export const PwaInstallBanner = () => {
               <div className="flex flex-1 flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <Icon name="Download" className="size-5 text-primary" />
-                  <h3>{t('title')}</h3>
+                  <h3>{'title'}</h3>
                 </div>
 
                 <p className="text-sm text-muted-foreground">
-                  {t('description', { brand: env.brand.name })}
+                  {'description', { brand: env.brand.name }}
                 </p>
               </div>
 
@@ -110,7 +107,7 @@ export const PwaInstallBanner = () => {
                   onClick={handleDismiss}
                   className="rounded-2xl max-sm:px-5 sm:px-4 py-2.5 h-fit text-sm flex-1 sm:w-fit"
                 >
-                  {t('dismiss')}
+                  {'dismiss'}
                 </Button>
 
                 <Button
@@ -118,7 +115,7 @@ export const PwaInstallBanner = () => {
                   onClick={handleInstall}
                   className="rounded-2xl max-sm:px-5 sm:px-4 py-2.5 h-fit text-sm flex-1 sm:w-fit"
                 >
-                  {t('install')}
+                  {'install'}
                 </Button>
               </div>
             </Card.Content>

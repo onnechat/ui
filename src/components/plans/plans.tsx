@@ -7,9 +7,6 @@ import { TextMorph } from 'torph/react'
 
 import { createContext, useContext, useMemo, useRef, useState } from 'react'
 
-import { usePathname, useRouter } from 'next/navigation'
-import { useLocale, useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { AvailableLocale } from '@/config/locales'
@@ -68,7 +65,6 @@ const usePlansContext = () => {
 }
 
 const usePlansData = (locale: AvailableLocale) => {
-  const t = useTranslations('pricing')
 
   const { data: plansData, isLoading: isPlansLoading } = useCustomQuery<any[]>({
     queryKey: ['plans'],
@@ -114,12 +110,12 @@ const usePlansData = (locale: AvailableLocale) => {
         canSelect: pricingEnabled,
         price,
         pricing,
-        tagline: t(plan.taglineKey),
+        tagline: plan.taglineKey,
         previousPlan,
         features: plan.features
           .map((feature) => {
             if (!feature.countKey) {
-              return t(feature.translationKey)
+              return feature.translationKey
             }
 
             const count = limits?.[feature.countKey] ?? 0
@@ -128,7 +124,7 @@ const usePlansData = (locale: AvailableLocale) => {
               return null
             }
 
-            return t(feature.translationKey, { count })
+            return feature.translationKey, { count }
           })
           .filter((feature): feature is string => !!feature),
       }
@@ -156,7 +152,7 @@ const PlansProvider = ({
   workspaceName,
   onSelectPlan,
 }: PlansProviderProps) => {
-  const locale = useLocale() as AvailableLocale
+  const locale = "pt-BR"; as AvailableLocale
   const [period, setPeriod] = useState<BillingPeriod>(BILLING_PERIODS.ANNUAL)
 
   const { plans, isPlansLoading } = usePlansData(locale)
@@ -198,7 +194,6 @@ type PlansSwitchProps =
 
 const PlansSwitch = ({ ...props }: PlansSwitchProps) => {
   const { period, setPeriod, isPlansLoading } = usePlansContext()
-  const t = useTranslations('pricing')
 
   const switchRef = useRef<HTMLButtonElement>(null)
 
@@ -256,7 +251,7 @@ const PlansSwitch = ({ ...props }: PlansSwitchProps) => {
             onClick={handleClickLabel}
             className="cursor-pointer select-none"
           >
-            {t(`switch.${BILLING_PERIODS.MONTHLY}`)}
+            {`switch.${BILLING_PERIODS.MONTHLY}`}
           </Label>
 
           <Switch
@@ -264,16 +259,16 @@ const PlansSwitch = ({ ...props }: PlansSwitchProps) => {
             onClick={handleClickSwitch}
             onCheckedChange={handleSwitchPeriod}
             checked={period === BILLING_PERIODS.ANNUAL}
-            aria-label={t('switchAriaLabel', {
-              period: t(`switch.${period}`),
-            })}
+            aria-label={'switchAriaLabel', {
+              period: `switch.${period}`,
+            }}
           />
 
           <Label
             onClick={handleClickLabel}
             className="cursor-pointer select-none"
           >
-            {t(`switch.${BILLING_PERIODS.ANNUAL}`)}
+            {`switch.${BILLING_PERIODS.ANNUAL}`}
           </Label>
         </>
       ) : (
@@ -283,16 +278,16 @@ const PlansSwitch = ({ ...props }: PlansSwitchProps) => {
             onClick={handleClickSwitch}
             onCheckedChange={handleSwitchPeriod}
             checked={period === BILLING_PERIODS.ANNUAL}
-            aria-label={t('switchAriaLabel', {
-              period: t(`switch.${period}`),
-            })}
+            aria-label={'switchAriaLabel', {
+              period: `switch.${period}`,
+            }}
           />
 
           <Label
             onClick={handleClickLabel}
             className="cursor-pointer select-none"
           >
-            {t(`switch.${period}`)}
+            {`switch.${period}`}
           </Label>
         </>
       )}
@@ -301,19 +296,16 @@ const PlansSwitch = ({ ...props }: PlansSwitchProps) => {
 }
 
 const PlansList = ({ className }: { className?: string }) => {
-  const router = useRouter()
-  const pathname = usePathname()
+  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
+  const pathname = "/";
 
-  const locale = useLocale()
+  const locale = "pt-BR";
   const format = useFormat()
 
   const workspaceSlug = Cookies.get(COOKIES_KEYS.WORKSPACE_SLUG)
 
   const { me } = useMe()
   const { workspace } = useWorkspace(workspaceSlug)
-
-  const t = useTranslations('pricing')
-  const tMessage = useTranslations('onConsultation.whatsappMessage')
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -340,21 +332,21 @@ const PlansList = ({ className }: { className?: string }) => {
     const message = encodeURIComponent(
       isLoggedIn
         ? hasWorkspaceSelected
-          ? tMessage('loggedIn.withWorkspace', {
+          ? 'loggedIn.withWorkspace', {
               plan: planName,
               workspace: workspace?.name ?? '',
-              period: t(`switch.${period}`),
-            })
-          : tMessage('loggedIn.withoutWorkspace', {
+              period: `switch.${period}`,
+            }
+          : 'loggedIn.withoutWorkspace', {
               plan: planName,
-              period: t(`switch.${period}`),
+              period: `switch.${period}`,
               brand: env.brand.name,
-            })
-        : tMessage('loggedOut', {
+            }
+        : 'loggedOut', {
             plan: planName,
-            period: t(`switch.${period}`),
+            period: `switch.${period}`,
             brand: env.brand.name,
-          }),
+          },
     )
 
     const url = `https://wa.me/${clean}?text=${message}`
@@ -515,7 +507,7 @@ const PlansList = ({ className }: { className?: string }) => {
                           )}
                         </div>
                       ) : (
-                        <span>{t('onConsultation.title')}</span>
+                        <span>{'onConsultation.title'}</span>
                       )}
                     </div>
 
@@ -529,15 +521,15 @@ const PlansList = ({ className }: { className?: string }) => {
                           className="text-muted-foreground text-sm -mt-1"
                         >
                           {isConsultation
-                            ? t('onConsultation.note')
-                            : t('plan.singlePayment', {
+                            ? 'onConsultation.note'
+                            : 'plan.singlePayment', {
                                 price: format.currency({
                                   value:
                                     period === BILLING_PERIODS.ANNUAL
                                       ? yearlyPrice
                                       : monthlyPrice * 12,
                                   cents: true,
-                                }),
+                                },
                               })}
                         </motion.span>
                       )}
@@ -610,14 +602,14 @@ const PlansList = ({ className }: { className?: string }) => {
                   }}
                 >
                   {isDisabled
-                    ? t('unavailable')
+                    ? 'unavailable'
                     : isConsultation
-                      ? t('onConsultation.contactUs')
+                      ? 'onConsultation.contactUs'
                       : isCurrentPlan
-                        ? t('manage')
+                        ? 'manage'
                         : isAvailable
-                          ? plan.cta || t('subscribe', { plan: plan.name })
-                          : t('comingSoon')}
+                          ? plan.cta || 'subscribe', { plan: plan.name }
+                          : 'comingSoon'}
 
                   {(isCurrentPlan || isConsultation) && !isLoading && (
                     <Icon name="ExternalLink" className="size-3 opacity-50" />

@@ -32,12 +32,12 @@ const cardContentShell = cn(
 )
 
 function Accordion({
-  items,
+  items = [],
   className,
   collapsible = true,
   ...rootProps
 }: AccordionProps) {
-  const count = items.length
+  const count = items?.length || 0
 
   return (
     <div className={cn(cardShell, className)}>

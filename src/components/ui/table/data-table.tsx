@@ -2,8 +2,6 @@
 
 import * as React from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { flexRender, type Table as TableType } from '@tanstack/react-table'
 
 import { AnimatePresence, motion } from 'motion/react'
@@ -50,7 +48,6 @@ export function DataTable<TData>({
   ...props
 }: DataTableProps<TData>) {
   const isMobile = useIsMobile()
-  const t = useTranslations('logged.tables')
 
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const [showShadow, setShowShadow] = React.useState(false)
@@ -76,7 +73,7 @@ export function DataTable<TData>({
     }
   }, [])
 
-  const defaultEmptyMessage = emptyMessage || t('noResults')
+  const defaultEmptyMessage = emptyMessage || 'noResults'
 
   const rows = table.getRowModel().rows
 

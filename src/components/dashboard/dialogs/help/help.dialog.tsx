@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { toast } from 'sonner'
 import { create } from 'zustand'
 
@@ -57,9 +55,6 @@ const HelpDialog = () => {
   const { me } = useMe()
   const { workspace } = useWorkspaceStore()
 
-  const t = useTranslations('toasts.help')
-  const tDialog = useTranslations('logged.dialogs.help')
-
   const { isOpen, close, toggle } = _internalStore()
 
   const [type, setType] = useState<FeedbackType>('question')
@@ -68,7 +63,7 @@ const HelpDialog = () => {
   const { isPending, mutate: handleSubmit } = useCustomMutation({
     mutationFn: async () => {
       if (!message.trim()) {
-        toast.error(t('emptyMessage'))
+        toast.error('emptyMessage')
         return
       }
 
@@ -87,15 +82,15 @@ const HelpDialog = () => {
 
         toast.success(
           type === 'feedback'
-            ? t('feedbackSuccess')
+            ? 'feedbackSuccess'
             : type === 'bug'
-              ? t('bugReportSuccess')
-              : t('questionSuccess'),
+              ? 'bugReportSuccess'
+              : 'questionSuccess',
         )
 
         close()
       } catch {
-        toast.error(t('sendError'))
+        toast.error('sendError')
       }
     },
     onSuccess: () => {
@@ -203,13 +198,13 @@ const HelpDialog = () => {
 
   return (
     <Dialog
-      title={tDialog(`title.${type}`)}
-      description={tDialog(`description.${type}`)}
+      title={`title.${type}`}
+      description={`description.${type}`}
       isOpen={isOpen}
       onOpenChange={toggle}
       actions={[
         {
-          label: tDialog('actions.send'),
+          label: 'actions.send',
           isLoading: isPending,
           variant: 'primary',
           onClick: () => handleSubmit(),
@@ -219,7 +214,7 @@ const HelpDialog = () => {
     >
       <div className="space-y-3">
         <Label htmlFor="type">
-          {tDialog('fields.type')}
+          {'fields.type'}
           <span className="text-destructive">*</span>
         </Label>
         <Select
@@ -227,26 +222,26 @@ const HelpDialog = () => {
           onValueChange={(value: FeedbackType) => setType(value)}
         >
           <SelectTrigger id="type" className="bg-input">
-            <SelectValue placeholder={tDialog('placeholders.type')} />
+            <SelectValue placeholder={'placeholders.type'} />
           </SelectTrigger>
 
           <SelectContent>
             {[
               {
                 value: 'question',
-                label: tDialog('types.question'),
+                label: 'types.question',
                 icon: 'HelpCircle',
                 color: 'var(--info)',
               },
               {
                 value: 'feedback',
-                label: tDialog('types.feedback'),
+                label: 'types.feedback',
                 icon: 'MessageSquare',
                 color: 'var(--success)',
               },
               {
                 value: 'bug',
-                label: tDialog('types.bug'),
+                label: 'types.bug',
                 icon: 'AlertTriangle',
                 color: 'var(--destructive)',
               },
@@ -273,7 +268,7 @@ const HelpDialog = () => {
 
       <div className="space-y-3">
         <Label htmlFor="message">
-          {tDialog('fields.message')}
+          {'fields.message'}
           <span className="text-destructive">*</span>
         </Label>
 
@@ -283,7 +278,7 @@ const HelpDialog = () => {
           value={message}
           className="resize-none"
           onChange={(e) => setMessage(e.target.value)}
-          placeholder={tDialog(`placeholders.message.${type}`)}
+          placeholder={`placeholders.message.${type}`}
         />
       </div>
     </Dialog>

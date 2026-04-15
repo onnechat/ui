@@ -2,14 +2,11 @@
 
 import { useEffect, useState } from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { Icon } from '@/components/icon'
 
 export function NetworkStatus() {
-  const t = useTranslations('logged.networkStatus')
 
   const [isOnline, setIsOnline] = useState(true)
   const [showBack, setShowBack] = useState(false)
@@ -64,7 +61,7 @@ export function NetworkStatus() {
               name={isOnline ? 'Wifi' : 'WifiOff'}
               className="size-3.5 shrink-0"
             />
-            <span>{isOnline ? t('back') : t('offline')}</span>
+            <span>{isOnline ? 'back' : 'offline'}</span>
           </div>
         </motion.div>
       )}

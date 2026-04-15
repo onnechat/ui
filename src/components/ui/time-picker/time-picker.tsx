@@ -2,8 +2,6 @@
 
 import * as React from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { cn } from '@/lib/cn'
 
 import {
@@ -22,7 +20,6 @@ interface TimePickerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
   ({ date, setDate, disabled, className, ...props }, ref) => {
-    const t = useTranslations('accessibility')
 
     const hours = React.useMemo(() => {
       return Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
@@ -66,10 +63,10 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
         >
           <SelectTrigger
             removeIcon
-            aria-label={t('timePicker.hour')}
+            aria-label={'timePicker.hour'}
             className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
           >
-            <SelectValue placeholder={t('timePicker.hourPlaceholder')} />
+            <SelectValue placeholder={'timePicker.hourPlaceholder'} />
           </SelectTrigger>
           <SelectContent>
             {hours.map((hour) => (
@@ -90,9 +87,9 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
           <SelectTrigger
             removeIcon
             className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
-            aria-label={t('timePicker.minute')}
+            aria-label={'timePicker.minute'}
           >
-            <SelectValue placeholder={t('timePicker.minutePlaceholder')} />
+            <SelectValue placeholder={'timePicker.minutePlaceholder'} />
           </SelectTrigger>
           <SelectContent>
             {minutes.map((minute) => (

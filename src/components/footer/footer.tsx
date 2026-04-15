@@ -2,9 +2,6 @@
 
 import React, { useState } from 'react'
 
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-
 import {
   getSocialProfileHref,
   SOCIAL_PROFILES,
@@ -68,12 +65,6 @@ function CloudflareEmailOffEnd() {
 }
 
 export const Footer = () => {
-  const t = useTranslations('footer')
-
-  const tCta = useTranslations('homepage.cta')
-  const tTrialButton = useTranslations('trialButton')
-
-  const tUptime = useTranslations('uptime')
 
   const [ctaSubmitted, setCtaSubmitted] = useState(false)
 
@@ -105,32 +96,32 @@ export const Footer = () => {
     }[]
   }[] = [
     {
-      title: t('sections.brand.title'),
+      title: 'sections.brand.title',
       links: [
         {
-          label: t('sections.brand.links.holding', {
+          label: 'sections.brand.links.holding', {
             holding: env.holding.name,
-          }),
+          },
           href: env.holding.domain.url,
         },
         {
-          label: t('sections.brand.links.we', {
+          label: 'sections.brand.links.we', {
             brand: env.brand.name,
-          }),
+          },
           href: env.domain.url,
         },
       ],
     },
     {
-      title: t('sections.support.title'),
+      title: 'sections.support.title',
       links: [
         {
-          label: t('sections.support.links.whatsapp'),
+          label: 'sections.support.links.whatsapp',
           href: `https://wa.me/${env.phone.whatsapp}`,
           external: true,
         },
         {
-          label: t('sections.support.links.email'),
+          label: 'sections.support.links.email',
           href: `mailto:${env.email.internal}`,
           external: true,
           cloudflareEmailOff: true,
@@ -138,53 +129,53 @@ export const Footer = () => {
       ],
     },
     {
-      title: t('sections.product.title'),
+      title: 'sections.product.title',
       links: [
         ...(env.node.development ? [{ label: 'SEO', href: '/dev/seo' }] : []),
-        { label: t('sections.product.links.find'), href: '/find' },
-        { label: t('sections.product.links.features'), href: '/#features' },
-        { label: t('sections.product.links.pricing'), href: '/#pricing' },
-        { label: t('sections.product.links.status'), href: '/status' },
-        { label: t('sections.product.links.blog'), href: '/blog' },
-        { label: t('sections.product.links.faq'), href: '/#faq' },
+        { label: 'sections.product.links.find', href: '/find' },
+        { label: 'sections.product.links.features', href: '/#features' },
+        { label: 'sections.product.links.pricing', href: '/#pricing' },
+        { label: 'sections.product.links.status', href: '/status' },
+        { label: 'sections.product.links.blog', href: '/blog' },
+        { label: 'sections.product.links.faq', href: '/#faq' },
         {
-          label: t('sections.product.links.changelog'),
+          label: 'sections.product.links.changelog',
           href: '/changelog',
         },
       ],
     },
     {
-      title: t('sections.useCases.title'),
+      title: 'sections.useCases.title',
       links: [
         {
-          label: t('sections.useCases.links.barbershops'),
+          label: 'sections.useCases.links.barbershops',
           href: '/find?type=BARBERSHOP',
         },
         {
-          label: t('sections.useCases.links.beautySalons'),
+          label: 'sections.useCases.links.beautySalons',
           href: '/find?type=BEAUTY_SALON',
         },
         {
-          label: t('sections.useCases.links.clinics'),
+          label: 'sections.useCases.links.clinics',
           href: '/find?type=DENTAL_CLINIC',
         },
         {
-          label: t('sections.useCases.links.petShops'),
+          label: 'sections.useCases.links.petShops',
           href: '/find?type=PET_SHOP',
         },
         {
-          label: t('sections.useCases.links.freelancers'),
+          label: 'sections.useCases.links.freelancers',
           href: '/find?type=FREELANCER',
         },
       ],
     },
     {
-      title: t('sections.legal.title'),
+      title: 'sections.legal.title',
       basePath: '/legal',
       links: [
-        { label: t('sections.legal.links.terms'), href: '/terms' },
-        { label: t('sections.legal.links.privacy'), href: '/privacy' },
-        { label: t('sections.legal.links.cookies'), href: '/cookies' },
+        { label: 'sections.legal.links.terms', href: '/terms' },
+        { label: 'sections.legal.links.privacy', href: '/privacy' },
+        { label: 'sections.legal.links.cookies', href: '/cookies' },
       ],
     },
   ]
@@ -209,22 +200,22 @@ export const Footer = () => {
               />
 
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-title tracking-tighter leading-tight chroma-title text-balance">
-                {tCta('title')}
+                {'title'}
               </h2>
 
               <p className="text-muted-foreground text-balance">
-                {tCta('description')}
+                {'description'}
               </p>
 
               <div className="flex flex-col items-start gap-4 animate-fade-in">
                 {[
                   {
                     icon: 'CheckCheck' as const,
-                    label: tTrialButton('noCreditCard'),
+                    label: 'noCreditCard',
                   },
                   {
                     icon: 'CheckCheck' as const,
-                    label: tTrialButton('noCommitment'),
+                    label: 'noCommitment',
                   },
                 ].map((item) => (
                   <div
@@ -243,12 +234,12 @@ export const Footer = () => {
               {ctaSubmitted ? (
                 <div className="flex items-center gap-3 text-success text-sm font-medium max-md:w-full">
                   <Icon name="CheckCircle" className="size-5 shrink-0" />
-                  <span>{tCta('formSuccess')}</span>
+                  <span>{'formSuccess'}</span>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6 md:gap-8 max-md:w-full">
                   <p className="text-base sm:text-lg font-title tracking-tight leading-snug text-balance md:max-w-sm">
-                    {tCta('formTitle')}
+                    {'formTitle'}
                   </p>
 
                   <LeadForm
@@ -256,12 +247,12 @@ export const Footer = () => {
                     onSuccess={() => setCtaSubmitted(true)}
                   />
 
-                  <Link
+                  <a
                     href="/auth/register"
                     className="text-sm text-foreground hover:text-primary font-semibold w-fit hover:underline underline-offset-8 decoration-primary transition-colors"
                   >
-                    {tCta('button')} →
-                  </Link>
+                    {'button'} →
+                  </a>
                 </div>
               )}
             </div>
@@ -272,21 +263,21 @@ export const Footer = () => {
       <div className="grid gap-8 sm:gap-16 max-w-container mx-auto p-4 py-8 sm:p-8 sm:py-16 lg:border-x border-t border-dashed border-foreground/5">
         <div className="grid md:grid-cols-3 gap-8 sm:gap-16 md:mb-8">
           <div className="flex flex-col items-start gap-8">
-            <Link
+            <a
               href="/"
               prefetch={false}
               className="w-fit outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] active:scale-[99.35%] active:grayscale transition-all rounded-md"
             >
               <Logo />
-            </Link>
+            </a>
 
             <p className="text-muted-foreground text-sm leading-relaxed text-balance">
-              {t('description')}
+              {'description'}
             </p>
 
             <div className="flex items-center gap-4 max-sm:mb-4">
               {social.map((item) => (
-                <Link
+                <a
                   key={item.label}
                   href={item.href}
                   target="_blank"
@@ -295,7 +286,7 @@ export const Footer = () => {
                   className="flex items-center gap-2 text-muted-foreground/75 hover:text-foreground hover:underline underline-offset-8 decoration-primary outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] rounded-sm"
                 >
                   {item.Icon({ className: 'size-4 text-current' })}
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -305,7 +296,7 @@ export const Footer = () => {
             aria-labelledby="footer-site-map-heading"
           >
             <h2 id="footer-site-map-heading" className="sr-only">
-              {t('navigationHeading')}
+              {'navigationHeading'}
             </h2>
 
             {links.map(({ title, links, basePath }) => (
@@ -332,7 +323,7 @@ export const Footer = () => {
                             <CloudflareEmailOffStart />
                           )}
 
-                          <Link
+                          <a
                             href={href}
                             prefetch={false}
                             target={isExternal ? '_blank' : undefined}
@@ -347,7 +338,7 @@ export const Footer = () => {
                                 className="size-3 shrink-0 opacity-50 group-hover/footer-link:chroma-title group-hover/footer-link:translate-x-1 transition-all"
                               />
                             )}
-                          </Link>
+                          </a>
 
                           {link.cloudflareEmailOff && <CloudflareEmailOffEnd />}
                         </li>
@@ -362,13 +353,13 @@ export const Footer = () => {
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-8 md:gap-4">
           <div className="flex flex-col-reverse gap-4">
             <span className="text-sm text-muted-foreground">
-              {t('copyright', {
-                year: new Date().getFullYear(),
+              {'copyright', {
+                year: new Date(.getFullYear(),
                 brand: env.brand.name,
               })}
             </span>
 
-            <Link
+            <a
               href="/status"
               prefetch={false}
               className="flex items-center gap-2"
@@ -400,11 +391,11 @@ export const Footer = () => {
                 )}
               >
                 {isLoadingUptime
-                  ? tUptime('checking')
-                  : tUptime(`statuses.${uptime.status}`)}
+                  ? 'checking'
+                  : `statuses.${uptime.status}`}
                 .
               </span>
-            </Link>
+            </a>
           </div>
 
           <div className="flex items-center gap-2">

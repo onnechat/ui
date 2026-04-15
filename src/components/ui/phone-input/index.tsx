@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 
-import Image from 'next/image'
 
 import * as SelectPrimitive from '@radix-ui/react-select'
 
@@ -80,7 +79,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             )}
           >
             <SelectValue>
-              <Image
+              <img
                 loading="lazy"
                 width={20}
                 height={20}
@@ -104,7 +103,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             {countries.map((country) => (
               <SelectItem key={country.code} value={country.code}>
                 <div className="flex items-center gap-2">
-                  <Image
+                  <img
                     loading="lazy"
                     width={20}
                     height={20}

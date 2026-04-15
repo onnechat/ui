@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-import Link from 'next/link'
 
 import { cn } from '@/lib/cn'
 
@@ -54,9 +53,9 @@ export const DashboardHeader = ({
     <>
       <div className="lg:hidden flex items-center justify-between gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 glass-dashboard-header max-lg:sticky top-(--announcement-height,0px) z-50 transition-all max-lg:border-b max-lg:border-border/70">
         <div className="flex min-w-0 flex-1 items-center gap-4">
-          <Link href="/" className="shrink-0 active:scale-99">
+          <a href="/" className="shrink-0 active:scale-99">
             <Logo variant="icon" />
-          </Link>
+          </a>
 
           <div className="flex min-h-7 min-w-0 flex-1 items-center overflow-hidden">
             <div

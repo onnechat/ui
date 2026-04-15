@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie'
 
-import { useRouter } from 'next/navigation'
 
 import { Invite } from '@/types/invite.type'
 
@@ -16,7 +15,7 @@ import { Icon } from '@/components/icon'
 import { Button } from '@/components/ui/button'
 
 export const SidebarNotification = () => {
-  const router = useRouter()
+  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
 
   const { data: invitesData, isFetching: isFetchingInvites } = useCustomQuery<
     Invite[]

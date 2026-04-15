@@ -2,9 +2,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -20,8 +17,6 @@ import { Button } from '@/components/ui/button'
 import { HeaderActions } from './actions'
 
 export const Header = () => {
-  const t = useTranslations('header.menu')
-  const tAccessibility = useTranslations('accessibility')
 
   const isMobile = useIsMobile()
 
@@ -33,29 +28,29 @@ export const Header = () => {
 
   const menu = [
     {
-      label: t('home'),
+      label: 'home',
       href: '/',
     },
     {
-      label: t('find'),
+      label: 'find',
       href: '/find',
     },
     {
-      label: t('blog'),
+      label: 'blog',
       href: '/blog',
     },
     {
-      label: t('features'),
+      label: 'features',
       href: '/#how',
       prefetch: false as const,
     },
     {
-      label: t('pricing'),
+      label: 'pricing',
       href: '/#pricing',
       prefetch: false as const,
     },
     {
-      label: t('faq'),
+      label: 'faq',
       href: '/#faq',
       prefetch: false as const,
     },
@@ -79,23 +74,23 @@ export const Header = () => {
       <header className="[--header-height:4rem] sm:[--header-height:5rem] ">
         <div className="fixed top-(--announcement-height,0px) w-full flex items-center justify-between overflow-hidden z-50 border-b border-foreground/5 bg-background">
           <div className="flex items-center justify-between gap-4 sm:gap-6 w-full max-w-container mx-auto p-4 sm:px-8 lg:border-x border-dashed border-foreground/5 h-(--header-height) overflow-hidden">
-            <Link
+            <a
               href="/"
               className="flex items-center justify-center outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] active:scale-[99.35%] active:grayscale transition-all rounded-md h-10"
             >
               <Logo classNames={{ text: 'hidden xs:block' }} />
-            </Link>
+            </a>
 
             <nav className="hidden lg:flex min-w-fit h-10 items-center justify-center gap-1 mt-1">
               {menu.map((item) => (
-                <Link
+                <a
                   key={item.label}
                   href={item.href}
                   prefetch={item.prefetch}
                   className="text-sm hover:underline underline-offset-8 decoration-primary transition-colors active:scale-[99.35%] p-2 h-10"
                 >
                   {item.label}
-                </Link>
+                </a>
               ))}
             </nav>
 
@@ -109,8 +104,8 @@ export const Header = () => {
                 onClick={() => handleToggleMenu()}
                 aria-label={
                   isMenuOpen
-                    ? tAccessibility('menu.close')
-                    : tAccessibility('menu.open')
+                    ? 'menu.close'
+                    : 'menu.open'
                 }
               >
                 <Icon name={isMenuOpen ? 'X' : 'Menu'} className="size-4" />
@@ -145,9 +140,9 @@ export const Header = () => {
                     onClick={() => handleToggleMenu(false)}
                     className="text-lg xs:text-xl sm:text-2xl text-left text-muted-foreground hover:text-foreground transition-colors active:scale-[99.35%] rounded-2xl px-4 py-3! h-fit items-start justify-start hover:bg-transparent! font-normal"
                   >
-                    <Link href={item.href} prefetch={item.prefetch}>
+                    <a href={item.href} prefetch={item.prefetch}>
                       {item.label}
-                    </Link>
+                    </a>
                   </Button>
                 ))}
             </div>

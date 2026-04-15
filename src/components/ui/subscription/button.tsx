@@ -1,8 +1,5 @@
 import React from 'react'
 
-import { useParams, useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-
 import { Billing } from '@/types/billing.type'
 
 import { api } from '@/lib/api'
@@ -24,12 +21,10 @@ export const SubscriptionButton = ({
   children: childrenProp,
   ...props
 }: React.ComponentProps<typeof Button>) => {
-  const router = useRouter()
+  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
   const { slug } = useParams()
 
   const { workspace } = useWorkspace(slug as string)
-
-  const t = useTranslations('logged.subscription')
 
   const { data: billing, isLoading: isLoadingBilling } =
     useCustomQuery<Billing>({
@@ -98,7 +93,7 @@ export const SubscriptionButton = ({
       </TooltipTrigger>
 
       {!isLoadingBilling && !hasSubscription && (
-        <TooltipContent>{t('need_subscription')}</TooltipContent>
+        <TooltipContent>{'need_subscription'}</TooltipContent>
       )}
     </Tooltip>
   )

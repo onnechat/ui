@@ -2,8 +2,6 @@
 
 import { useEffect, useMemo } from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { ColumnDef } from '@tanstack/react-table'
 
 import { AnimatePresence, motion } from 'motion/react'
@@ -70,7 +68,6 @@ export function DataCustomTable<T>({
   showCheckboxCol = false,
   showPagination = true,
 }: DataCustomTableProps<T>) {
-  const t = useTranslations('logged.tables.pagination')
 
   const idColumn: ColumnDef<T> = useMemo(
     () => ({
@@ -95,7 +92,7 @@ export function DataCustomTable<T>({
           onCheckedChange={(value: boolean | 'indeterminate') =>
             table.toggleAllPageRowsSelected(!!value)
           }
-          aria-label={t('selectAll')}
+          aria-label={'selectAll'}
         />
       ),
       cell: ({ row }) => (
@@ -104,7 +101,7 @@ export function DataCustomTable<T>({
           onCheckedChange={(value: boolean | 'indeterminate') =>
             row.toggleSelected(!!value)
           }
-          aria-label={t('selectRow')}
+          aria-label={'selectRow'}
         />
       ),
       enableSorting: false,

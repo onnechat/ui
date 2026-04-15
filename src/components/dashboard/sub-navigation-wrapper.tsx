@@ -2,10 +2,6 @@
 
 import * as React from 'react'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-
 import { cn } from '@/lib/cn'
 
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -122,14 +118,14 @@ function SubNavListItem({
           </div>
         ) : variant === 'drawer' ? (
           <DrawerClose asChild>
-            <Link href={item.href} scroll={false} className={linkClassName}>
+            <a href={item.href} scroll={false} className={linkClassName}>
               {row}
-            </Link>
+            </a>
           </DrawerClose>
         ) : (
-          <Link href={item.href} scroll={false} className={linkClassName}>
+          <a href={item.href} scroll={false} className={linkClassName}>
             {row}
-          </Link>
+          </a>
         )}
       </SidebarMenuButton>
     </li>
@@ -147,10 +143,8 @@ export function SubNavigationWrapper({
   children,
   className,
 }: SubNavigationWrapperProps) {
-  const pathname = usePathname()
+  const pathname = "/";
   const isMobile = useIsMobile()
-
-  const t = useTranslations('ui.subNavigation')
 
   const [drawerOpen, setDrawerOpen] = React.useState(false)
 
@@ -186,7 +180,7 @@ export function SubNavigationWrapper({
                 type="button"
                 variant="outline"
                 className="h-auto min-h-10 w-full justify-between gap-2 py-2.5"
-                aria-label={t('openMenu')}
+                aria-label={'openMenu'}
               >
                 <span className="flex min-w-0 items-center gap-2 text-left font-normal">
                   {activeItem && (
@@ -215,7 +209,7 @@ export function SubNavigationWrapper({
               </Button>
             </DrawerTrigger>
 
-            <DrawerContent showDivider title={t('sheetTitle')}>
+            <DrawerContent showDivider title={'sheetTitle'}>
               <nav
                 aria-label="Section"
                 className="max-h-[min(60vh,24rem)] overflow-y-auto overflow-x-hidden px-2 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2"

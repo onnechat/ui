@@ -2,9 +2,6 @@
 
 import { useCallback } from 'react'
 
-import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-
 import { useCalendarNavigation } from '@/hooks/use-calendar-navigation'
 
 import type { SubNavigationTabItem } from '@/components/dashboard/sub-navigation-tabs'
@@ -127,8 +124,7 @@ export function SidebarCommandPalette({
   showWorkspace,
   settingsItems,
 }: SidebarCommandPaletteProps) {
-  const router = useRouter()
-  const t = useTranslations('logged.sidebar')
+  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
 
   const { isOpen, setOpen } = useSidebarCommandPalette()
   const { isCalendarRoute, navigateToCalendar } = useCalendarNavigation()
@@ -137,8 +133,8 @@ export function SidebarCommandPalette({
     menus,
     slug,
     showWorkspace,
-    t('commandPalette.groupFallback'),
-    t('commandPalette.settingsGroup'),
+    'commandPalette.groupFallback',
+    'commandPalette.settingsGroup',
     settingsItems,
   )
 
@@ -146,8 +142,8 @@ export function SidebarCommandPalette({
     bottomMenus,
     slug,
     showWorkspace,
-    t('commandPalette.groupFallback'),
-    t('commandPalette.settingsGroup'),
+    'commandPalette.groupFallback',
+    'commandPalette.settingsGroup',
   )
 
   const commandEntries = [...mainEntries, ...bottomEntries]
@@ -192,18 +188,18 @@ export function SidebarCommandPalette({
     <CommandDialog
       open={isOpen}
       onOpenChange={setOpen}
-      title={t('commandPalette.title')}
-      description={t('commandPalette.description')}
+      title={'commandPalette.title'}
+      description={'commandPalette.description'}
       closeButtonClassName="size-8 -mt-0.5 hover:bg-card rounded-lg cursor-pointer"
       className="max-w-xl! **:data-[slot=command-input-wrapper]:border-b-4 **:data-[slot=command-input-wrapper]:border-card"
     >
       <CommandInput
         className="pr-9 placeholder:text-muted-foreground/50"
-        placeholder={t('commandPalette.searchPlaceholder')}
+        placeholder={'commandPalette.searchPlaceholder'}
       />
 
       <CommandList>
-        <CommandEmpty>{t('commandPalette.empty')}</CommandEmpty>
+        <CommandEmpty>{'commandPalette.empty'}</CommandEmpty>
 
         {commandGroups.map(([group, items]) => (
           <CommandGroup key={group} heading={group} className="pb-4">
@@ -238,7 +234,7 @@ export function SidebarCommandPalette({
               kbdClassName="inline-flex items-center justify-center h-5 min-w-5 px-1.5 text-xxs font-mono rounded-md bg-card border"
             />
 
-            <span>{t('commandPalette.footerNavigate')}</span>
+            <span>{'commandPalette.footerNavigate'}</span>
           </span>
 
           <span className="flex items-center gap-1.5">
@@ -247,7 +243,7 @@ export function SidebarCommandPalette({
               kbdClassName="inline-flex items-center justify-center h-5 min-w-5 px-1.5 text-xxs font-mono rounded-md bg-card border"
             />
 
-            <span>{t('commandPalette.footerSelect')}</span>
+            <span>{'commandPalette.footerSelect'}</span>
           </span>
         </div>
 
@@ -257,7 +253,7 @@ export function SidebarCommandPalette({
             kbdClassName="inline-flex items-center justify-center h-5 min-w-5 px-1.5 text-xxs font-mono rounded-md bg-card border"
           />
 
-          <span>{t('commandPalette.footerClose')}</span>
+          <span>{'commandPalette.footerClose'}</span>
         </span>
       </div>
     </CommandDialog>

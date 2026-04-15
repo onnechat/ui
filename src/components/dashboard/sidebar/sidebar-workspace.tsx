@@ -5,10 +5,6 @@ import Cookies from 'js-cookie'
 
 import { useMemo, useState } from 'react'
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { Billing } from '@/types/billing.type'
@@ -84,18 +80,17 @@ export const SidebarWorkspaceSelectPrompt = ({
 }: {
   className?: string
 }) => {
-  const t = useTranslations('workspace.select')
 
   return (
     <SidebarMenu className={className}>
       <SidebarMenuButton asChild size="lg" className="h-12 cursor-pointer">
-        <Link href="/workspace?select=1" scroll={false}>
+        <a href="/workspace?select=1" scroll={false}>
           <Icon name="Building2" className="size-5 shrink-0" />
 
-          <span className="truncate text-left font-medium">{t('title')}</span>
+          <span className="truncate text-left font-medium">{'title'}</span>
 
           <ChevronUpDownIcon className="ml-auto size-5 text-muted-foreground" />
-        </Link>
+        </a>
       </SidebarMenuButton>
     </SidebarMenu>
   )
@@ -108,12 +103,10 @@ export const SidebarWorkspace = ({
   slug: string
   className?: string
 }) => {
-  const router = useRouter()
+  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
 
   const { has, isLoading: isLoadingRoles } = useRoles()
   const { workspace, isLoading: isLoadingWorkspace } = useWorkspace(slug)
-
-  const t = useTranslations('logged.sidebar.workspace')
 
   const [open, setOpen] = useState(false)
 
@@ -160,7 +153,7 @@ export const SidebarWorkspace = ({
       [
         [
           {
-            label: t('switchWorkspace'),
+            label: 'switchWorkspace',
             icon: 'ArrowRightLeft',
             onClick: () => {
               Cookies.remove(COOKIES_KEYS.WORKSPACE_SLUG)
@@ -172,7 +165,7 @@ export const SidebarWorkspace = ({
           ...(isPagePublic
             ? ([
                 {
-                  label: t('publicPage'),
+                  label: 'publicPage',
                   icon: 'Eye',
                   url: `/${handle}`,
                   external: true,
@@ -182,7 +175,7 @@ export const SidebarWorkspace = ({
           ...(has(['admin', 'system'])
             ? ([
                 {
-                  label: t('settings'),
+                  label: 'settings',
                   icon: 'Settings',
                   url: `${basePath}/settings`,
                 },
@@ -295,8 +288,8 @@ export const SidebarWorkspace = ({
                                   )}
                                 >
                                   {isTrialling
-                                    ? t('subscriptionStatus.trialling')
-                                    : t('subscriptionStatus.active')}
+                                    ? 'subscriptionStatus.trialling'
+                                    : 'subscriptionStatus.active'}
                                 </TooltipContent>
                               </Tooltip>
                             </motion.div>
@@ -434,7 +427,7 @@ export const SidebarWorkspace = ({
                       />
 
                       <span className="text-sm">
-                        {t('trialEndsOn', { days: trialEndInDays })}
+                        {'trialEndsOn', { days: trialEndInDays }}
                       </span>
                     </div>
 

@@ -4,10 +4,6 @@ import Cookies from 'js-cookie'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { cn } from '@/lib/cn'
@@ -76,8 +72,8 @@ export const AppSidebar = ({
   showSetupWidget = false,
   ...props
 }: AppSidebarProps) => {
-  const router = useRouter()
-  const pathname = usePathname()
+  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
+  const pathname = "/";
 
   const {
     toggleSidebar,
@@ -87,8 +83,6 @@ export const AppSidebar = ({
   } = useSidebar()
 
   const { toggle: toogleHelpDialog } = useHelpDialog()
-
-  const t = useTranslations('logged.sidebar')
 
   const { isAdmin } = useRoles()
   const { items: settingsItems } = useWorkspaceSettingsNavigation()
@@ -300,10 +294,10 @@ export const AppSidebar = ({
 
   const BOTTOM_MENU = bottomMenus ?? [
     {
-      title: t('sections.others'),
+      title: 'sections.others',
       items: [
         {
-          title: t('items.helpAndDoubts'),
+          title: 'items.helpAndDoubts',
           icon: 'Headset',
           url: '#',
           onClick: toogleHelpDialog,
@@ -396,12 +390,12 @@ export const AppSidebar = ({
     <>
       <Sidebar variant="inset" {...props}>
         <SidebarHeader className="flex flex-row items-center justify-between border-none p-4 pb-2 -mt-0.5">
-          <Link
+          <a
             href="/"
             className="outline-none focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-2 active:scale-[99.35%] active:grayscale transition-[scale,filter] rounded-md p-2"
           >
             <Logo />
-          </Link>
+          </a>
 
           <SidebarNotification />
         </SidebarHeader>
@@ -409,7 +403,7 @@ export const AppSidebar = ({
         <div className="flex min-h-0 flex-1 flex-col">
           {isLoadingSlug ? (
             <Loader
-              text={t('loading')}
+              text={'loading'}
               iconClassName="size-6"
               className="flex h-full flex-1 flex-col items-center justify-center gap-4 p-6 text-sm"
             />
@@ -430,7 +424,7 @@ export const AppSidebar = ({
                   <button
                     type="button"
                     onClick={() => openCommandPalette()}
-                    aria-label={t('commandPalette.openLabel')}
+                    aria-label={'commandPalette.openLabel'}
                     className={cn(
                       'flex h-11 w-full min-w-0 cursor-pointer items-center rounded-lg border-2 border-sidebar-accent bg-transparent p-2 text-left text-sm text-muted-foreground outline-none transition-all',
                       'hover:bg-sidebar-accent/30 focus-visible:border-transparent focus-visible:ring-[3px] focus-visible:ring-ring/50',
@@ -438,7 +432,7 @@ export const AppSidebar = ({
                   >
                     <span className="pointer-events-none flex w-full items-center justify-between gap-2">
                       <span className="truncate opacity-50 ml-1">
-                        {t('commandPalette.searchPlaceholder')}
+                        {'commandPalette.searchPlaceholder'}
                       </span>
 
                       <Kbd

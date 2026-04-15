@@ -2,7 +2,6 @@
 
 import { useId } from 'react'
 
-import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 
 import { THEMES, TOGGLEABLE_THEMES } from '@/config/themes'
@@ -17,7 +16,6 @@ import { Button } from '@/components/ui/button'
 
 export function ThemeToggle({ className }: { className?: string }) {
   const id = useId()
-  const t = useTranslations('accessibility')
 
   const { theme, setTheme } = useTheme()
   const mounted = useIsClient()
@@ -51,7 +49,7 @@ export function ThemeToggle({ className }: { className?: string }) {
           onChange={cycleTheme}
           type="checkbox"
           name="theme-toggle"
-          aria-label={t('theme.toggle')}
+          aria-label={'theme.toggle'}
           className="peer sr-only"
         />
 

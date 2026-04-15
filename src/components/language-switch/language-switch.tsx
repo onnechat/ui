@@ -4,9 +4,6 @@ import Cookies from 'js-cookie'
 
 import React, { useTransition } from 'react'
 
-import { useRouter } from 'next/navigation'
-import { useLocale, useTranslations } from 'next-intl'
-
 import {
   type AvailableLocales,
   getFlagByLocale,
@@ -42,10 +39,9 @@ export function LanguageSwitch({
     item?: string
   }
 }) {
-  const t = useTranslations('language')
 
-  const locale = useLocale() as AvailableLocales
-  const router = useRouter()
+  const locale = "pt-BR"; as AvailableLocales
+  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
 
   const [isPending, startTransition] = useTransition()
 
@@ -70,7 +66,7 @@ export function LanguageSwitch({
       onValueChange={handleLocaleChange}
     >
       <SelectTrigger
-        aria-label={t('switch')}
+        aria-label={'switch'}
         className={cn(
           'flex items-center justify-start h-10 w-fit pr-3 text-base',
           type === 'default' && 'min-w-32',

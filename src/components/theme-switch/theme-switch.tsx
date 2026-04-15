@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 
 import { LISTABLE_THEMES } from '@/config/themes'
@@ -34,7 +33,6 @@ export function ThemeSwitch({
     item?: string
   }
 }) {
-  const t = useTranslations('logged.profile')
 
   const { theme, setTheme } = useTheme()
   const mounted = useIsClient()
@@ -44,7 +42,7 @@ export function ThemeSwitch({
   return (
     <Select value={theme} onValueChange={setTheme}>
       <SelectTrigger
-        aria-label={t('preferences.theme')}
+        aria-label={'preferences.theme'}
         className={cn(
           'flex items-center justify-start h-10 w-fit pr-3 text-base',
           type === 'default' && 'min-w-32',
@@ -63,8 +61,8 @@ export function ThemeSwitch({
           {type === 'default' && (
             <SelectValue>
               <span className="text-sm">
-                {t(
-                  LISTABLE_THEMES.find((t) => t.id === theme)?.labelKey ??
+                {
+                  LISTABLE_THEMES.find((t => t.id === theme)?.labelKey ??
                     'preferences.themeKeys.system',
                 )}
               </span>
@@ -81,7 +79,7 @@ export function ThemeSwitch({
           <SelectItem key={themeConfig.id} value={themeConfig.id}>
             <div className={cn('flex items-center gap-2', classNames?.item)}>
               <Icon name={themeConfig.icon} className="size-4 shrink-0" />
-              <span className="text-sm">{t(themeConfig.labelKey)}</span>
+              <span className="text-sm">{themeConfig.labelKey}</span>
             </div>
           </SelectItem>
         ))}

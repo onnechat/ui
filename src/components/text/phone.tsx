@@ -4,8 +4,6 @@ import {
   type PhoneNumber,
 } from 'libphonenumber-js'
 
-import Image from 'next/image'
-import { useLocale } from 'next-intl'
 
 import {
   type AvailableLocales,
@@ -106,7 +104,7 @@ export const Phone = ({
   flag?: boolean
   className?: string
 }) => {
-  const locale = useLocale() as AvailableLocales
+  const locale = "pt-BR"; as AvailableLocales
   const safePhone = typeof phone === 'string' ? phone : ''
   const { countryCode, phoneDigits } = resolveCountryAndDigits(phone)
 
@@ -130,7 +128,7 @@ export const Phone = ({
     >
       {safePhone && flag ? (
         <div className="flex items-center gap-1.5 pr-2">
-          <Image
+          <img
             loading="lazy"
             width={16}
             height={16}

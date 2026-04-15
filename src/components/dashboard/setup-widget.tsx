@@ -2,9 +2,6 @@
 
 import { useCallback, useRef, useState } from 'react'
 
-import { useParams, useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-
 import { AnimatePresence, motion } from 'motion/react'
 
 import { channels } from '@/config/channels'
@@ -266,10 +263,8 @@ function SetupStepRow({
   toggleExpanded,
   compact,
 }: SetupStepRowProps) {
-  const router = useRouter()
+  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
   const { slug } = useParams()
-
-  const t = useTranslations('logged.dashboard.setup')
 
   const isCompleted = step.isCompleted(setup)
   const handleClick = () => {
@@ -327,10 +322,10 @@ function SetupStepRow({
           isCompleted && 'text-muted-foreground line-through opacity-75',
         )}
       >
-        {t(`steps.${step.key}`, {
+        {`steps.${step.key}`, {
           name: env.brand.name,
           channel: channels.whatsapp.label,
-        })}
+        }}
       </p>
 
       {step.key === 'channels' ? (
@@ -343,7 +338,7 @@ function SetupStepRow({
 }
 
 export function SetupWidget({ placement, className }: SetupWidgetProps) {
-  const params = useParams()
+  const params = {} as any;
 
   const { isAdmin } = useWorkspaceRole()
   const { trigger } = useHaptics()
@@ -354,7 +349,6 @@ export function SetupWidget({ placement, className }: SetupWidgetProps) {
   const { data: setupData, isLoading: isLoadingSetup } = useSetup(workspace?.id)
 
   const isMobile = useIsMobile()
-  const t = useTranslations('logged.dashboard.setup')
 
   const isAnimating = useRef(false)
 
@@ -440,7 +434,7 @@ export function SetupWidget({ placement, className }: SetupWidgetProps) {
                     />
 
                     <h3 className="text-sm font-medium leading-snug">
-                      {t('trigger')}
+                      {'trigger'}
                     </h3>
                   </div>
 
@@ -450,7 +444,7 @@ export function SetupWidget({ placement, className }: SetupWidgetProps) {
                     size="icon-sm"
                     className="-mr-1 -mt-0.5 shrink-0 rounded-sm"
                     onClick={closeSidebar}
-                    aria-label={t('dismiss')}
+                    aria-label={'dismiss'}
                   >
                     <Icon name="X" className="size-4" />
                   </Button>
@@ -484,7 +478,7 @@ export function SetupWidget({ placement, className }: SetupWidgetProps) {
                 <SetupTriggerButton
                   fullWidth
                   isExpanded={false}
-                  label={t('trigger')}
+                  label={'trigger'}
                   totalSteps={totalSteps}
                   completedSteps={completedSteps}
                   onClick={() => setSidebarOpen(true)}
@@ -506,8 +500,8 @@ export function SetupWidget({ placement, className }: SetupWidgetProps) {
       <Dialog
         isOpen={isExpanded}
         onOpenChange={handleToggle}
-        title={t('title')}
-        description={t('description', { name: env.brand.name })}
+        title={'title'}
+        description={'description', { name: env.brand.name }}
       >
         <SetupWidgetContent
           setup={setup}
@@ -529,7 +523,7 @@ export function SetupWidget({ placement, className }: SetupWidgetProps) {
           onClick={handleToggle}
           completedSteps={completedSteps}
           totalSteps={totalSteps}
-          label={t('trigger')}
+          label={'trigger'}
         />
       </div>
     </>

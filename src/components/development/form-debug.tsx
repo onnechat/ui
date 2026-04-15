@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { FieldErrors } from 'react-hook-form'
 
 import { cn } from '@/lib/cn'
@@ -24,7 +22,6 @@ export function FormDebug({
   isDirty: boolean
   errors: FieldErrors<any>
 }) {
-  const t = useTranslations('development.formDebug')
 
   const [isOpen, setIsOpen] = useState(false)
   if (!env.node.development) return null
@@ -73,7 +70,7 @@ export function FormDebug({
       </Button>
 
       <Dialog
-        title={t('title')}
+        title={'title'}
         description="Form validation debug information"
         isOpen={isOpen}
         onOpenChange={setIsOpen}
@@ -133,7 +130,7 @@ export function FormDebug({
           <EmptyState
             variant="embeddedFlat"
             icon="BadgeCheck"
-            title={t('noValidationErrors')}
+            title={'noValidationErrors'}
             description="All form fields are valid"
             className="p-8"
             classNames={{

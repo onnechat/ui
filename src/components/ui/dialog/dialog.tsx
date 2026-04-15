@@ -2,8 +2,6 @@
 
 import * as React from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import { RemoveScroll } from 'react-remove-scroll'
 
 import * as DialogPrimitive from '@radix-ui/react-dialog'
@@ -84,7 +82,7 @@ function DialogContent({
   overlay?: boolean
   scrollableRef?: React.RefObject<HTMLElement | null>
 }) {
-  const t = useTranslations('ui')
+  
   const contentRef = React.useRef<HTMLDivElement>(null)
 
   const onOpenAutoFocus = (event: Event) => {
@@ -128,7 +126,7 @@ function DialogContent({
               size={16}
               className="opacity-60 transition-opacity group-hover:opacity-100"
             />
-            <span className="sr-only">{t('close')}</span>
+            <span className="sr-only">{'close'}</span>
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>

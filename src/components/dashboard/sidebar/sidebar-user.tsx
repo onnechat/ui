@@ -5,9 +5,6 @@ import Cookies from 'js-cookie'
 
 import React, { useMemo, useState, useTransition } from 'react'
 
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { useLocale, useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 
 import { AnimatePresence, motion } from 'motion/react'
@@ -99,10 +96,10 @@ export const SidebarUser = ({
   itemClassName?: string
   triggerClassName?: string
 }) => {
-  const pathname = usePathname()
-  const router = useRouter()
+  const pathname = "/";
+  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
 
-  const locale = useLocale()
+  const locale = "pt-BR";
 
   const { isSystem } = useMeRole()
   const { me: user, isLoading } = useMe()
@@ -115,9 +112,6 @@ export const SidebarUser = ({
 
   const { openCommandPalette } = useSidebarCommandPalette()
 
-  const t = useTranslations('logged.sidebar.user')
-  const tSidebar = useTranslations('logged.sidebar')
-  const tProfile = useTranslations('logged.profile')
   const [isPendingLocale, startTransition] = useTransition()
 
   const [open, setOpen] = useState(false)
@@ -163,12 +157,12 @@ export const SidebarUser = ({
         : []),
       [
         {
-          label: t('profile'),
+          label: 'profile',
           icon: 'User',
           url: '/user',
         },
         {
-          label: t('preferences'),
+          label: 'preferences',
           icon: 'Settings2',
           url: '/user/preferences',
         },
@@ -177,7 +171,7 @@ export const SidebarUser = ({
         ? [
             [
               {
-                label: tSidebar('items.helpAndDoubts'),
+                label: 'items.helpAndDoubts',
                 icon: 'Headset' as IconType,
                 onClick: toggleHelpDialog,
               },
@@ -205,18 +199,18 @@ export const SidebarUser = ({
         : []),
       [
         {
-          label: t('theme'),
+          label: 'theme',
           icon: 'Monitor',
           subItems: LISTABLE_THEMES.map((th) => ({
             selected: th.id === theme,
             icon: th.icon,
-            label: tProfile(th.labelKey),
+            label: th.labelKey,
             onClick: () => setTheme(th.id),
             className: th.id === theme ? 'bg-accent' : undefined,
           })),
         },
         {
-          label: t('language'),
+          label: 'language',
           icon: 'Globe',
           subItems: LOCALES.map((l) => ({
             selected: l === locale,
@@ -231,7 +225,7 @@ export const SidebarUser = ({
       [
         {
           id: 'logout',
-          label: isLoggingOut ? t('loggingOut') : t('logout'),
+          label: isLoggingOut ? 'loggingOut' : 'logout',
           icon: 'LogOut',
           className:
             'text-destructive hover:!text-destructive hover:!bg-destructive/5',
@@ -329,7 +323,7 @@ export const SidebarUser = ({
                                 )}
                                 disabled={
                                   isPendingLocale ||
-                                  (isLoggingOut && item.label === t('logout'))
+                                  (isLoggingOut && item.label === 'logout')
                                 }
                               >
                                 {item.icon && (
@@ -413,14 +407,14 @@ export const SidebarUser = ({
                             key={item.label}
                             disabled={
                               isPendingLocale ||
-                              (isLoggingOut && item.label === t('logout'))
+                              (isLoggingOut && item.label === 'logout')
                             }
                           >
                             <Component
                               onClick={onClickFn}
                               disabled={
                                 isPendingLocale ||
-                                (isLoggingOut && item.label === t('logout'))
+                                (isLoggingOut && item.label === 'logout')
                               }
                               {...(isLink && {
                                 href: item.url,
@@ -431,7 +425,7 @@ export const SidebarUser = ({
                                 isFirstItem && 'rounded-t-lg',
                                 isLastItem && 'rounded-b-lg',
                                 (isPendingLocale ||
-                                  (isPending && item.label === t('logout'))) &&
+                                  (isPending && item.label === 'logout')) &&
                                   'opacity-50 cursor-not-allowed',
                                 item.className,
                               )}

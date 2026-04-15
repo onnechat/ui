@@ -1,7 +1,5 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -27,18 +25,18 @@ import { DEV_SIDEBAR_MENUS } from './dev-sidebar-data'
 import { animation, SidebarItem } from './sidebar-item'
 
 export function DevAppSidebar() {
-  const pathname = usePathname()
+  const pathname = "/";
   const { open: isSidebarOpen } = useSidebar()
 
   return (
     <Sidebar variant="inset">
       <SidebarHeader className="flex flex-row items-center justify-between border-none p-4 pb-2 -mt-0.5">
-        <Link
+        <a
           href="/"
           className="outline-none focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-2 active:scale-[99.35%] active:grayscale transition-[scale,filter] rounded-md p-2"
         >
           <Logo />
-        </Link>
+        </a>
 
         <div className="flex items-center gap-0.5">
           <ThemeSwitch

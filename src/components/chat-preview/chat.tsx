@@ -1,42 +1,39 @@
-'use client'
+'use client';
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
 
-import Image from 'next/image'
-import { useTranslations } from 'next-intl'
+import { cn } from '@/lib/cn';
+import { env } from '@/lib/env';
 
-import { cn } from '@/lib/cn'
-import { env } from '@/lib/env'
-
-import { Logo } from '@/components/logo'
-import { TextShimmer } from '@/components/shimmer-text'
+import { Logo } from '@/components/logo';
+import { TextShimmer } from '@/components/shimmer-text';
 
 export type ChatMessage = {
-  role: 'user' | 'assistant'
-  content: string
-}
+  role: 'user' | 'assistant';
+  content: string;
+};
 
 export type AssistantChatTheme =
   | 'webchat'
   | 'whatsapp'
   | 'instagram'
-  | 'messenger'
+  | 'messenger';
 
 type ThemeStyles = {
-  container: string
-  header: string
-  badge: string
-  avatarUser: string
-  avatarAssistant: string
-  bubble?: string
-  bubbleUser: string
-  bubbleAssistant: string
-  input: string
-  button: string
-  title: string
-  inputContainer: string
-  messagesArea?: string
-}
+  container: string;
+  header: string;
+  badge: string;
+  avatarUser: string;
+  avatarAssistant: string;
+  bubble?: string;
+  bubbleUser: string;
+  bubbleAssistant: string;
+  input: string;
+  button: string;
+  title: string;
+  inputContainer: string;
+  messagesArea?: string;
+};
 
 const THEME_STYLES: Record<AssistantChatTheme, ThemeStyles> = {
   webchat: {
@@ -149,7 +146,7 @@ const THEME_STYLES: Record<AssistantChatTheme, ThemeStyles> = {
     title: 'text-foreground',
     inputContainer: 'bg-transparent',
   },
-}
+};
 
 export const AssistantChat = ({
   theme = 'webchat',
@@ -159,154 +156,154 @@ export const AssistantChat = ({
   messages = [],
   className,
 }: {
-  theme?: AssistantChatTheme
-  icon: React.ReactNode
-  name: string
-  disabled?: boolean
-  messages?: ChatMessage[]
-  className?: string
+  theme?: AssistantChatTheme;
+  icon: React.ReactNode;
+  name: string;
+  disabled?: boolean;
+  messages?: ChatMessage[];
+  className?: string;
 }) => {
-  const t = useTranslations('chatPreview')
-  const styles = THEME_STYLES[theme]
+  
+  const styles = THEME_STYLES[theme];
 
-  const scrollRef = useRef<HTMLUListElement | null>(null)
+  const scrollRef = useRef<HTMLUListElement | null>(null);
 
-  const [displayedMessages, setDisplayedMessages] = useState<ChatMessage[]>([])
-  const [currentMessages, setCurrentMessages] = useState<ChatMessage[]>([])
+  const [displayedMessages, setDisplayedMessages] = useState<ChatMessage[]>([]);
+  const [currentMessages, setCurrentMessages] = useState<ChatMessage[]>([]);
 
-  const [messagesKey, setMessagesKey] = useState<string>('')
+  const [messagesKey, setMessagesKey] = useState<string>('');
 
-  const [hasInitialized, setHasInitialized] = useState(false)
+  const [hasInitialized, setHasInitialized] = useState(false);
 
-  const [isTyping, setIsTyping] = useState(false)
-  const [isAnimating, setIsAnimating] = useState(false)
+  const [isTyping, setIsTyping] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const [isAtBottom, setIsAtBottom] = useState(true)
+  const [isAtBottom, setIsAtBottom] = useState(true);
 
   const handleScroll = () => {
-    const container = scrollRef.current
-    if (!container) return
+    const container = scrollRef.current;
+    if (!container) return;
 
     const isBottom =
       container.scrollHeight - container.scrollTop <=
-      container.clientHeight + 10
+      container.clientHeight + 10;
 
-    setIsAtBottom(isBottom)
-  }
+    setIsAtBottom(isBottom);
+  };
 
   const [messageStates, setMessageStates] = useState<
     Record<number, 'typing' | 'completed'>
-  >({})
+  >({});
 
-  const containerRef = useRef<HTMLDivElement | null>(null)
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const newMessagesKey = JSON.stringify(messages)
-    const messagesChanged = newMessagesKey !== messagesKey
+    const newMessagesKey = JSON.stringify(messages);
+    const messagesChanged = newMessagesKey !== messagesKey;
 
     if (messagesChanged || !hasInitialized) {
-      setMessagesKey(newMessagesKey)
-      setCurrentMessages(messages)
+      setMessagesKey(newMessagesKey);
+      setCurrentMessages(messages);
 
-      setHasInitialized(true)
+      setHasInitialized(true);
 
-      setDisplayedMessages([])
-      setMessageStates({})
+      setDisplayedMessages([]);
+      setMessageStates({});
 
-      setIsAnimating(false)
-      setIsTyping(false)
+      setIsAnimating(false);
+      setIsTyping(false);
     }
-  }, [messages, messagesKey, hasInitialized])
+  }, [messages, messagesKey, hasInitialized]);
 
   useEffect(() => {
     if (
       currentMessages.length === 0 ||
       displayedMessages.length >= currentMessages.length
     ) {
-      return
+      return;
     }
 
     if (isAnimating) {
-      return
+      return;
     }
 
-    setIsAnimating(true)
+    setIsAnimating(true);
 
-    let isCancelled = false
-    const activeTimers = new Set<number>()
+    let isCancelled = false;
+    const activeTimers = new Set<number>();
 
     const sleep = (ms: number) =>
-      new Promise<void>((resolve) => {
+      new Promise<void>(resolve => {
         const id = window.setTimeout(() => {
-          activeTimers.delete(id)
-          resolve()
-        }, ms)
-        activeTimers.add(id)
-      })
+          activeTimers.delete(id);
+          resolve();
+        }, ms);
+        activeTimers.add(id);
+      });
 
     const play = async (index: number) => {
-      if (isCancelled || index >= currentMessages.length) return
+      if (isCancelled || index >= currentMessages.length) return;
 
-      const current = currentMessages[index]
+      const current = currentMessages[index];
 
       if (current.role === 'assistant') {
-        const newIndex = displayedMessages.length
+        const newIndex = displayedMessages.length;
 
-        setDisplayedMessages((prev) => [...prev, current])
-        setMessageStates((prev) => ({ ...prev, [newIndex]: 'typing' }))
+        setDisplayedMessages(prev => [...prev, current]);
+        setMessageStates(prev => ({ ...prev, [newIndex]: 'typing' }));
 
-        setIsTyping(true)
+        setIsTyping(true);
 
-        await sleep(current.content.length * 50)
+        await sleep(current.content.length * 50);
 
-        if (isCancelled) return
+        if (isCancelled) return;
 
-        setMessageStates((prev) => ({
+        setMessageStates(prev => ({
           ...prev,
           [newIndex]: 'completed',
-        }))
-        setIsTyping(false)
+        }));
+        setIsTyping(false);
 
-        return play(index + 1)
+        return play(index + 1);
       }
 
-      await sleep(150)
+      await sleep(150);
 
-      if (isCancelled) return
+      if (isCancelled) return;
 
-      setDisplayedMessages((prev) => [...prev, current])
+      setDisplayedMessages(prev => [...prev, current]);
 
-      await sleep(current.content.length * 30)
+      await sleep(current.content.length * 30);
 
-      if (isCancelled) return
-      return play(index + 1)
-    }
+      if (isCancelled) return;
+      return play(index + 1);
+    };
 
     void play(displayedMessages.length).finally(() => {
-      setIsAnimating(false)
-    })
+      setIsAnimating(false);
+    });
 
     const safetyTimeout = setTimeout(() => {
-      if (!isCancelled) setIsAnimating(false)
-    }, 30000)
+      if (!isCancelled) setIsAnimating(false);
+    }, 30000);
 
     return () => {
-      isCancelled = true
-      setIsAnimating(false)
-      clearTimeout(safetyTimeout)
+      isCancelled = true;
+      setIsAnimating(false);
+      clearTimeout(safetyTimeout);
 
-      activeTimers.forEach((id) => clearTimeout(id))
-      activeTimers.clear()
-    }
+      activeTimers.forEach(id => clearTimeout(id));
+      activeTimers.clear();
+    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentMessages])
+  }, [currentMessages]);
 
   useEffect(() => {
-    const container = scrollRef.current
-    if (!container || !isAtBottom) return
-    container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' })
-  }, [displayedMessages.length, isTyping, isAtBottom])
+    const container = scrollRef.current;
+    if (!container || !isAtBottom) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+  }, [displayedMessages.length, isTyping, isAtBottom]);
 
   return (
     <div
@@ -324,12 +321,11 @@ export const AssistantChat = ({
       >
         {theme === 'whatsapp' && (
           <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-            <Image
+            <img
               src="/chat-themes/whatsapp-doodles.png"
               alt=""
               width={800}
               height={800}
-              priority
               fetchPriority="high"
               className="size-full object-cover opacity-[0.25] dark:opacity-[0.07]"
             />
@@ -349,9 +345,9 @@ export const AssistantChat = ({
             />
 
             <p className={cn('text-sm font-medium', styles.title)}>
-              {t('headerTitle', {
+              {'headerTitle', {
                 brand: env.brand.name,
-                name: name || t('title'),
+                name: name || t('title',
               })}
             </p>
           </div>
@@ -388,8 +384,8 @@ export const AssistantChat = ({
 
               <div className="text-base w-full text-center text-foreground absolute left-1/2 -translate-x-1/2 bottom-1/2 -translate-y-1/2">
                 <TextShimmer className="[--base-color:var(--color-muted-foreground)] [--base-gradient-color:var(--color-foreground)]">
-                  {t('comingSoon', {
-                    theme: theme.charAt(0).toUpperCase() + theme.slice(1),
+                  {'comingSoon', {
+                    theme: theme.charAt(0.toUpperCase() + theme.slice(1),
                   })}
                 </TextShimmer>
               </div>
@@ -414,14 +410,14 @@ export const AssistantChat = ({
                   ]
                 : []),
             ].map((message, index) => {
-              const isUser = message.role === 'user'
-              const isAssistant = message.role === 'assistant'
+              const isUser = message.role === 'user';
+              const isAssistant = message.role === 'assistant';
 
-              const isSpace = message.role === 'space'
+              const isSpace = message.role === 'space';
 
-              const previousMessage = displayedMessages[index - 1]
+              const previousMessage = displayedMessages[index - 1];
               const hasSameRoleAsPrevious =
-                previousMessage && previousMessage.role === message.role
+                previousMessage && previousMessage.role === message.role;
 
               return (
                 <li
@@ -449,8 +445,8 @@ export const AssistantChat = ({
                   >
                     <span className="text-xs opacity-50">
                       {isUser
-                        ? t('labels.yourCustomer')
-                        : t('labels.aiAgent', { brand: env.brand.name })}
+                        ? 'labels.yourCustomer'
+                        : 'labels.aiAgent', { brand: env.brand.name }}
                     </span>
 
                     {isAssistant && (
@@ -483,11 +479,11 @@ export const AssistantChat = ({
                     </span>
                   )}
                 </li>
-              )
+              );
             })
           )}
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};

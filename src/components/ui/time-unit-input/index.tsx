@@ -2,8 +2,6 @@
 
 import * as React from 'react'
 
-import { useTranslations } from 'next-intl'
-
 import * as SelectPrimitive from '@radix-ui/react-select'
 
 import { cn } from '@/lib/cn'
@@ -73,8 +71,6 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
       align = 'start',
       ...inputProps
     } = props
-
-    const t = useTranslations('components.timeInput.units')
 
     const triggerRef = React.useRef<HTMLButtonElement>(null)
     const { width: triggerWidth } = useElementSize(triggerRef)
@@ -188,7 +184,7 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
           >
             <SelectValue>
               <span className="text-sm font-mono">
-                {t(`${selectedUnitOption.value}.short`)}
+                {`${selectedUnitOption.value}.short`}
               </span>
             </SelectValue>
           </SelectTrigger>
@@ -202,9 +198,9 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
               <SelectItem key={unit.value} value={unit.value}>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-mono">
-                    {t(`${unit.value}.short`)}
+                    {`${unit.value}.short`}
                   </span>
-                  <span className="opacity-50">{t(`${unit.value}.label`)}</span>
+                  <span className="opacity-50">{`${unit.value}.label`}</span>
                 </div>
               </SelectItem>
             ))}

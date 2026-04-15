@@ -1,4 +1,3 @@
-import { useTranslations } from 'next-intl'
 
 import { cn } from '@/lib/cn'
 
@@ -10,7 +9,6 @@ export const Cell = ({
 }: React.HTMLAttributes<HTMLSpanElement> & {
   wrap?: boolean
 }) => {
-  const t = useTranslations('common')
 
   return (
     <span
@@ -21,7 +19,7 @@ export const Cell = ({
         className,
       )}
     >
-      {children || t('notDefined')}
+      {children || 'notDefined'}
     </span>
   )
 }

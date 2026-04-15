@@ -1,4 +1,3 @@
-import { useTranslations } from 'next-intl'
 
 import { cn } from '@/lib/cn'
 
@@ -11,7 +10,6 @@ export const RoleBadge = ({
   role: string
   className?: string
 }) => {
-  const t = useTranslations('roles')
 
   const transformed = role
     .normalize('NFD')
@@ -19,7 +17,7 @@ export const RoleBadge = ({
     .toUpperCase()
 
   const variant = transformed === 'ADMIN' ? 'default' : 'outline'
-  const label = transformed === 'ADMIN' ? t('ADMIN') : t('USER')
+  const label = transformed === 'ADMIN' ? 'ADMIN' : 'USER'
 
   return (
     <Badge variant={variant} className={cn('text-xs', className)}>
