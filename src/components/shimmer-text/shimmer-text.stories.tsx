@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ShimmerText } from './shimmer-text';
+import { TextShimmer } from './shimmer-text';
 
 const meta = {
-  title: 'UI/ShimmerText',
-  component: typeof ShimmerText !== 'undefined' ? ShimmerText : undefined,
+  title: 'UI/TextShimmer',
+  component: typeof TextShimmer !== 'undefined' ? TextShimmer : undefined,
   parameters: {
     layout: 'centered',
   },

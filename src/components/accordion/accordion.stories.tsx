@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Accordion } from './accordion';
 
 const meta = {
-  title: 'UI/Accordion',
+  title: 'Components/Accordion',
   component: typeof Accordion !== 'undefined' ? Accordion : undefined,
   parameters: {
     layout: 'centered',

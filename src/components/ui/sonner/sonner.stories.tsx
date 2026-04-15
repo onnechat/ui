@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Sonner } from './sonner';
+import { Toaster } from './sonner';
 
 const meta = {
-  title: 'UI/Sonner',
-  component: typeof Sonner !== 'undefined' ? Sonner : undefined,
+  title: 'UI/Toaster',
+  component: typeof Toaster !== 'undefined' ? Toaster : undefined,
   parameters: {
     layout: 'centered',
   },

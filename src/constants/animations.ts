@@ -65,3 +65,9 @@ export const animations = {
     },
   },
 };
+
+export const ANIMATION = {
+  DURATION: ANIMATION_DURATION * 1000,
+  DURATION_FLOAT: ANIMATION_DURATION,
+};
+

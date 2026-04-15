@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Chart } from './chart';
+import { ChartContainer } from './chart';
 
 const meta = {
-  title: 'UI/Chart',
-  component: typeof Chart !== 'undefined' ? Chart : undefined,
+  title: 'UI/ChartContainer',
+  component: typeof ChartContainer !== 'undefined' ? ChartContainer : undefined,
   parameters: {
     layout: 'centered',
   },

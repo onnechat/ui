@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Dialog } from './dialog';
 
 const meta = {
-  title: 'UI/Dialog',
+  title: 'Components/Dialog',
   component: typeof Dialog !== 'undefined' ? Dialog : undefined,
   parameters: {
     layout: 'centered',

@@ -18,7 +18,7 @@ const preview: Preview = {
         inline: true,
       },
     },
-    backgrounds: { disable: true },
+    backgrounds: { disabled: true },
     layout: 'fullscreen',
   },
   tags: ['autodocs'],

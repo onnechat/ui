@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Card } from './card';
 
 const meta = {
-  title: 'UI/Card',
+  title: 'Components/Card',
   component: typeof Card !== 'undefined' ? Card : undefined,
   parameters: {
     layout: 'centered',
