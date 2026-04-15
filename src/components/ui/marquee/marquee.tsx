@@ -1,22 +1,20 @@
-'use client'
-import type { HTMLAttributes } from 'react'
+'use client';
+import type { HTMLAttributes } from 'react';
 
-import Link from 'next/link'
+import type { MarqueeProps as FastMarqueeProps } from 'react-fast-marquee';
+import FastMarquee from 'react-fast-marquee';
 
-import type { MarqueeProps as FastMarqueeProps } from 'react-fast-marquee'
-import FastMarquee from 'react-fast-marquee'
+import { cn } from '@/lib/cn';
 
-import { cn } from '@/lib/cn'
-
-export type MarqueeProps = HTMLAttributes<HTMLDivElement>
+export type MarqueeProps = HTMLAttributes<HTMLDivElement>;
 export const Marquee = ({ className, ...props }: MarqueeProps) => (
   <div
     className={cn('relative w-full overflow-hidden', className)}
     {...props}
   />
-)
+);
 
-export type MarqueeContentProps = FastMarqueeProps
+export type MarqueeContentProps = FastMarqueeProps;
 export const MarqueeContent = ({
   loop = 0,
   autoFill = true,
@@ -29,11 +27,11 @@ export const MarqueeContent = ({
     pauseOnHover={pauseOnHover}
     {...props}
   />
-)
+);
 
 export type MarqueeFadeProps = HTMLAttributes<HTMLDivElement> & {
-  side: 'left' | 'right'
-}
+  side: 'left' | 'right';
+};
 export const MarqueeFade = ({
   className,
   side,
@@ -47,21 +45,31 @@ export const MarqueeFade = ({
     )}
     {...props}
   />
-)
+);
 
 export type MarqueeItemProps = HTMLAttributes<
   HTMLDivElement | HTMLAnchorElement
 > & {
-  href?: string
-}
+  href?: string;
+};
 
 export const MarqueeItem = ({
   href,
   className,
   ...props
 }: MarqueeItemProps) => {
-  const commonClassName = cn('mx-2 shrink-0 object-contain', className)
+  const commonClassName = cn('mx-2 shrink-0 object-contain', className);
 
-  if (href) return <Link href={href} className={commonClassName} {...props} />
-  else return <div className={commonClassName} {...props} />
-}
+  return href ? (
+    <a
+      href={href}
+      className={commonClassName}
+      {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+    />
+  ) : (
+    <div
+      className={commonClassName}
+      {...(props as React.HTMLAttributes<HTMLDivElement>)}
+    />
+  );
+};

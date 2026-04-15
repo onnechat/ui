@@ -1,13 +1,26 @@
-import { partners } from '@/config/partners'
+import { cn } from '@/lib/cn';
 
-import { cn } from '@/lib/cn'
-import { env } from '@/lib/env'
+import { Marquee, MarqueeContent, MarqueeItem } from '@/components/ui/marquee';
 
-import { Marquee, MarqueeContent, MarqueeItem } from '@/components/ui/marquee'
+export interface Partner {
+  name: string;
+  logo: string;
+  handle?: string;
+}
 
-export const Partners = ({ className }: { className?: string }) => {
+export interface PartnersProps {
+  className?: string;
+  partners: Partner[];
+  brandName?: string;
+}
+
+export const Partners = ({
+  className,
+  partners,
+  brandName = 'Our Brand',
+}: PartnersProps) => {
   const mask =
-    'linear-gradient(to right, transparent, black 35%, black 65%, transparent)'
+    'linear-gradient(to right, transparent, black 35%, black 65%, transparent)';
 
   return (
     <Marquee className="min-h-[68px] sm:min-h-[72px]">
@@ -16,19 +29,19 @@ export const Partners = ({ className }: { className?: string }) => {
         style={{ maskImage: mask, WebkitMaskImage: mask }}
       >
         {partners.map((partner, index) => {
-          const url = `@${partner.handle}`
-          const title = `${partner.name} recomenda a ${env.brand.name}`
+          const url = partner.handle ? `@${partner.handle}` : undefined;
+          const title = `${partner.name} recomenda a ${brandName}`;
 
           return (
             <MarqueeItem
               key={`${partner.name}-${index}`}
-              {...(env.node.production && { href: url })}
+              {...(url && { href: url })}
               title={partner.name}
               aria-label={title}
               className={cn(
                 'flex h-[68px] sm:h-[72px] flex-col items-center justify-center gap-2 shrink-0 px-4 sm:px-8 md:px-12',
                 'group-has-[div:hover]:opacity-25 group-has-[div:hover]:grayscale hover:opacity-100! hover:grayscale-0! transition-all duration-200',
-                env.node.production && url && 'cursor-pointer hover:scale-105',
+                url && 'cursor-pointer hover:scale-105',
               )}
             >
               <div className="w-20 h-10 sm:w-24 sm:h-12 flex items-center justify-center">
@@ -45,9 +58,9 @@ export const Partners = ({ className }: { className?: string }) => {
 
               <div className="sr-only">{title}</div>
             </MarqueeItem>
-          )
+          );
         })}
       </MarqueeContent>
     </Marquee>
-  )
-}
+  );
+};
