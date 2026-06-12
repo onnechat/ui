@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { cn } from '@/lib/cn'
+import { cn } from '@/lib/cn';
 
 import {
   Select,
@@ -10,41 +10,40 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './select'
+} from '../select';
 
 interface TimePickerProps extends React.HTMLAttributes<HTMLDivElement> {
-  date: Date | undefined
-  setDate: (date: Date | undefined) => void
-  disabled?: boolean
+  date: Date | undefined;
+  setDate: (date: Date | undefined) => void;
+  disabled?: boolean;
 }
 
 const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
   ({ date, setDate, disabled, className, ...props }, ref) => {
-
     const hours = React.useMemo(() => {
-      return Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
-    }, [])
+      return Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+    }, []);
 
     const minutes = React.useMemo(() => {
-      return Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'))
-    }, [])
+      return Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+    }, []);
 
     const handleHourChange = (hour: string) => {
-      const newDate = date ? new Date(date.getTime()) : new Date()
-      newDate.setHours(parseInt(hour, 10))
-      setDate(newDate)
-    }
+      const newDate = date ? new Date(date.getTime()) : new Date();
+      newDate.setHours(parseInt(hour, 10));
+      setDate(newDate);
+    };
 
     const handleMinuteChange = (minute: string) => {
-      const newDate = date ? new Date(date.getTime()) : new Date()
-      newDate.setMinutes(parseInt(minute, 10))
-      setDate(newDate)
-    }
+      const newDate = date ? new Date(date.getTime()) : new Date();
+      newDate.setMinutes(parseInt(minute, 10));
+      setDate(newDate);
+    };
 
-    const selectedHour = date ? String(date.getHours()).padStart(2, '0') : ''
+    const selectedHour = date ? String(date.getHours()).padStart(2, '0') : '';
     const selectedMinute = date
       ? String(date.getMinutes()).padStart(2, '0')
-      : ''
+      : '';
 
     return (
       <div
@@ -69,7 +68,7 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
             <SelectValue placeholder={'timePicker.hourPlaceholder'} />
           </SelectTrigger>
           <SelectContent>
-            {hours.map((hour) => (
+            {hours.map(hour => (
               <SelectItem key={hour} value={hour}>
                 {hour}
               </SelectItem>
@@ -92,7 +91,7 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
             <SelectValue placeholder={'timePicker.minutePlaceholder'} />
           </SelectTrigger>
           <SelectContent>
-            {minutes.map((minute) => (
+            {minutes.map(minute => (
               <SelectItem key={minute} value={minute}>
                 {minute}
               </SelectItem>
@@ -100,10 +99,10 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
           </SelectContent>
         </Select>
       </div>
-    )
+    );
   },
-)
+);
 
-TimePicker.displayName = 'TimePicker'
+TimePicker.displayName = 'TimePicker';
 
-export { TimePicker }
+export { TimePicker };

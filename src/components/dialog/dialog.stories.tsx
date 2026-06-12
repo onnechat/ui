@@ -14,5 +14,15 @@ const meta = {
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {
-  args: {},
+  args: {
+    title: 'Dialog Title',
+    description: 'Dialog Description',
+    actions: [
+      {
+        label: 'Cancel',
+        onClick: () => {},
+      },
+    ],
+    children: 'Dialog Content',
+  },
 };

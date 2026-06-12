@@ -1,18 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Card } from './card';
 
-const meta = {
+const meta: Meta<typeof Card> = {
   title: 'Components/Card',
-  component: typeof Card !== 'undefined' ? Card : undefined,
+  component: Card,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
   argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {
-  args: {},
+  args: {
+    title: 'Card Title',
+    children: 'Card Content',
+  },
 };
