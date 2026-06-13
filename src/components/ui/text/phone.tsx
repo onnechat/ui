@@ -31,8 +31,10 @@ const getPhoneDigitsForCountry = (
   countryCode: string,
 ): string => {
   const dial = countryDialCodes[countryCode]
+
   if (dial !== undefined) {
     const dialDigits = removePhoneMask(dial)
+
     if (dialDigits && cleanPhone.startsWith(dialDigits)) {
       return cleanPhone.substring(dialDigits.length)
     }
@@ -45,6 +47,7 @@ const resolveCountryAndDigits = (
   phone: string | null | undefined,
 ): { countryCode: string; phoneDigits: string } => {
   const safePhone = typeof phone === 'string' ? phone : ''
+
   const cleanPhone = removePhoneMask(safePhone)
   const defaultRegion = DEFAULT_LOCALE_CONFIG.COUNTRY_CODE as CountryCode
 
@@ -95,21 +98,17 @@ const resolveCountryAndDigits = (
   }
 }
 
-export const Phone = ({
-  phone,
-  flag = true,
-  className,
-}: {
+interface PhoneProps extends React.HTMLAttributes<HTMLSpanElement> {
   phone: string | null | undefined
   flag?: boolean
-  className?: string
-}) => {
+}
+
+export const Phone = ({ phone, flag = true, className }: PhoneProps) => {
   const locale = "pt-BR" as AvailableLocales
   const safePhone = typeof phone === 'string' ? phone : ''
   const { countryCode, phoneDigits } = resolveCountryAndDigits(phone)
 
   const maskConfig = phoneMasks[countryCode] || getDefaultMask()
-
   const formattedPhone = applyPhoneMask(phoneDigits, maskConfig.mask)
 
   const formatted = {

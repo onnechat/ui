@@ -1,14 +1,18 @@
 
 import { cn } from '@/lib/cn'
 
+interface CellProps extends React.HTMLAttributes<HTMLSpanElement> {
+  wrap?: boolean
+  emptyText?: string
+}
+
 export const Cell = ({
   wrap = false,
   children,
   className,
+  emptyText = 'Not defined',
   ...props
-}: React.HTMLAttributes<HTMLSpanElement> & {
-  wrap?: boolean
-}) => {
+}: CellProps) => {
 
   return (
     <span
@@ -19,7 +23,7 @@ export const Cell = ({
         className,
       )}
     >
-      {children || 'notDefined'}
+      {children || emptyText}
     </span>
   )
 }
