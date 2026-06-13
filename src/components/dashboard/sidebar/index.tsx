@@ -436,7 +436,7 @@ export const AppSidebar = ({
                       </span>
 
                       <Kbd
-                        keys={['MOD', 'K']}
+                        keys={['Mod', 'K']}
                         className="rounded-md bg-sidebar-accent px-2 py-1 text-xs text-muted-foreground"
                       />
                     </span>

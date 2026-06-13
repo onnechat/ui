@@ -12,6 +12,26 @@ const meta: Meta<typeof Kbd> = {
 
 export default meta;
 
-export const Default: StoryObj<typeof meta> = {
-  args: {},
+export const Single: StoryObj<typeof meta> = {
+  args: {
+    keys: 'Mod',
+  },
+};
+
+export const Simultaneous: StoryObj<typeof meta> = {
+  args: {
+    keys: ['Mod', 'Enter'],
+  },
+};
+
+export const Sequential: StoryObj<typeof meta> = {
+  args: {
+    keys: [['G'], ['D']],
+  },
+};
+
+export const Mixed: StoryObj<typeof meta> = {
+  args: {
+    keys: [['Mod', 'G'], ['E']],
+  },
 };

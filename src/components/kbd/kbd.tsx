@@ -103,20 +103,69 @@ function resolveKeyIcon(key: string): IconType | null {
   return arrowIconMap[lower] ?? null
 }
 
+type KbdInput = KbdKey | KbdInput[]
+
+function normalize(input: KbdKey | KbdKey[] | KbdKey[][]): KbdInput {
+  if (typeof input === 'string') return input
+  if (input.length === 0) return []
+  if (typeof input[0] === 'string') return input as KbdKey[]
+  return input as KbdInput[]
+}
+
+function SingleKey({ kbdKey, kbdClassName }: { kbdKey: KbdKey; kbdClassName?: string }) {
+  const icon = resolveKeyIcon(kbdKey)
+  const text = resolveKeyText(kbdKey)
+  return (
+    <kbd className={cn('font-sans', kbdClassName)}>
+      {icon ? <Icon name={icon} className="size-3" /> : (text ?? kbdKey)}
+    </kbd>
+  )
+}
+
+function renderKeys(
+  keys: KbdInput,
+  separator: ReactNode,
+  thenSeparator: ReactNode,
+  kbdClassName?: string,
+): ReactNode {
+  if (typeof keys === 'string') {
+    return <SingleKey kbdKey={keys} kbdClassName={kbdClassName} />
+  }
+
+  if (keys.length === 0) return null
+
+  const sep = typeof keys[0] === 'string' ? separator : thenSeparator
+
+  return (
+    <span className="inline-flex items-center gap-1">
+      {keys.map((k, i) => (
+        <Fragment key={i}>
+          {i > 0 ? sep : null}
+          {renderKeys(k, separator, thenSeparator, kbdClassName)}
+        </Fragment>
+      ))}
+    </span>
+  )
+}
+
 export type KbdProps = {
-  keys: KbdKey[]
+  keys: KbdKey | KbdKey[] | KbdKey[][]
   className?: string
   kbdClassName?: string
   separator?: ReactNode
+  thenSeparator?: ReactNode
 }
 
 export function Kbd({
   keys,
   className,
   kbdClassName,
-  separator = <> + </>,
+  separator = '+',
+  thenSeparator = 'then',
 }: KbdProps) {
-  if (keys.length === 0) return null
+  const groups = normalize(keys)
+
+  if (Array.isArray(groups) && groups.length === 0) return null
 
   return (
     <span
@@ -125,19 +174,7 @@ export function Kbd({
         className,
       )}
     >
-      {keys.map((key, i) => {
-        const icon = resolveKeyIcon(key)
-        const text = resolveKeyText(key)
-
-        return (
-          <Fragment key={key}>
-            {i > 0 ? separator : null}
-            <kbd className={cn('font-sans', kbdClassName)}>
-              {icon ? <Icon name={icon} className="size-3" /> : (text ?? key)}
-            </kbd>
-          </Fragment>
-        )
-      })}
+      {renderKeys(groups, separator, thenSeparator, kbdClassName)}
     </span>
   )
 }

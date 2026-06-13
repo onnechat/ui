@@ -239,7 +239,7 @@ export function SidebarCommandPalette({
 
           <span className="flex items-center gap-1.5">
             <Kbd
-              keys={['Enter']}
+              keys="Enter"
               kbdClassName="inline-flex items-center justify-center h-5 min-w-5 px-1.5 text-xxs font-mono rounded-md bg-card border"
             />
 
@@ -249,7 +249,7 @@ export function SidebarCommandPalette({
 
         <span className="flex items-center gap-1.5">
           <Kbd
-            keys={['Escape']}
+            keys="Escape"
             kbdClassName="inline-flex items-center justify-center h-5 min-w-5 px-1.5 text-xxs font-mono rounded-md bg-card border"
           />
 
