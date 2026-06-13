@@ -11,9 +11,9 @@ import { Input } from '../input';
 export type InputTimeType = 'date' | 'time' | 'datetime-local';
 
 const INPUT_TIME_PLACEHOLDERS: Record<InputTimeType, string> = {
-  date: 'AAAA-MM-DD',
+  date: 'YYYY-MM-DD',
   time: 'HH:MM',
-  'datetime-local': 'AAAA-MM-DD HH:MM',
+  'datetime-local': 'YYYY-MM-DD HH:MM',
 };
 
 const INPUT_TIME_ICONS: Record<InputTimeType, IconType> = {
@@ -29,18 +29,22 @@ const INPUT_TIME_ICONS: Record<InputTimeType, IconType> = {
  * ({@link IconType}) that opens the native picker on click. An opaque overlay
  * covers the native affordance in Firefox, which lacks the webkit pseudo-element.
  *
+ * Provides English placeholder defaults (`YYYY-MM-DD`, `HH:MM`, etc.) based on
+ * the `type`. Pass a custom `placeholder` prop to override.
+ *
  * @example
  * <InputTime type="date" onChange={(e) => console.log(e.target.value)} />
  *
  * @example
- * <InputTime type="time" value="14:30" />
+ * <InputTime type="time" placeholder="Selecione o horário" />
  *
  * @example
- * <InputTime type="datetime-local" />
+ * <InputTime type="datetime-local" value="2026-01-15T14:30" />
  */
 function InputTime({
   type,
   className,
+  placeholder,
   ...props
 }: React.ComponentProps<'input'> & {
   type: InputTimeType;
@@ -51,7 +55,8 @@ function InputTime({
   );
 
   const iconName = INPUT_TIME_ICONS[type] ?? INPUT_TIME_ICONS.date;
-  const placeholder = INPUT_TIME_PLACEHOLDERS[type] ?? '';
+  const resolvedPlaceholder =
+    placeholder ?? INPUT_TIME_PLACEHOLDERS[type] ?? '';
 
   const handleIconClick = () => {
     inputRef.current?.showPicker?.() || inputRef.current?.focus();
@@ -62,7 +67,7 @@ function InputTime({
       <Input
         ref={inputRef}
         type={type}
-        placeholder={placeholder}
+        placeholder={resolvedPlaceholder}
         className={cn(
           'text-end pr-12 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:none] appearance-none',
           !hasValue && 'text-sm text-muted-foreground/50',

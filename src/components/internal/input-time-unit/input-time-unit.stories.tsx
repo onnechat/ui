@@ -89,10 +89,10 @@ export const PickUnit: StoryObj<typeof meta> = {
     const trigger = canvas.getByRole('combobox');
     await userEvent.click(trigger);
 
-    const daysOption = canvas.getByText('days.label');
+    const daysOption = canvas.getByText('Days');
     await expect(daysOption).toBeVisible();
     await userEvent.click(daysOption);
 
-    await expect(trigger).toHaveTextContent('days.short');
+    await expect(trigger).toHaveTextContent('d');
   },
 };

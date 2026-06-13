@@ -23,6 +23,14 @@ export interface InputTimePickerProps
   setDate: (date: Date | undefined) => void;
   /** When `true`, both hour and minute Selects are disabled. */
   disabled?: boolean;
+  /** Placeholder shown in the hour Select when no value is picked. Defaults to `"HH"`. */
+  hourPlaceholder?: string;
+  /** Placeholder shown in the minute Select when no value is picked. Defaults to `"MM"`. */
+  minutePlaceholder?: string;
+  /** `aria-label` for the hour Select trigger. Defaults to `"Hours"`. */
+  hourAriaLabel?: string;
+  /** `aria-label` for the minute Select trigger. Defaults to `"Minutes"`. */
+  minuteAriaLabel?: string;
 }
 
 /**
@@ -31,16 +39,39 @@ export interface InputTimePickerProps
  * Displays a single-row selector with hours (00–23) on the left,
  * a colon separator, and minutes (00–59) on the right.
  *
- * When {@link InputTimePickerProps.date} is `undefined`, both selects start empty.
- * Picking a value creates or mutates a `Date` and passes it to
- * {@link InputTimePickerProps.setDate}.
+ * When {@link InputTimePickerProps.date} is `undefined`, both selects start empty with
+ * English placeholders (`HH` / `MM`). Picking a value creates or mutates a `Date`
+ * and passes it to {@link InputTimePickerProps.setDate}.
  *
  * @example
  * const [date, setDate] = useState<Date>();
  * <InputTimePicker date={date} setDate={setDate} />
+ *
+ * @example
+ * <InputTimePicker
+ *   date={date}
+ *   setDate={setDate}
+ *   hourPlaceholder="Hora"
+ *   minutePlaceholder="Minuto"
+ *   hourAriaLabel="Horas"
+ *   minuteAriaLabel="Minutos"
+ * />
  */
 const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
-  ({ date, setDate, disabled, className, ...props }, ref) => {
+  (
+    {
+      date,
+      setDate,
+      disabled,
+      className,
+      hourPlaceholder = 'HH',
+      minutePlaceholder = 'MM',
+      hourAriaLabel = 'Hours',
+      minuteAriaLabel = 'Minutes',
+      ...props
+    },
+    ref,
+  ) => {
     const hours = React.useMemo(() => {
       return Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
     }, []);
@@ -83,10 +114,10 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
         >
           <SelectTrigger
             removeIcon
-            aria-label={'timePicker.hour'}
+            aria-label={hourAriaLabel}
             className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
           >
-            <SelectValue placeholder={'timePicker.hourPlaceholder'} />
+            <SelectValue placeholder={hourPlaceholder} />
           </SelectTrigger>
           <SelectContent>
             {hours.map((hour) => (
@@ -107,9 +138,9 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
           <SelectTrigger
             removeIcon
             className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
-            aria-label={'timePicker.minute'}
+            aria-label={minuteAriaLabel}
           >
-            <SelectValue placeholder={'timePicker.minutePlaceholder'} />
+            <SelectValue placeholder={minutePlaceholder} />
           </SelectTrigger>
           <SelectContent>
             {minutes.map((minute) => (

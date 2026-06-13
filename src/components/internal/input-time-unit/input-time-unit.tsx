@@ -26,6 +26,13 @@ export type TimeUnit =
   | 'months'
   | 'years';
 
+export interface TimeUnitLabel {
+  /** Abbreviated label shown in the Select trigger. */
+  short: string;
+  /** Full label shown in the Select dropdown. */
+  label: string;
+}
+
 export interface TimeUnitOption {
   /** Unit identifier used in the Select value. */
   value: TimeUnit;
@@ -48,6 +55,17 @@ const TIME_UNITS: TimeUnitOption[] = [
   { value: 'years', toMinutes: 60 * 24 * 365 },
 ];
 
+/** English default labels for each time unit. */
+const DEFAULT_UNIT_LABELS: Record<TimeUnit, TimeUnitLabel> = {
+  seconds: { short: 's', label: 'Seconds' },
+  minutes: { short: 'm', label: 'Minutes' },
+  hours: { short: 'h', label: 'Hours' },
+  days: { short: 'd', label: 'Days' },
+  weeks: { short: 'w', label: 'Weeks' },
+  months: { short: 'mo', label: 'Months' },
+  years: { short: 'y', label: 'Years' },
+};
+
 export interface InputTimeUnitProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   /** Current value in **minutes**. Drives the input display via unit conversion. */
@@ -69,6 +87,14 @@ export interface InputTimeUnitProps
   align?: SelectPrimitive.SelectContentProps['align'];
   /** Extra classes for the outermost wrapper div. */
   containerClassName?: string;
+  /**
+   * Override labels for specific time units. Merged with English defaults.
+   * Only the units you provide will be overridden; the rest keep their defaults.
+   *
+   * @example
+   * labels={{ hours: { short: 'hrs', label: 'Horas' } }}
+   */
+  labels?: Partial<Record<TimeUnit, Partial<TimeUnitLabel>>>;
 }
 
 /**
@@ -78,7 +104,8 @@ export interface InputTimeUnitProps
  * based on the selected unit (seconds, minutes, hours, days, weeks, months, years).
  *
  * On the left, an {@link Input} for the numeric quantity (digits and decimal dots only).
- * On the right, a {@link Select} for the time unit, showing a short abbreviation.
+ * On the right, a {@link Select} for the time unit, showing a short abbreviation
+ * with English defaults (`s`, `m`, `h`, `d`, `w`, `mo`, `y`).
  *
  * When the user picks a different unit, the displayed value is re-computed
  * so the underlying minute value stays constant — only the representation changes.
@@ -91,10 +118,11 @@ export interface InputTimeUnitProps
  * />
  *
  * @example
- * // Restrict to hours and days only
+ * // Restrict to hours and days only, with custom labels
  * <InputTimeUnit
  *   allowedUnits={['hours', 'days']}
  *   defaultUnit="hours"
+ *   labels={{ hours: { short: 'hrs' }, days: { short: 'dias' } }}
  * />
  */
 const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
@@ -111,6 +139,7 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
       placeholder,
       defaultUnit = 'minutes',
       align = 'start',
+      labels,
       ...inputProps
     } = props;
 
@@ -130,6 +159,22 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
 
       return TIME_UNITS.filter((unit) => allowedUnits.includes(unit.value));
     }, [allowedUnits]);
+
+    /** Resolved labels, merging user overrides with English defaults. */
+    const resolvedLabels = React.useMemo(() => {
+      const merged: Record<TimeUnit, TimeUnitLabel> = { ...DEFAULT_UNIT_LABELS };
+
+      if (labels) {
+        for (const unit of Object.keys(labels) as TimeUnit[]) {
+          merged[unit] = {
+            ...merged[unit],
+            ...labels[unit],
+          };
+        }
+      }
+
+      return merged;
+    }, [labels]);
 
     /** Resolves the selected unit to its {@link TimeUnitOption}, falling back to the first available. */
     const selectedUnitOption = React.useMemo(
@@ -248,7 +293,7 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
           >
             <SelectValue>
               <span className="text-sm font-mono">
-                {`${selectedUnitOption.value}.short`}
+                {resolvedLabels[selectedUnitOption.value].short}
               </span>
             </SelectValue>
           </SelectTrigger>
@@ -262,9 +307,11 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
               <SelectItem key={unit.value} value={unit.value}>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-mono">
-                    {`${unit.value}.short`}
+                    {resolvedLabels[unit.value].short}
                   </span>
-                  <span className="opacity-50">{`${unit.value}.label`}</span>
+                  <span className="opacity-50">
+                    {resolvedLabels[unit.value].label}
+                  </span>
                 </div>
               </SelectItem>
             ))}

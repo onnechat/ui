@@ -15,7 +15,6 @@ import {
 import type { Menu } from '@/components/ui/dashboard/sidebar/data'
 import { Loader } from '@/components/ui/loader'
 import { NetworkStatus } from '@/components/ui/network-status'
-import { PwaInstallBanner } from '@/components/ui/pwa-install-banner'
 
 import { SidebarInset, SidebarProvider } from '@/components/internal/sidebar'
 
@@ -86,7 +85,6 @@ export function AppShellLayout({
 
             {children}
 
-            <PwaInstallBanner />
           </SidebarInset>
         </SidebarProvider>
       </SidebarCommandPaletteProvider>
