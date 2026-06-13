@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 import { Loader } from './loader';
 
 const meta: Meta<typeof Loader> = {
@@ -7,11 +8,23 @@ const meta: Meta<typeof Loader> = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
+  tags: ['ai-generated'],
 };
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default: StoryObj<typeof meta> = {
-  args: {},
+export const Default: Story = {
+  args: { text: 'Loading...' },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('Loading...')).toBeVisible();
+  },
+};
+
+export const Clean: Story = {
+  args: { variant: 'clean', text: 'Please wait...' },
+};
+
+export const Button: Story = {
+  args: { variant: 'button' },
 };

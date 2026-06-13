@@ -1,6 +1,5 @@
 'use client'
 
-import { ChevronUpDownIcon } from '@heroicons/react/16/solid'
 import Cookies from 'js-cookie'
 
 import { useMemo, useState } from 'react'
@@ -89,7 +88,7 @@ export const SidebarWorkspaceSelectPrompt = ({
 
           <span className="truncate text-left font-medium">{'title'}</span>
 
-          <ChevronUpDownIcon className="ml-auto size-5 text-muted-foreground" />
+          <Icon name="ChevronUpDown" className="ml-auto size-5 text-muted-foreground" />
         </a>
       </SidebarMenuButton>
     </SidebarMenu>
@@ -302,7 +301,7 @@ export const SidebarWorkspace = ({
                       </span>
                     </div>
 
-                    <ChevronUpDownIcon className="ml-auto size-5 text-foreground" />
+                    <Icon name="ChevronUpDown" className="ml-auto size-5 text-foreground" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
 

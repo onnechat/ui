@@ -1,13 +1,14 @@
 'use client'
 
 import { Menu as MenuPrimitive } from '@base-ui/react/menu'
-import { CheckIcon, ChevronRightIcon } from '@heroicons/react/16/solid'
 
 import * as React from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
 import { cn } from '@/lib/cn'
+
+import { Icon } from '@/components/icon'
 
 import { useHaptics } from '@/hooks/use-haptics'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -167,7 +168,7 @@ function DropdownMenuContent({
                     }}
                     className="flex w-full items-center gap-2 rounded-sm p-4 text-sm font-medium hover:bg-accent text-muted-foreground"
                   >
-                    <ChevronRightIcon className="size-4 rotate-180" />
+                    <Icon name="ChevronRight" className="size-4 rotate-180" />
                     {'dropdownMenu.back'}
                   </button>
 
@@ -371,7 +372,7 @@ function DropdownMenuCheckboxItem({
     >
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
         <MenuPrimitive.CheckboxItemIndicator>
-          <CheckIcon className="size-4" />
+          <Icon name="Check" className="size-4" />
         </MenuPrimitive.CheckboxItemIndicator>
       </span>
       {children}
@@ -406,7 +407,7 @@ function DropdownMenuRadioItem({
     >
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
         <MenuPrimitive.RadioItemIndicator>
-          <CheckIcon className="size-4" />
+          <Icon name="Check" className="size-4" />
         </MenuPrimitive.RadioItemIndicator>
       </span>
       {children}
@@ -516,7 +517,7 @@ function DropdownMenuSubTrigger({
         }}
       >
         {children}
-        <ChevronRightIcon className="ml-auto size-4" />
+        <Icon name="ChevronRight" className="ml-auto size-4" />
       </button>
     )
   }

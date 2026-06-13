@@ -1,6 +1,5 @@
 'use client'
 
-import { ChevronUpDownIcon } from '@heroicons/react/16/solid'
 import Cookies from 'js-cookie'
 
 import React, { useMemo, useState, useTransition } from 'react'
@@ -284,7 +283,7 @@ export const SidebarUser = ({
                     </span>
                   </div>
 
-                  <ChevronUpDownIcon className="ml-auto size-5 text-foreground hidden lg:block" />
+                  <Icon name="ChevronUpDown" className="ml-auto size-5 text-foreground hidden lg:block" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
 

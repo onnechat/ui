@@ -7,11 +7,12 @@ const meta: Meta<typeof TrialButton> = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
+  tags: ['ai-generated'],
 };
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default: StoryObj<typeof meta> = {
+export const Default: Story = {
   args: {},
 };
