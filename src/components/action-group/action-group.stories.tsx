@@ -23,7 +23,7 @@ const meta: Meta<typeof ActionGroup> = {
   },
   args: {
     disabled: false,
-    align: 'end',
+    align: 'center',
   },
 };
 

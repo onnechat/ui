@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EmptyState } from './empty-state';
+import { Button } from '@/components/ui/button';
 
 const meta: Meta<typeof EmptyState> = {
   title: 'UI/EmptyState',
@@ -60,9 +61,7 @@ export const WithAction: StoryObj<typeof meta> = {
     title: 'No projects yet',
     description: 'Create your first project to get started.',
     children: (
-      <button className="rounded-xl bg-primary text-primary-foreground px-4 py-2 text-sm font-medium">
-        Create project
-      </button>
+      <Button variant="primary">Create project</Button>
     ),
   },
 };
