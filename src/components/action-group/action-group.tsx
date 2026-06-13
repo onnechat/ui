@@ -58,7 +58,7 @@ export function ActionGroup({
             disabled={isDisabled}
             className="relative min-h-8 min-w-8 max-h-8 max-w-8 p-0 shrink-0 disabled:opacity-50"
           >
-            <Icon className="h-4 w-4" name="MenuBars" />
+            <Icon className="h-4 w-4" name="Dots" />
 
             {isDisabled && (
               <div className="absolute top-0 right-0 bg-card rounded-full p-1">
@@ -104,7 +104,7 @@ export function ActionGroup({
                       )}
                     >
                       <Icon
-                        name={item.icon ?? 'MoreHorizontal'}
+                        name={item.icon ?? 'Dots'}
                         className="size-4 text-current"
                       />
 

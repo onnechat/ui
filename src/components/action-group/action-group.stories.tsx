@@ -38,7 +38,7 @@ export const Default: StoryObj<typeof meta> = {
   args: {
     items: [
       [
-        { label: 'Edit', icon: 'Pencil' as IconType, onClick: fn() },
+        { label: 'Edit', icon: 'Pen3' as IconType, onClick: fn() },
         { label: 'Duplicate', icon: 'Copy' as IconType, onClick: fn() },
       ],
       [
