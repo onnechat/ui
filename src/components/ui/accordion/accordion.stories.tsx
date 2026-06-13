@@ -21,7 +21,6 @@ const items = Array.from({ length: 3 }, (_, index) => ({
 export const Default: StoryObj<typeof meta> = {
   args: {
     items,
-    defaultValue: 'item-0',
     className: 'w-full min-w-(--container-md) max-w-(--container-md)',
   },
 };
