@@ -12,12 +12,16 @@ import {
   SelectValue,
 } from '../select';
 
-interface TimePickerProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** The currently selected date. When `undefined`, the picker starts with empty selects. */
+export interface InputTimePickerProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  /** The currently selected date. When `undefined`, both selects start empty. */
   date: Date | undefined;
-  /** Callback invoked with a new `Date` whenever the hour or minute changes. Only the respective unit is mutated; seconds/millis are preserved. */
+  /**
+   * Callback invoked with a new `Date` whenever the hour or minute changes.
+   * Only the respective unit is mutated; seconds and milliseconds are preserved.
+   */
   setDate: (date: Date | undefined) => void;
-  /** When `true`, both hour and minute selects are disabled. */
+  /** When `true`, both hour and minute Selects are disabled. */
   disabled?: boolean;
 }
 
@@ -27,11 +31,15 @@ interface TimePickerProps extends React.HTMLAttributes<HTMLDivElement> {
  * Displays a single-row selector with hours (00–23) on the left,
  * a colon separator, and minutes (00–59) on the right.
  *
- * If {@link TimePickerProps.date} is `undefined`, both selects start empty.
- * When the user picks a value, a new `Date` is created — or the existing one is
- * mutated — and passed to {@link TimePickerProps.setDate}.
+ * When {@link InputTimePickerProps.date} is `undefined`, both selects start empty.
+ * Picking a value creates or mutates a `Date` and passes it to
+ * {@link InputTimePickerProps.setDate}.
+ *
+ * @example
+ * const [date, setDate] = useState<Date>();
+ * <InputTimePicker date={date} setDate={setDate} />
  */
-const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
+const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
   ({ date, setDate, disabled, className, ...props }, ref) => {
     const hours = React.useMemo(() => {
       return Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
@@ -62,7 +70,7 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
       <div
         ref={ref}
         className={cn(
-          'flex h-12 w-full items-center justify-between rounded-lg bg-input text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 md:text-sm min-w-24 px-0.5',
+          'flex h-12 w-full items-center justify-between rounded-lg bg-input text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 md:text-sm min-w-24',
           'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
           className,
         )}
@@ -75,13 +83,13 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
         >
           <SelectTrigger
             removeIcon
-            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3 rounded-lg"
+            aria-label={'timePicker.hour'}
+            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
           >
-            <SelectValue placeholder='Hour' />
+            <SelectValue placeholder={'timePicker.hourPlaceholder'} />
           </SelectTrigger>
-
           <SelectContent>
-            {hours.map(hour => (
+            {hours.map((hour) => (
               <SelectItem key={hour} value={hour}>
                 {hour}
               </SelectItem>
@@ -98,13 +106,13 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
         >
           <SelectTrigger
             removeIcon
-            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3 rounded-lg"
+            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
+            aria-label={'timePicker.minute'}
           >
-            <SelectValue placeholder='Minute' />
+            <SelectValue placeholder={'timePicker.minutePlaceholder'} />
           </SelectTrigger>
-
           <SelectContent>
-            {minutes.map(minute => (
+            {minutes.map((minute) => (
               <SelectItem key={minute} value={minute}>
                 {minute}
               </SelectItem>
@@ -116,6 +124,6 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
   },
 );
 
-TimePicker.displayName = 'TimePicker';
+InputTimePicker.displayName = 'InputTimePicker';
 
-export { TimePicker };
+export { InputTimePicker };

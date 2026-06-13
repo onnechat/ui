@@ -1,21 +1,21 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import * as SelectPrimitive from '@radix-ui/react-select'
+import * as SelectPrimitive from '@radix-ui/react-select';
 
-import { cn } from '@/lib/cn'
+import { cn } from '@/lib/cn';
 
-import { useElementSize } from '@/hooks/use-element-size'
+import { useElementSize } from '@/hooks/use-element-size';
 
-import { Input } from '@/components/internal/input'
+import { Input } from '@/components/internal/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/internal/select'
+} from '@/components/internal/select';
 
 export type TimeUnit =
   | 'seconds'
@@ -24,16 +24,20 @@ export type TimeUnit =
   | 'days'
   | 'weeks'
   | 'months'
-  | 'years'
+  | 'years';
 
 export interface TimeUnitOption {
   /** Unit identifier used in the Select value. */
-  value: TimeUnit
+  value: TimeUnit;
   /** Number of minutes in one unit of this type. */
-  toMinutes: number
+  toMinutes: number;
 }
 
-/** All supported time units with their minute-conversion factors. Months are 30 days, years are 365 days. */
+/**
+ * All supported time units with their minute-conversion factors.
+ *
+ * Months are approximated as 30 days and years as 365 days.
+ */
 const TIME_UNITS: TimeUnitOption[] = [
   { value: 'seconds', toMinutes: 1 / 60 },
   { value: 'minutes', toMinutes: 1 },
@@ -42,28 +46,29 @@ const TIME_UNITS: TimeUnitOption[] = [
   { value: 'weeks', toMinutes: 60 * 24 * 7 },
   { value: 'months', toMinutes: 60 * 24 * 30 },
   { value: 'years', toMinutes: 60 * 24 * 365 },
-]
+];
 
-export interface TimeUnitInputProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'onChange'
-> {
-  /** Current value in **minutes**. Drives the input display via conversion. */
-  value?: number
-  /** Unit selected by default when no user interaction has occurred. */
-  defaultUnit?: TimeUnit
+export interface InputTimeUnitProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  /** Current value in **minutes**. Drives the input display via unit conversion. */
+  value?: number;
+  /** Unit selected by default when the user has not manually picked one. */
+  defaultUnit?: TimeUnit;
   /** When `true`, the unit Select is disabled — only the numeric input is editable. */
-  disableUnitSelect?: boolean
-  /** Restrict which units appear in the dropdown. Empty array = all units. */
-  allowedUnits?: TimeUnit[]
-  /** Called with the total value in **minutes** (or `undefined` when the input is empty/invalid). */
-  onChange?: (valueInMinutes: number | undefined) => void
+  disableUnitSelect?: boolean;
+  /** Restrict which units appear in the dropdown. An empty or omitted array shows all units. */
+  allowedUnits?: TimeUnit[];
+  /**
+   * Called with the total value in **minutes**.
+   * Receives `undefined` when the input is empty or invalid.
+   */
+  onChange?: (valueInMinutes: number | undefined) => void;
   /** Called whenever the user picks a different unit. */
-  onUnitChange?: (unit: TimeUnit) => void
+  onUnitChange?: (unit: TimeUnit) => void;
   /** Alignment of the unit dropdown relative to the trigger. */
-  align?: SelectPrimitive.SelectContentProps['align']
-  /** Extra classes for the outermost wrapper. */
-  containerClassName?: string
+  align?: SelectPrimitive.SelectContentProps['align'];
+  /** Extra classes for the outermost wrapper div. */
+  containerClassName?: string;
 }
 
 /**
@@ -72,27 +77,27 @@ export interface TimeUnitInputProps extends Omit<
  * Accepts and emits values in **minutes**, converting the displayed number
  * based on the selected unit (seconds, minutes, hours, days, weeks, months, years).
  *
- * On the left, an {@link Input} for the numeric quantity (validated to numbers only).
+ * On the left, an {@link Input} for the numeric quantity (digits and decimal dots only).
  * On the right, a {@link Select} for the time unit, showing a short abbreviation.
  *
  * When the user picks a different unit, the displayed value is re-computed
  * so the underlying minute value stays constant — only the representation changes.
  *
  * @example
- * // Basic usage: pick a duration in minutes
- * <TimeUnitInput
+ * // Basic usage: pick a duration
+ * <InputTimeUnit
  *   value={5}
  *   onChange={(minutes) => console.log(minutes)}
  * />
  *
  * @example
  * // Restrict to hours and days only
- * <TimeUnitInput
+ * <InputTimeUnit
  *   allowedUnits={['hours', 'days']}
  *   defaultUnit="hours"
  * />
  */
-const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
+const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
   (props, ref) => {
     const {
       value,
@@ -107,24 +112,24 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
       defaultUnit = 'minutes',
       align = 'start',
       ...inputProps
-    } = props
+    } = props;
 
-    const triggerRef = React.useRef<HTMLButtonElement>(null)
-    const { width: triggerWidth } = useElementSize(triggerRef)
+    const triggerRef = React.useRef<HTMLButtonElement>(null);
+    const { width: triggerWidth } = useElementSize(triggerRef);
 
-    const [userPickedUnit, setUserPickedUnit] = React.useState(false)
+    const [userPickedUnit, setUserPickedUnit] = React.useState(false);
     const [selectedUnit, setSelectedUnit] =
-      React.useState<TimeUnit>(defaultUnit)
+      React.useState<TimeUnit>(defaultUnit);
 
-    const [inputValue, setInputValue] = React.useState<string>('')
+    const [inputValue, setInputValue] = React.useState<string>('');
 
     const availableUnits = React.useMemo(() => {
       if (!allowedUnits || allowedUnits.length === 0) {
-        return TIME_UNITS
+        return TIME_UNITS;
       }
 
-      return TIME_UNITS.filter((unit) => allowedUnits.includes(unit.value))
-    }, [allowedUnits])
+      return TIME_UNITS.filter((unit) => allowedUnits.includes(unit.value));
+    }, [allowedUnits]);
 
     /** Resolves the selected unit to its {@link TimeUnitOption}, falling back to the first available. */
     const selectedUnitOption = React.useMemo(
@@ -132,29 +137,32 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
         availableUnits.find((u) => u.value === selectedUnit) ??
         availableUnits[0],
       [selectedUnit, availableUnits],
-    )
+    );
 
     /**
-     * Sanitizes the raw input (only digits, dots, commas → dot),
+     * Sanitizes the raw input (only digits, dots, and commas → dot),
      * then converts to minutes via the currently selected unit
-     * and calls {@link TimeUnitInputProps.onChange}.
+     * and calls {@link InputTimeUnitProps.onChange}.
      */
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const rawValue = e.target.value.replace(/[^0-9.,]/g, '').replace(',', '.')
-      setInputValue(rawValue)
+      const rawValue = e.target.value
+        .replace(/[^0-9.,]/g, '')
+        .replace(',', '.');
+
+      setInputValue(rawValue);
 
       if (rawValue === '' || rawValue === '.') {
-        onChange?.(undefined)
-        return
+        onChange?.(undefined);
+        return;
       }
 
-      const numericValue = parseFloat(rawValue)
+      const numericValue = parseFloat(rawValue);
 
       if (!isNaN(numericValue)) {
-        const valueInMinutes = numericValue * selectedUnitOption.toMinutes
-        onChange?.(valueInMinutes)
+        const valueInMinutes = numericValue * selectedUnitOption.toMinutes;
+        onChange?.(valueInMinutes);
       }
-    }
+    };
 
     /**
      * Switches the selected unit, marks it as user-picked (to ignore future
@@ -162,48 +170,54 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
      * current minute value so the actual amount stays the same.
      */
     const handleUnitChange = (newUnit: TimeUnit) => {
-      setUserPickedUnit(true)
-      setSelectedUnit(newUnit)
+      setUserPickedUnit(true);
+      setSelectedUnit(newUnit);
 
-      onUnitChange?.(newUnit)
+      onUnitChange?.(newUnit);
 
       if (value !== undefined && value !== null) {
-        const newUnitOption = availableUnits.find((u) => u.value === newUnit)
+        const newUnitOption = availableUnits.find((u) => u.value === newUnit);
 
         if (newUnitOption) {
-          const displayValue = value / newUnitOption.toMinutes
+          const displayValue = value / newUnitOption.toMinutes;
 
           setInputValue(
             Number.isInteger(displayValue)
               ? displayValue.toString()
               : displayValue.toFixed(2).replace(/\.?0+$/, ''),
-          )
+          );
         }
       }
-    }
+    };
 
-    /** Syncs the selected unit to `defaultUnit` as long as the user hasn't manually picked one. */
+    /**
+     * Syncs the selected unit to `defaultUnit` as long as the user
+     * hasn't manually picked one.
+     */
     React.useLayoutEffect(() => {
       if (!userPickedUnit) {
-        setSelectedUnit(defaultUnit)
+        setSelectedUnit(defaultUnit);
       }
-    }, [defaultUnit, userPickedUnit])
+    }, [defaultUnit, userPickedUnit]);
 
-    /** Converts the controlled `value` (in minutes) back to a display string using the current unit. */
+    /**
+     * Converts the controlled `value` (in minutes) back to a display string
+     * using the current unit's {@link TimeUnitOption.toMinutes} factor.
+     */
     React.useEffect(() => {
       if (value === undefined || value === null) {
-        setInputValue('')
-        return
+        setInputValue('');
+        return;
       }
 
-      const displayValue = value / selectedUnitOption.toMinutes
+      const displayValue = value / selectedUnitOption.toMinutes;
 
       setInputValue(
         Number.isInteger(displayValue)
           ? displayValue.toString()
           : displayValue.toFixed(2).replace(/\.?0+$/, ''),
-      )
-    }, [value, selectedUnitOption.toMinutes])
+      );
+    }, [value, selectedUnitOption.toMinutes]);
 
     return (
       <div className={cn('flex w-full', containerClassName)}>
@@ -257,10 +271,10 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
           </SelectContent>
         </Select>
       </div>
-    )
+    );
   },
-)
+);
 
-TimeUnitInput.displayName = 'TimeUnitInput'
+InputTimeUnit.displayName = 'InputTimeUnit';
 
-export { TIME_UNITS, TimeUnitInput }
+export { TIME_UNITS, InputTimeUnit };

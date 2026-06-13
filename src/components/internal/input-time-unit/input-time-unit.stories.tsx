@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent } from 'storybook/test'
-import { TimeUnitInput } from './time-unit-input'
+import { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, userEvent } from 'storybook/test';
+import { InputTimeUnit } from './input-time-unit';
 
-const meta: Meta<typeof TimeUnitInput> = {
-  title: 'UI/TimeUnitInput',
-  component: TimeUnitInput,
+const meta: Meta<typeof InputTimeUnit> = {
+  title: 'UI/InputTimeUnit',
+  component: InputTimeUnit,
   parameters: {
     layout: 'centered',
   },
@@ -17,25 +17,25 @@ const meta: Meta<typeof TimeUnitInput> = {
       </div>
     ),
   ],
-}
+};
 
-export default meta
+export default meta;
 
 export const Default: StoryObj<typeof meta> = {
   args: {
     placeholder: 'Enter duration',
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByPlaceholderText('Enter duration')).toBeVisible()
+    await expect(canvas.getByPlaceholderText('Enter duration')).toBeVisible();
   },
-}
+};
 
 export const WithValue: StoryObj<typeof meta> = {
   args: {
     value: 120,
     placeholder: 'Duration',
   },
-}
+};
 
 export const RestrictedUnits: StoryObj<typeof meta> = {
   args: {
@@ -43,7 +43,7 @@ export const RestrictedUnits: StoryObj<typeof meta> = {
     defaultUnit: 'hours',
     placeholder: 'Duration',
   },
-}
+};
 
 export const DisabledUnitSelect: StoryObj<typeof meta> = {
   args: {
@@ -51,15 +51,15 @@ export const DisabledUnitSelect: StoryObj<typeof meta> = {
     defaultUnit: 'minutes',
     placeholder: 'Duration (minutes only)',
   },
-}
+};
 
 export const Controlled: StoryObj<typeof meta> = {
   render: () => {
-    const [value, setValue] = useState<number | undefined>(undefined)
+    const [value, setValue] = useState<number | undefined>(undefined);
 
     return (
       <div className="flex flex-col gap-2">
-        <TimeUnitInput
+        <InputTimeUnit
           value={value}
           onChange={setValue}
           placeholder="Pick a duration"
@@ -68,31 +68,31 @@ export const Controlled: StoryObj<typeof meta> = {
           Minutes: {value ?? '—'}
         </span>
       </div>
-    )
+    );
   },
-}
+};
 
 export const PickUnit: StoryObj<typeof meta> = {
   render: () => {
-    const [value, setValue] = useState<number | undefined>(30)
+    const [value, setValue] = useState<number | undefined>(30);
 
     return (
-      <TimeUnitInput
+      <InputTimeUnit
         value={value}
         onChange={setValue}
         defaultUnit="hours"
         placeholder="Duration"
       />
-    )
+    );
   },
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('combobox')
-    await userEvent.click(trigger)
+    const trigger = canvas.getByRole('combobox');
+    await userEvent.click(trigger);
 
-    const daysOption = canvas.getByText('days.label')
-    await expect(daysOption).toBeVisible()
-    await userEvent.click(daysOption)
+    const daysOption = canvas.getByText('days.label');
+    await expect(daysOption).toBeVisible();
+    await userEvent.click(daysOption);
 
-    await expect(trigger).toHaveTextContent('days.short')
+    await expect(trigger).toHaveTextContent('days.short');
   },
-}
+};
