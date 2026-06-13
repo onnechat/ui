@@ -12,7 +12,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-} from '@/components/ui/dialog'
+} from '@/components/internal/dialog'
 
 function Command({
   className,

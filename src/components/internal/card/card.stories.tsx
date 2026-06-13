@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card';
 
 const meta: Meta<typeof Card> = {
-  title: 'UI/Card',
+  title: 'Internal/Card',
   component: Card,
   parameters: {
     layout: 'centered',

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Accordion } from './accordion';
+import { Dialog } from './dialog';
 
-const meta: Meta<typeof Accordion> = {
-  title: 'UI/Accordion',
-  component: Accordion,
+const meta: Meta<typeof Dialog> = {
+  title: 'Internal/Dialog',
+  component: Dialog,
   parameters: {
     layout: 'centered',
   },

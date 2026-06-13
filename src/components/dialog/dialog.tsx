@@ -26,7 +26,7 @@ import {
   DialogFooter as UiDialogFooter,
   DialogHeader as UiDialogHeader,
   DialogTitle as UiDialogTitle,
-} from '@/components/ui/dialog'
+} from '@/components/internal/dialog'
 
 export const useDialog = create<DialogStore>((set) => ({
   isOpen: false,

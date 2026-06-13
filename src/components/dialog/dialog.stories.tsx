@@ -47,7 +47,7 @@ function WizardStep({
 }
 
 const meta: Meta<typeof Dialog> = {
-  title: 'UI/Dialog (Compound)',
+  title: 'UI/Dialog',
   component: Dialog,
   parameters: {
     layout: 'centered',

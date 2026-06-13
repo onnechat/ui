@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardSlider } from './card';
 import { Button } from '@/components/ui/button';
 
 const meta: Meta<typeof Card> = {
-  title: 'UI/Card (Compound)',
+  title: 'UI/Card',
   component: Card,
   subcomponents: { CardHeader, CardContent, CardFooter, CardSlider },
   parameters: {
