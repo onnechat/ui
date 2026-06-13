@@ -197,6 +197,7 @@ function Dialog({
   const [stackOrder, setStackOrder] = useState<number | null>(order ?? null)
 
   let isBehind = false
+  let isActive = true
   let dialogOpen = isOpen !== undefined ? isOpen : globalDialog.isOpen
 
   let stackStyle: React.CSSProperties = {}
@@ -285,6 +286,8 @@ function Dialog({
         dialogOpen = false
       }
     }
+
+    isActive = !isBehind && dialogOpen
   }
 
   useEffect(() => {
@@ -350,7 +353,7 @@ function Dialog({
 
         <div
           ref={scrollableContentRef}
-          inert={isBehind || undefined}
+          {...(isBehind ? { inert: true } : {})}
           className={cn(
             'p-4 w-full bg-muted text-card-foreground flex min-h-0 flex-col gap-4 rounded-xl overflow-y-auto overflow-x-hidden flex-1',
             isBehind && 'pointer-events-none select-none',
@@ -365,7 +368,7 @@ function Dialog({
 
         {actions && actions.length > 0 && (
           <UiDialogFooter
-            className={cn('p-4 rounded-b-xl shrink-0', classNames?.footer)}
+            className={cn('flex-row justify-end p-4 rounded-b-xl shrink-0', classNames?.footer)}
           >
             {actions.map((action) => (
               <Button
