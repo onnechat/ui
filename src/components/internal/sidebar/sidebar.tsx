@@ -11,7 +11,6 @@ import { cn } from '@/lib/cn'
 
 import { useIsMobile } from '@/hooks/use-mobile'
 
-import { COOKIES_KEYS, defaultTTL } from '@/constants/keys'
 
 import { Icon } from '@/components/icon'
 
@@ -32,8 +31,8 @@ import {
   TooltipTrigger,
 } from '@/components/internal/tooltip'
 
-const SIDEBAR_COOKIE_NAME = COOKIES_KEYS.SIDEBAR_STATE
-const SIDEBAR_COOKIE_MAX_AGE = defaultTTL
+const SIDEBAR_COOKIE_NAME = "sidebar-state"
+const SIDEBAR_COOKIE_MAX_AGE = 365 * 86400
 
 const SIDEBAR_WIDTH = '18rem'
 const SIDEBAR_WIDTH_ICON = '3rem'
@@ -116,7 +115,7 @@ function SidebarProvider({
   }, [toggleSidebar])
 
   React.useLayoutEffect(() => {
-    const saved = Cookies.get(COOKIES_KEYS.SIDEBAR_WIDTH)
+    const saved = Cookies.get("sidebar-width")
     if (saved) setSidebarWidth(saved)
   }, [])
 

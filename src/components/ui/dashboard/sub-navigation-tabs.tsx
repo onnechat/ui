@@ -5,6 +5,10 @@ import { cn } from '@/lib/cn'
 
 import { Icon, type IconType } from '@/components/icon'
 
+const Link = ({ href, children, ...props }: { href?: string; children?: React.ReactNode; [key: string]: unknown }) => (
+  <a href={href} {...props}>{children}</a>
+)
+
 export interface SubNavigationTabItem {
   label: string
   icon: IconType

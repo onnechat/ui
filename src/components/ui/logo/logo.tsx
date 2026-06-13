@@ -1,5 +1,4 @@
 import { cn } from '@/lib/cn'
-import { env } from '@/lib/env'
 
 const Icon = ({
   classNames,
@@ -36,7 +35,7 @@ const Icon = ({
 }
 
 const Text = ({ className }: { className?: string }) => (
-  <span className={cn('text-xl text-title', className)}>{env.brand.name}</span>
+  <span className={cn('text-xl text-title', className)}>{'Onne'}</span>
 )
 
 export const Logo = ({

@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 
 import { cn } from '@/lib/cn'
 
-import { useMe } from '@/hooks/user/use-me'
 
 import { Logo } from '@/components/ui/logo'
 
@@ -22,7 +21,7 @@ export const DashboardHeader = ({
   actionPortalClassName?: string
   actionPortalMobileClassName?: string
 }) => {
-  const { me: user, isFetching: isFetchingMe } = useMe()
+  const user = undefined; const isFetchingMe = false
 
   const [isSticked, setIsSticked] = useState(false)
   const [scrollY, setScrollY] = useState(0)

@@ -4,15 +4,10 @@ import { useCallback, useRef, useState } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
-import { channels } from '@/config/channels'
 
 import { cn } from '@/lib/cn'
-import { env } from '@/lib/env'
 
-import { useSetup } from '@/hooks/setup/use-setup'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { useWorkspaceRole } from '@/hooks/user/use-workspace-role'
-import { useWorkspace } from '@/hooks/workspaces/use-workspace'
 
 import { ANIMATION } from '@/constants/animations'
 
@@ -22,6 +17,18 @@ import { SocialIcon } from '@/components/icon/social'
 import { Loader } from '@/components/ui/loader'
 
 import { Button } from '@/components/internal/button'
+
+const useParams = () => ({ slug: '' as string | undefined })
+
+interface SetupData {
+  isComplete: boolean
+  setup: {
+    workspace: boolean
+    professional: boolean
+    service: boolean
+    serviceAdvanced: boolean
+  }
+}
 
 interface SetupStepConfig {
   key: string
@@ -91,7 +98,6 @@ const SETUP_STEPS: SetupStepConfig[] = [
   },
 ]
 
-import { SetupData } from '@/types/setup.type'
 
 import { useHaptics } from '@/hooks/use-haptics'
 
@@ -323,8 +329,8 @@ function SetupStepRow({
         )}
       >
         {`steps.${step.key}`, {
-          name: env.brand.name,
-          channel: channels.whatsapp.label,
+          name: 'Onne',
+          channel: 'WhatsApp',
         }}
       </p>
 
@@ -340,13 +346,13 @@ function SetupStepRow({
 export function SetupWidget({ placement, className }: SetupWidgetProps) {
   const params = {} as { slug?: string };
 
-  const { isAdmin } = useWorkspaceRole()
+  const isAdmin = false
   const { trigger } = useHaptics()
 
   const slug = params.slug as string
 
-  const { workspace, isFetching: isFetchingWorkspace } = useWorkspace(slug)
-  const { data: setupData, isLoading: isLoadingSetup } = useSetup(workspace?.id)
+  const workspace = null; const isFetchingWorkspace = false
+  const setupData = null; const isLoadingSetup = false
 
   const isMobile = useIsMobile()
 

@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie'
 
-import { COOKIES_KEYS } from '@/constants/keys'
 
 import { IconType } from '@/components/icon'
 
@@ -107,7 +106,7 @@ function getSidebarMenu(t: (key: string) => string): Menu[] {
 }
 
 function getInternalMenus(slug?: string): Menu[] {
-  const workspaceSlug = slug ?? Cookies.get(COOKIES_KEYS.WORKSPACE_SLUG)
+  const workspaceSlug = slug ?? Cookies.get("workspace-slug")
 
   return [
     {

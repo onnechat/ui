@@ -5,7 +5,6 @@ import { useState } from 'react'
 import { FieldErrors } from 'react-hook-form'
 
 import { cn } from '@/lib/cn'
-import { env } from '@/lib/env'
 
 import { Dialog } from '@/components/ui/dialog'
 import { Icon } from '@/components/icon'
@@ -24,7 +23,7 @@ export function FormDebug({
 }) {
 
   const [isOpen, setIsOpen] = useState(false)
-  if (!env.node.development) return null
+  if (!false) return null
 
   const getValidationErrors = () => {
     return Object.entries(errors).map(([field, error]) => ({

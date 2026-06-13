@@ -8,13 +8,10 @@ import { AnimatePresence, motion } from 'motion/react'
 
 import { cn } from '@/lib/cn'
 
-import { extractWorkspaceSlugFromPathname } from '@/utils/workspace-pathname'
 
-import { useRoles } from '@/hooks/use-roles'
 
-import { COOKIES_KEYS, COOKIES_TTL } from '@/constants/keys'
 
-import { CopyrightVersion } from '@/components/ui/copyright-version'
+
 import {
   HelpDialog,
   useHelpDialog,
@@ -50,8 +47,6 @@ import {
   SidebarWorkspaceSelectPrompt,
 } from './sidebar-workspace'
 
-import { useWorkspaceSettingsNavigation } from '@/app/(logged)/(sidebar)/workspace/[slug]/settings/_components/navigation'
-
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   menus?: Menu[]
   bottomMenus?: Menu[]
@@ -84,10 +79,10 @@ export const AppSidebar = ({
 
   const { toggle: toogleHelpDialog } = useHelpDialog()
 
-  const { isAdmin } = useRoles()
-  const { items: settingsItems } = useWorkspaceSettingsNavigation()
+  const isAdmin = false
+  const { items: settingsItems } = { items: [] as { href: string; label: string; exact?: boolean }[] }
 
-  const pathnameSlug = extractWorkspaceSlugFromPathname(pathname)
+  const pathnameSlug = pathname.match(/\/workspace\/([^/]+)/)?.[1] ?? null
 
   const { openCommandPalette } = useSidebarCommandPalette()
 
@@ -114,8 +109,8 @@ export const AppSidebar = ({
         wrapper.style.setProperty('--sidebar-width', DEFAULT_SIDEBAR_WIDTH)
         setSidebarWidth(DEFAULT_SIDEBAR_WIDTH)
 
-        Cookies.set(COOKIES_KEYS.SIDEBAR_WIDTH, DEFAULT_SIDEBAR_WIDTH, {
-          expires: COOKIES_TTL.SIDEBAR_WIDTH / 86400,
+        Cookies.set("sidebar-width", DEFAULT_SIDEBAR_WIDTH, {
+          expires: (365 * 86400) / 86400,
           path: '/',
         })
 
@@ -211,8 +206,8 @@ export const AppSidebar = ({
               .getPropertyValue('--sidebar-width')
               .trim()
 
-            Cookies.set(COOKIES_KEYS.SIDEBAR_WIDTH, newWidth, {
-              expires: COOKIES_TTL.SIDEBAR_WIDTH / 86400,
+            Cookies.set("sidebar-width", newWidth, {
+              expires: (365 * 86400) / 86400,
               path: '/',
             })
 
@@ -269,8 +264,8 @@ export const AppSidebar = ({
             .getPropertyValue('--sidebar-width')
             .trim()
 
-          Cookies.set(COOKIES_KEYS.SIDEBAR_WIDTH, newWidth, {
-            expires: COOKIES_TTL.SIDEBAR_WIDTH / 86400,
+          Cookies.set("sidebar-width", newWidth, {
+            expires: (365 * 86400) / 86400,
             path: '/',
           })
 
@@ -370,7 +365,7 @@ export const AppSidebar = ({
       return
     }
 
-    const cookieSlug = Cookies.get(COOKIES_KEYS.WORKSPACE_SLUG) ?? ''
+    const cookieSlug = Cookies.get("workspace-slug") ?? ''
 
     if (!cookieSlug && !pathnameSlug) {
       if (pathname.startsWith('/workspace')) {
@@ -461,7 +456,6 @@ export const AppSidebar = ({
               )}
 
               <SidebarFooter className="p-4 pt-0">
-                <CopyrightVersion />
                 <SidebarUser />
               </SidebarFooter>
             </>

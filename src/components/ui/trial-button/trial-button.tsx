@@ -2,12 +2,13 @@
 
 import { TextMorph } from 'torph/react'
 
-import { Trial } from '@/types/trial.type'
 
 import { cn } from '@/lib/cn'
 
 import { useCustomQuery } from '@/hooks/use-custom-query'
 import { useIsClient } from '@/hooks/use-is-client'
+
+interface Trial { trialDays: number }
 
 import { Icon, IconType } from '@/components/icon'
 

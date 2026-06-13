@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 import { cn } from '@/lib/cn'
-import { env } from '@/lib/env'
 
 import { useIsMobile } from '@/hooks/use-mobile'
 
@@ -15,7 +14,7 @@ export const BrandDomainInput = React.forwardRef<
   const [prefix, setPrefix] = useState('')
 
   useEffect(() => {
-    setPrefix(isMobile ? '@' : `${env.domain.base}/@`)
+    setPrefix(isMobile ? '@' : `${'onne.chat'}/@`)
   }, [isMobile])
 
   return (

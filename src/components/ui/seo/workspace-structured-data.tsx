@@ -1,4 +1,3 @@
-import { env } from '@/lib/env'
 
 interface WorkspaceStructuredDataProps {
   name: string
@@ -14,7 +13,7 @@ export function WorkspaceStructuredData({
   logo,
   url,
 }: WorkspaceStructuredDataProps) {
-  const siteUrl = env.domain.url
+  const siteUrl = 'https://onne.chat'
 
   const schema = {
     '@context': 'https://schema.org',

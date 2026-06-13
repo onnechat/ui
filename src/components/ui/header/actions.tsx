@@ -5,9 +5,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/lib/cn'
 
 import { useIsClient } from '@/hooks/use-is-client'
-import { useMe } from '@/hooks/user/use-me'
 
-import { TEST_ID } from '@/constants/tests/id'
 
 import { Icon } from '@/components/icon/index'
 import { LanguageSwitch } from '@/components/ui/language-switch'
@@ -22,7 +20,7 @@ export function HeaderActions({
   bottom?: boolean
 }) {
   
-  const { me: user, isFetching: loading } = useMe()
+  const user = undefined; const loading = false
   const mounted = useIsClient()
 
   const animationVariants = {
@@ -54,7 +52,7 @@ export function HeaderActions({
             <Button
               asChild
               variant="default"
-              data-testid={TEST_ID.BUTTON.DASHBOARD}
+              data-testid={'button-dashboard'}
               className={cn(
                 'group rounded-2xl py-2.25 h-auto active:scale-[99.35%] gap-1!',
                 bottom && 'w-full text-base py-4 h-12 lg:h-auto',
@@ -83,14 +81,14 @@ export function HeaderActions({
                 variant: 'default',
                 label: 'login',
                 href: '/auth/login',
-                dataTestId: TEST_ID.BUTTON.LOGIN,
+                dataTestId: 'button-login',
                 className: !bottom ? 'max-md:hidden' : 'w-full',
               },
               {
                 variant: 'primary',
                 label: 'tryNow',
                 href: '/auth/register',
-                dataTestId: TEST_ID.BUTTON.REGISTER,
+                dataTestId: 'button-register',
                 className: cn(
                   'relative after:content-[""] after:absolute after:inset-0 after:rounded-2xl after:outline-6 after:outline-transparent after:-z-10 after:animate-pulse-button hover:scale-105 hover:shadow-[0_0_20px_4px_oklch(from_var(--primary)_l_c_h_/_0.35)] transition-[transform,box-shadow] duration-200',
                   bottom && 'w-full',

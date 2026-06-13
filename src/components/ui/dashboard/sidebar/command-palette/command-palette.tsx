@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo } from 'react'
 
-import { useCalendarNavigation } from '@/hooks/use-calendar-navigation'
 
 import type { SubNavigationTabItem } from '@/components/ui/dashboard/sub-navigation-tabs'
 import { Icon } from '@/components/icon'
@@ -127,7 +126,7 @@ export function SidebarCommandPalette({
   const router = useMemo(() => ({ push: (_url: string) => {}, replace: (_url: string) => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: (_url: string) => {} }), []);
 
   const { isOpen, setOpen } = useSidebarCommandPalette()
-  const { isCalendarRoute, navigateToCalendar } = useCalendarNavigation()
+  const isCalendarRoute = false; const navigateToCalendar = () => {}
 
   const mainEntries = collectCommandEntries(
     menus,

@@ -10,7 +10,6 @@ import { Controller, useForm, useWatch, type Path } from 'react-hook-form'
 
 import { motion } from 'motion/react'
 
-import { createSchemas } from '@/schemas'
 
 import { cn } from '@/lib/cn'
 
@@ -19,6 +18,15 @@ import { useIsClient } from '@/hooks/use-is-client'
 import { Icon } from '@/components/icon/index'
 
 import { Button } from '@/components/internal/button'
+
+const createSchemas = (_t: (key: string) => string) => ({
+  REGISTER: z.object({
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+    email: z.string().email(),
+    phone: z.string(),
+  }),
+})
 import { Checkbox } from '@/components/internal/checkbox'
 import { Input } from '@/components/internal/input'
 import { Label } from '@/components/internal/label'

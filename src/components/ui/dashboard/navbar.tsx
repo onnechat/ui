@@ -10,10 +10,8 @@ import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/lib/cn'
 
 import { useHaptics } from '@/hooks/use-haptics'
-import { useWorkspace } from '@/hooks/workspaces/use-workspace'
 
 import { ANIMATION } from '@/constants/animations'
-import { COOKIES_KEYS } from '@/constants/keys'
 
 import { Icon, type IconType } from '@/components/icon'
 
@@ -59,7 +57,7 @@ export function AppNavbar() {
   const { trigger } = useHaptics()
 
   const [slug, setSlug] = useState<string>('')
-  const { workspace } = useWorkspace(slug)
+  const workspace = null
 
   const NAVBAR_MENU: NavbarMenuItem[] = [
     {
@@ -92,7 +90,7 @@ export function AppNavbar() {
       return pathnameSlug
     }
 
-    return Cookies.get(COOKIES_KEYS.WORKSPACE_SLUG) ?? ''
+    return Cookies.get("workspace-slug") ?? ''
   }, [pathname, extractSlugFromPathname])
 
   const isEmptySlug = slug === '' || slug === null

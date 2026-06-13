@@ -7,12 +7,15 @@ import { AnimatePresence, motion } from 'motion/react'
 
 import { cn } from '@/lib/cn'
 
-import { useCalendarNavigation } from '@/hooks/use-calendar-navigation'
 
 import { ANIMATION } from '@/constants/animations'
 
 import { Icon } from '@/components/icon/index'
 import { Soon } from '@/components/ui/soon'
+
+const Link = ({ href, children, ...props }: { href?: string; children?: React.ReactNode; [key: string]: unknown }) => (
+  <a href={href} {...props}>{children}</a>
+)
 
 import { SidebarMenuButton, useSidebar } from '@/components/internal/sidebar'
 
@@ -62,7 +65,7 @@ type SidebarItemProps = {
 export const SidebarItem = ({ item, index, level = 0 }: SidebarItemProps) => {
   const { isMobile, toggleSidebar } = useSidebar()
   const pathname = "/";
-  const { isCalendarRoute, navigateToCalendar } = useCalendarNavigation()
+  const isCalendarRoute = false; const navigateToCalendar = () => {}
 
   const [open, setOpen] = useState(false)
 

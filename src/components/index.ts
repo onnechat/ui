@@ -7,7 +7,6 @@ export * from './ui/auth';
 export * from './ui/badges';
 export * from './ui/card';
 export * from './ui/chat-preview';
-export * from './ui/copyright-version';
 export * from './ui/dashboard';
 export * from './ui/data-custom-table';
 export * from './ui/development';

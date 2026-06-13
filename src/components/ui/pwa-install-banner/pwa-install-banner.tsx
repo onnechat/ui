@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 
 import { ANIMATION } from '@/constants/animations'
-import { STORAGE_KEYS } from '@/constants/keys'
 
 import { Card } from '@/components/ui/card'
 import { Icon } from '@/components/icon'
