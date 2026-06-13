@@ -18,8 +18,6 @@ import {
   PopoverTrigger,
 } from '@/components/internal/popover'
 
-import { Icon } from '@/components/icon'
-
 export interface SelectMultiProps<T extends object> {
   values: string[]
   onValuesChange: (values: string[]) => void

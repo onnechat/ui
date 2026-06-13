@@ -11,7 +11,6 @@ import { cn } from '@/lib/cn'
 import { ANIMATION } from '@/constants/animations'
 
 import { Icon } from '@/components/icon/index'
-import { Soon } from '@/components/ui/soon'
 
 const Link = ({ href, children, ...props }: { href?: string; children?: React.ReactNode; [key: string]: unknown }) => (
   <a href={href} {...props}>{children}</a>
@@ -181,7 +180,9 @@ export const SidebarItem = ({ item, index, level = 0 }: SidebarItemProps) => {
                   className="flex items-center gap-2 ml-auto"
                 >
                   {isSoon ? (
-                    <Soon />
+                    <span className="text-xs text-nowrap min-w-fit uppercase bg-accent text-accent-foreground rounded-lg px-2 py-0.5 scale-90 origin-right select-none">
+                      Em breve
+                    </span>
                   ) : hasItems ? (
                     <Icon
                       data-open={open}

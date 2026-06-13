@@ -19,8 +19,6 @@ import {
   PopoverTrigger,
 } from '@/components/internal/popover'
 
-import { Icon } from '@/components/icon'
-
 export interface SelectInfiniteScrollProps<T extends object> {
   search?: boolean
 

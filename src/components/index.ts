@@ -31,7 +31,6 @@ export * from './ui/seo';
 export * from './ui/service-worker-register';
 export * from './ui/settings-item';
 export * from './ui/shimmer-text';
-export * from './ui/soon';
 export * from './ui/text';
 export * from './ui/theme-color';
 export * from './ui/theme-switch';
