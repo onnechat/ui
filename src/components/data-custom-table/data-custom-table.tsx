@@ -4,16 +4,22 @@ import { useEffect, useMemo } from 'react'
 
 import { ColumnDef } from '@tanstack/react-table'
 
-import { AnimatePresence, motion } from 'motion/react'
-
 import { cn } from '@/lib/cn'
 
 import { useDataTable } from '@/hooks/use-data-table'
 
 import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { DataTable } from '@/components/ui/table/data-table'
-import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton'
 import { DataTableToolbar } from '@/components/ui/table/data-table-toolbar'
+import { Skeleton } from '@/index'
 
 export const DATA_CUSTOM_TABLE_VARIANTS = ['default', 'inset'] as const
 export const DEFAULT_DATA_CUSTOM_TABLE_VARIANT = 'default'
@@ -151,7 +157,7 @@ export function DataCustomTable<T>({
         .getFilteredSelectedRowModel()
         .rows.map((row) => row.original)
 
-      onRowSelectionChange(selectedRows)
+      onRowSelectionChange(selectedRows as T[])
     }
   }, [rowSelectionState, onRowSelectionChange, table])
 
@@ -172,23 +178,44 @@ export function DataCustomTable<T>({
         isLoading && 'overflow-hidden',
       )}
     >
-      <AnimatePresence mode="wait">
-        {isLoading ? (
-          <motion.div
-            key="skeleton"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-          >
-            <DataTableSkeleton variant={variant} />
-          </motion.div>
+      {isLoading ? (
+          <div className="rounded-2xl bg-card overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border/25 bg-card!">
+                  {tableColumns.map((col) => (
+                    <TableHead
+                      key={col.id}
+                      className="max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis"
+                    >
+                      {typeof col.header === 'string'
+                        ? col.header
+                        : col.id}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              
+              <TableBody>
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <TableRow
+                    key={i}
+                    className="border-b border-border/50 transition-none odd:bg-accent/15 even:bg-accent/50"
+                  >
+                    {tableColumns.map((col) => (
+                      <TableCell
+                        key={col.id}
+                        className="h-12 max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis"
+                      >
+                        <Skeleton className="h-4 w-[80%]" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         ) : (
-          <motion.div
-            key="data"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-          >
             <DataTable
               table={table}
               emptyMessage={emptyMessage}
@@ -202,9 +229,7 @@ export function DataCustomTable<T>({
             >
               <DataTableToolbar table={table} />
             </DataTable>
-          </motion.div>
         )}
-      </AnimatePresence>
     </div>
   )
 }
