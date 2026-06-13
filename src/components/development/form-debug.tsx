@@ -20,7 +20,7 @@ export function FormDebug({
 }: {
   isValid: boolean
   isDirty: boolean
-  errors: FieldErrors<any>
+  errors: FieldErrors<Record<string, unknown>>
 }) {
 
   const [isOpen, setIsOpen] = useState(false)
@@ -128,7 +128,7 @@ export function FormDebug({
 
         {debug.errors.length === 0 ? (
           <EmptyState
-            variant="embeddedFlat"
+            variant="flat"
             icon="BadgeCheck"
             title={'noValidationErrors'}
             description="All form fields are valid"
@@ -142,7 +142,7 @@ export function FormDebug({
           <div className="space-y-4 p-4">
             <div className="flex items-center gap-2">
               <Icon
-                name="AlertTriangle"
+                name="AlertWarning"
                 className={cn('size-5', 'text-destructive')}
               />
 

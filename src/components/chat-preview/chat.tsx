@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/cn';
-import { env } from '@/lib/env';
 
 import { Logo } from '@/components/logo';
 import { TextShimmer } from '@/components/shimmer-text';
@@ -151,7 +150,7 @@ const THEME_STYLES: Record<AssistantChatTheme, ThemeStyles> = {
 export const AssistantChat = ({
   theme = 'webchat',
   // icon,
-  name,
+  name: _name,
   disabled = false,
   messages = [],
   className,
@@ -345,10 +344,7 @@ export const AssistantChat = ({
             />
 
             <p className={cn('text-sm font-medium', styles.title)}>
-              {'headerTitle', {
-                brand: env.brand.name,
-                name: name || t('title',
-              })}
+              {'headerTitle'}
             </p>
           </div>
         </header>
@@ -384,9 +380,7 @@ export const AssistantChat = ({
 
               <div className="text-base w-full text-center text-foreground absolute left-1/2 -translate-x-1/2 bottom-1/2 -translate-y-1/2">
                 <TextShimmer className="[--base-color:var(--color-muted-foreground)] [--base-gradient-color:var(--color-foreground)]">
-                  {'comingSoon', {
-                    theme: theme.charAt(0.toUpperCase() + theme.slice(1),
-                  })}
+                  {'comingSoon'}
                 </TextShimmer>
               </div>
             </div>
@@ -446,7 +440,7 @@ export const AssistantChat = ({
                     <span className="text-xs opacity-50">
                       {isUser
                         ? 'labels.yourCustomer'
-                        : 'labels.aiAgent', { brand: env.brand.name }}
+                        : 'labels.aiAgent'}
                     </span>
 
                     {isAssistant && (

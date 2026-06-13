@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Label } from './label';
 
-const meta = {
+const meta: Meta<typeof Label> = {
   title: 'UI/Label',
-  component: typeof Label !== 'undefined' ? Label : undefined,
+  component: Label,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

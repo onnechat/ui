@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from './button';
 
-const meta = {
+const meta: Meta<typeof Button> = {
   title: 'UI/Button',
-  component: typeof Button !== 'undefined' ? Button : undefined,
+  component: Button,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

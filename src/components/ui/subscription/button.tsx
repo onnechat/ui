@@ -21,7 +21,7 @@ export const SubscriptionButton = ({
   children: childrenProp,
   ...props
 }: React.ComponentProps<typeof Button>) => {
-  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
+  const router = { push: (_url: string) => {}, replace: (_url: string) => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: (_url: string) => {} };
   const { slug } = useParams()
 
   const { workspace } = useWorkspace(slug as string)

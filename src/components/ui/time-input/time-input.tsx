@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn'
 
 import { Icon, IconType } from '@/components/icon'
 
-import { Input } from './input'
+import { Input } from '../input'
 
 const TIME_INPUT_TYPES = {
   DATE: 'date',

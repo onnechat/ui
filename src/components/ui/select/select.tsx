@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import * as SelectPrimitive from '@radix-ui/react-select'
 
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
+import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
 
@@ -212,7 +212,8 @@ function SelectTrigger({
 
       {!removeIcon && (
         <SelectPrimitive.Icon asChild>
-          <ChevronDownIcon
+          <Icon
+            name="ChevronDown"
             size={16}
             className="text-muted-foreground/80 in-aria-invalid:text-destructive/80 shrink-0 ml-auto"
           />
@@ -257,7 +258,7 @@ function SelectContent({
           onOpenChange={ctx.onOpenChange}
           direction="bottom"
         >
-          <DrawerContent title="Selecionar" showDivider>
+          <DrawerContent title="Select" showDivider>
             <SelectItemModeContext.Provider value="interactive">
               <div className="overflow-y-auto p-2 pb-6">
                 {cloneSelectChildren(children, 'drawer')}
@@ -354,7 +355,8 @@ function SelectItem({
         }}
       >
         {isSelected && (
-          <CheckIcon
+          <Icon
+            name="Check"
             strokeWidth={4}
             className="absolute inset-e-4 flex size-4 items-center justify-center"
           />
@@ -377,7 +379,7 @@ function SelectItem({
     >
       <span className="absolute inset-e-2 flex size-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <CheckIcon size={16} />
+          <Icon name="Check" size={16} />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -411,7 +413,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <ChevronUpIcon size={16} />
+      <Icon name="ChevronUp" size={16} />
     </SelectPrimitive.ScrollUpButton>
   )
 }
@@ -429,7 +431,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <ChevronDownIcon size={16} />
+      <Icon name="ChevronDown" size={16} />
     </SelectPrimitive.ScrollDownButton>
   )
 }

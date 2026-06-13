@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Sidebar } from './sidebar';
 
-const meta = {
+const meta: Meta<typeof Sidebar> = {
   title: 'UI/Sidebar',
-  component: typeof Sidebar !== 'undefined' ? Sidebar : undefined,
+  component: Sidebar,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

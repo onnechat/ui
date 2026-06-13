@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Alert } from './alert';
 
-const meta = {
+const meta: Meta<typeof Alert> = {
   title: 'UI/Alert',
-  component: typeof Alert !== 'undefined' ? Alert : undefined,
+  component: Alert,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

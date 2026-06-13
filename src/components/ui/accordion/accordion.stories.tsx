@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Accordion } from './accordion';
 
-const meta = {
+const meta: Meta<typeof Accordion> = {
   title: 'UI/Accordion',
-  component: typeof Accordion !== 'undefined' ? Accordion : undefined,
+  component: Accordion,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

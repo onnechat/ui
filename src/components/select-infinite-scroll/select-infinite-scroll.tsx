@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ChevronDownIcon, XIcon } from 'lucide-react'
+import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
 
@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 
-import { Icon } from './icon'
+import { Icon } from '@/components/icon'
 
 export interface SelectInfiniteScrollProps<T extends object> {
   search?: boolean
@@ -35,8 +35,8 @@ export interface SelectInfiniteScrollProps<T extends object> {
 
   enabled?: boolean
   queryKey: (string | undefined)[]
-  queryFn: (params: { pageParam?: unknown; search: string }) => Promise<any>
-  options?: Record<string, any>
+  queryFn: (params: { pageParam?: unknown; search: string }) => Promise<T[]>
+  options?: Record<string, unknown>
 
   getItemValue: (item: T) => string
   renderItem: (item: T, isSelected: boolean) => React.ReactNode
@@ -64,8 +64,8 @@ function SelectInfiniteScroll<T extends object>({
   renderItem,
   renderSelectedValue,
   placeholder,
-  searchPlaceholder = 'Buscar…',
-  emptyText = 'Nenhum resultado encontrado.',
+  searchPlaceholder = 'Search…',
+  emptyText = 'No results found.',
   contentTitle,
 }: SelectInfiniteScrollProps<T>) {
   const isMobile = useIsMobile()
@@ -144,7 +144,8 @@ function SelectInfiniteScroll<T extends object>({
       {isFetching && !open ? (
         <span className="size-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin shrink-0" />
       ) : (
-        <ChevronDownIcon
+        <Icon
+          name="ChevronDown"
           size={16}
           className="text-muted-foreground/80 shrink-0 ml-auto"
         />
@@ -157,7 +158,7 @@ function SelectInfiniteScroll<T extends object>({
       {searchProp && (
         <div className="p-2 relative">
           <Icon
-            name="Search"
+            name="Magnifier"
             className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none size-4 z-1"
           />
 
@@ -176,7 +177,7 @@ function SelectInfiniteScroll<T extends object>({
               onClick={() => setSearch('')}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg"
             >
-              <XIcon size={13} />
+              <Icon name="Xmark" size={13} />
             </button>
           )}
         </div>
@@ -272,7 +273,7 @@ function SelectInfiniteScroll<T extends object>({
 
         <Drawer open={open} onOpenChange={handleOpenChange} direction="bottom">
           <DrawerContent
-            title={contentTitle ?? placeholder ?? 'Selecionar'}
+            title={contentTitle ?? placeholder ?? 'Select'}
             showDivider
           >
             <div className="pb-6">{DropdownContent}</div>

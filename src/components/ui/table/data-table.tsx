@@ -155,16 +155,16 @@ export function DataTable<TData>({
                           if (trigger) trigger.click()
                         }, 500)
 
-                        ;(el as any)._longPressTimer = timer
+                        ;(el as HTMLElement & { _longPressTimer?: number })._longPressTimer = timer
                       }}
                       onTouchEnd={(e) => {
                         window.clearTimeout(
-                          (e.currentTarget as any)._longPressTimer,
+                          (e.currentTarget as HTMLElement & { _longPressTimer?: number })._longPressTimer,
                         )
                       }}
                       onTouchMove={(e) => {
                         window.clearTimeout(
-                          (e.currentTarget as any)._longPressTimer,
+                          (e.currentTarget as HTMLElement & { _longPressTimer?: number })._longPressTimer,
                         )
                       }}
                     >

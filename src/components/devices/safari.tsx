@@ -19,7 +19,7 @@ function SafariDesktop({ url, children }: SafariProps) {
           </div>
 
           <Icon
-            name="PanelLeft"
+            name="LayoutSidebar"
             className="size-5 text-muted-foreground fill-transparent!"
           />
 
@@ -45,7 +45,7 @@ function SafariDesktop({ url, children }: SafariProps) {
           </span>
 
           <Icon
-            name="RotateCw"
+            name="ArrowRotateClockwise"
             className="size-4 absolute right-3 fill-transparent!"
           />
         </div>
@@ -113,7 +113,7 @@ function SafariIPad({ url, children }: SafariProps) {
               </span>
 
               <Icon
-                name="RotateCw"
+                name="ArrowRotateClockwise"
                 className="size-3 absolute right-3 fill-transparent!"
               />
             </div>
@@ -158,7 +158,7 @@ function SafariIPhone({ url, children }: SafariProps) {
               className="relative flex items-center justify-center gap-1.5 rounded-md bg-muted text-muted-foreground px-2 py-2.5 w-full mx-auto h-10"
             >
               <Icon
-                name="TextAlignStart"
+                name="TextAlignLeft"
                 className="size-4 absolute left-3 fill-transparent!"
               />
 
@@ -167,7 +167,7 @@ function SafariIPhone({ url, children }: SafariProps) {
               </span>
 
               <Icon
-                name="RotateCw"
+                name="ArrowRotateClockwise"
                 className="size-4 absolute right-3 fill-transparent!"
               />
 

@@ -1,18 +1,67 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EmptyState } from './empty-state';
 
-const meta = {
+const meta: Meta<typeof EmptyState> = {
   title: 'UI/EmptyState',
-  component: typeof EmptyState !== 'undefined' ? EmptyState : undefined,
+  component: EmptyState,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['default', 'embedded', 'flat'],
+      table: { defaultValue: { summary: 'default' } },
+    },
+    title: { control: 'text' },
+    description: { control: 'text' },
+  },
+  args: {
+    variant: 'default',
+  },
+};
 
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {
-  args: {},
+  args: {
+    icon: 'Search',
+    title: 'No results found',
+    description: 'Try adjusting your search or filters.',
+  },
+};
+
+export const IconDescription: StoryObj<typeof meta> = {
+  args: {
+    icon: 'FolderOpen',
+    description: 'Create your first project to get started.',
+  },
+};
+
+export const IconTitle: StoryObj<typeof meta> = {
+  args: {
+    icon: 'FolderOpen',
+    title: 'No projects yet',
+  },
+};
+
+export const TitleDescription: StoryObj<typeof meta> = {
+  args: {
+    title: 'No projects yet',
+    description: 'Create your first project to get started.',
+  },
+};
+
+export const WithAction: StoryObj<typeof meta> = {
+  args: {
+    icon: 'FolderOpen',
+    title: 'No projects yet',
+    description: 'Create your first project to get started.',
+    children: (
+      <button className="rounded-xl bg-primary text-primary-foreground px-4 py-2 text-sm font-medium">
+        Create project
+      </button>
+    ),
+  },
 };

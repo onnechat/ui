@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Skeleton } from './skeleton';
 
-const meta = {
+const meta: Meta<typeof Skeleton> = {
   title: 'UI/Skeleton',
-  component: typeof Skeleton !== 'undefined' ? Skeleton : undefined,
+  component: Skeleton,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

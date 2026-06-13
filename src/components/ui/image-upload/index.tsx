@@ -71,7 +71,7 @@ const ImageUpload = ({
       }
       return true
     },
-    [t],
+    [],
   )
 
   const handleFile = useCallback(
@@ -193,13 +193,13 @@ const ImageUpload = ({
                 onClick={handleRemove}
                 aria-label={'aria.remove'}
               >
-                <Icon name="X" className="size-4" />
+                <Icon name="Xmark" className="size-4" />
               </Button>
             )}
           </div>
         ) : (
           <EmptyState
-            variant="embeddedFlat"
+            variant="flat"
             icon={isDragging ? 'Upload' : 'Image'}
             title={isDragging ? 'dropNow' : 'clickOrDrag'}
             description={'hint'}

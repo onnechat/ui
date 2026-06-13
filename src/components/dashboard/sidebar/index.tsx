@@ -2,7 +2,7 @@
 
 import Cookies from 'js-cookie'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -72,7 +72,7 @@ export const AppSidebar = ({
   showSetupWidget = false,
   ...props
 }: AppSidebarProps) => {
-  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
+  const router = useMemo(() => ({ push: (_url: string) => {}, replace: (_url: string) => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: (_url: string) => {} }), []);
   const pathname = "/";
 
   const {
@@ -284,7 +284,7 @@ export const AppSidebar = ({
     [toggleSidebar, setSidebarWidth, isSidebarOpen, setOpen],
   )
 
-  const SIDEBAR_MENU = menus ?? getSidebarMenu(t)
+  const SIDEBAR_MENU = menus ?? getSidebarMenu()
 
   /**
    * Workspace-scoped routes (overview, calendar, …)

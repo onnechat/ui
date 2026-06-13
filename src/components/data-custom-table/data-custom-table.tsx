@@ -54,7 +54,7 @@ type DataCustomTableProps<T> = {
 export function DataCustomTable<T>({
   isLoading = true,
   data,
-  columns,
+  columns = [],
   totalItems,
   variant = DEFAULT_DATA_CUSTOM_TABLE_VARIANT,
   pageSizeOptions = [10, 20, 30, 40, 50, 100],
@@ -107,7 +107,7 @@ export function DataCustomTable<T>({
       enableSorting: false,
       enableHiding: false,
     }),
-    [t],
+    [],
   )
 
   const tableColumns = useMemo(

@@ -86,7 +86,6 @@ export const Header = () => {
                 <a
                   key={item.label}
                   href={item.href}
-                  prefetch={item.prefetch}
                   className="text-sm hover:underline underline-offset-8 decoration-primary transition-colors active:scale-[99.35%] p-2 h-10"
                 >
                   {item.label}
@@ -140,7 +139,7 @@ export const Header = () => {
                     onClick={() => handleToggleMenu(false)}
                     className="text-lg xs:text-xl sm:text-2xl text-left text-muted-foreground hover:text-foreground transition-colors active:scale-[99.35%] rounded-2xl px-4 py-3! h-fit items-start justify-start hover:bg-transparent! font-normal"
                   >
-                    <a href={item.href} prefetch={item.prefetch}>
+                    <a href={item.href}>
                       {item.label}
                     </a>
                   </Button>

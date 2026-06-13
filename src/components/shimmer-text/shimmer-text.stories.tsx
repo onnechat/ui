@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TextShimmer } from './shimmer-text';
 
-const meta = {
+const meta: Meta<typeof TextShimmer> = {
   title: 'UI/TextShimmer',
-  component: typeof TextShimmer !== 'undefined' ? TextShimmer : undefined,
+  component: TextShimmer,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

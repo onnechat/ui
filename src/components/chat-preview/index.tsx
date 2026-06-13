@@ -44,7 +44,7 @@ export const ChatPreview = ({
         value: 'webchat' as const,
         disabled: true,
         icon: (props: { className?: string }) => (
-          <Icon name="BotMessageSquare" {...props} />
+          <Icon name="ChatBot" {...props} />
         ),
       },
     ],

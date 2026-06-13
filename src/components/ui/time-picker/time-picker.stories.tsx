@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TimePicker } from './time-picker';
 
-const meta = {
+const meta: Meta<typeof TimePicker> = {
   title: 'UI/TimePicker',
-  component: typeof TimePicker !== 'undefined' ? TimePicker : undefined,
+  component: TimePicker,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

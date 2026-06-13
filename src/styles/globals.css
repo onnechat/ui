@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './utilities.css';
+@import './glass.css';
 
 @plugin 'tailwindcss-animate';
 
@@ -55,6 +56,8 @@
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
+  --color-dashboard-background: hsl(var(--dashboard-background));
+
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
@@ -90,6 +93,7 @@
   :root {
     --background: 0 0% 94%;
     --foreground: 240 10% 3.9%;
+    --dashboard-background: 0 0% 94%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
@@ -130,6 +134,7 @@
   :root.dark {
     --background: 240 5.9% 8%;
     --foreground: 0 0% 98%;
+    --dashboard-background: 240 5.9% 8%;
     --card: 240 5.9% 10%;
     --card-foreground: 0 0% 98%;
     --popover: 240 5.9% 8%;

@@ -15,7 +15,7 @@ import { Icon } from '@/components/icon'
 import { Button } from '@/components/ui/button'
 
 export const SidebarNotification = () => {
-  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
+  const router = { push: (_url: string) => {}, replace: (_url: string) => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: (_url: string) => {} };
 
   const { data: invitesData, isFetching: isFetchingInvites } = useCustomQuery<
     Invite[]

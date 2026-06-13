@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PwaInstallBanner } from './pwa-install-banner';
 
-const meta = {
+const meta: Meta<typeof PwaInstallBanner> = {
   title: 'UI/PwaInstallBanner',
-  component: typeof PwaInstallBanner !== 'undefined' ? PwaInstallBanner : undefined,
+  component: PwaInstallBanner,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

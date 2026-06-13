@@ -6,13 +6,35 @@ import { discordService } from '@/services/discord.service'
 
 import { FeedbackType } from '../help.dialog'
 
+interface FeedbackData {
+  user: { id?: string; name?: string; email?: string }
+  workspace: { id?: string; name?: string; slug?: string }
+  environment: {
+    pathname: string
+    hostname: string
+    url: string
+    timestamp: string
+    timezone: string
+    userAgent: string
+    language: string
+    platform: string
+    cookieEnabled: boolean
+    onLine: boolean
+    screenResolution: string
+    viewportSize: string
+  }
+  app: { version: string }
+  browser: { name: string; version: string }
+  os: { name: string; version: string }
+}
+
 const uploadToDiscord = async ({
   type,
   data,
   message,
 }: {
   type: FeedbackType
-  data: any
+  data: FeedbackData
   message: string
 }) => {
   const getWebhookUrl = () => {

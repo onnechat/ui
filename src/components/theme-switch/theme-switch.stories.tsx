@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ThemeSwitch } from './theme-switch';
 
-const meta = {
+const meta: Meta<typeof ThemeSwitch> = {
   title: 'UI/ThemeSwitch',
-  component: typeof ThemeSwitch !== 'undefined' ? ThemeSwitch : undefined,
+  component: ThemeSwitch,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ServiceWorkerRegister } from './service-worker-register';
 
-const meta = {
+const meta: Meta<typeof ServiceWorkerRegister> = {
   title: 'UI/ServiceWorkerRegister',
-  component: typeof ServiceWorkerRegister !== 'undefined' ? ServiceWorkerRegister : undefined,
+  component: ServiceWorkerRegister,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

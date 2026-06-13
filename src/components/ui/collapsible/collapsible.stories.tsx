@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Collapsible } from './collapsible';
 
-const meta = {
+const meta: Meta<typeof Collapsible> = {
   title: 'UI/Collapsible',
-  component: typeof Collapsible !== 'undefined' ? Collapsible : undefined,
+  component: Collapsible,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

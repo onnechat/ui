@@ -1,0 +1,159 @@
+@layer utilities {
+  :root {
+    --glass-backdrop-filter-blur: 24px;
+    --glass-opacity: 75%;
+
+    --glass-popover-opacity: calc(var(--glass-opacity) * 0.9);
+    --glass-dashboard-scrim-opacity: calc(var(--glass-opacity) * 0.9);
+    --glass-background-overlay-opacity: calc(var(--glass-opacity) * 0.9);
+    --glass-dashboard-background-opacity: calc(var(--glass-opacity) * 0.9);
+
+    --glass-dashboard-scrim-backdrop-blur: calc(
+      var(--glass-backdrop-filter-blur) * 0.9
+    );
+  }
+
+  .glass-dashboard-header {
+    background-color: hsl(var(--dashboard-background));
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    @supports not (selector(:-moz-focusring)) {
+      .glass-dashboard-header {
+        background-color: color-mix(
+          in oklab,
+          hsl(var(--dashboard-background)) var(--glass-dashboard-background-opacity),
+          transparent
+        );
+        -webkit-backdrop-filter: blur(var(--glass-backdrop-filter-blur));
+        backdrop-filter: blur(var(--glass-backdrop-filter-blur));
+      }
+    }
+  }
+
+  .glass-dashboard-chrome {
+    background-color: hsl(var(--dashboard-background));
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    @supports not (selector(:-moz-focusring)) {
+      .glass-dashboard-chrome {
+        background-color: color-mix(
+          in oklab,
+          hsl(var(--dashboard-background)) var(--glass-dashboard-background-opacity),
+          transparent
+        );
+        -webkit-backdrop-filter: blur(var(--glass-backdrop-filter-blur));
+        backdrop-filter: blur(var(--glass-backdrop-filter-blur));
+      }
+    }
+  }
+
+  .glass-dashboard-chrome-important {
+    background-color: hsl(var(--dashboard-background)) !important;
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    @supports not (selector(:-moz-focusring)) {
+      .glass-dashboard-chrome-important {
+        background-color: color-mix(
+          in oklab,
+          hsl(var(--dashboard-background)) var(--glass-dashboard-background-opacity),
+          transparent
+        ) !important;
+        -webkit-backdrop-filter: blur(
+          var(--glass-backdrop-filter-blur)
+        ) !important;
+        backdrop-filter: blur(var(--glass-backdrop-filter-blur)) !important;
+      }
+    }
+  }
+
+  .glass-popover {
+    background-color: hsl(var(--popover));
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    @supports not (selector(:-moz-focusring)) {
+      .glass-popover {
+        background-color: color-mix(
+          in oklab,
+          hsl(var(--popover)) var(--glass-popover-opacity),
+          transparent
+        );
+        -webkit-backdrop-filter: blur(var(--glass-backdrop-filter-blur));
+        backdrop-filter: blur(var(--glass-backdrop-filter-blur));
+      }
+    }
+  }
+
+  .glass-background-overlay {
+    background-color: hsl(var(--background));
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    @supports not (selector(:-moz-focusring)) {
+      .glass-background-overlay {
+        background-color: color-mix(
+          in oklab,
+          hsl(var(--background)) var(--glass-background-overlay-opacity),
+          transparent
+        );
+        -webkit-backdrop-filter: blur(var(--glass-backdrop-filter-blur));
+        backdrop-filter: blur(var(--glass-backdrop-filter-blur));
+      }
+    }
+  }
+
+  .glass-dashboard-scrim {
+    background-color: hsl(var(--dashboard-background));
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    @supports not (selector(:-moz-focusring)) {
+      .glass-dashboard-scrim {
+        background-color: color-mix(
+          in oklab,
+          hsl(var(--dashboard-background)) var(--glass-dashboard-scrim-opacity),
+          transparent
+        );
+
+        -webkit-backdrop-filter: blur(0px);
+        backdrop-filter: blur(0px);
+
+        animation: glass-blur-in 0.3s ease-in-out forwards;
+      }
+    }
+  }
+
+  @keyframes glass-blur-in {
+    to {
+      -webkit-backdrop-filter: blur(var(--glass-dashboard-scrim-backdrop-blur));
+      backdrop-filter: blur(var(--glass-dashboard-scrim-backdrop-blur));
+    }
+  }
+
+  /* Dropdown menu popup enter/exit animations */
+  [data-slot='dropdown-menu-content'],
+  [data-slot='dropdown-menu-sub-content'] {
+    transition-property: transform, scale, opacity, filter;
+    transition-duration: 150ms;
+    transition-timing-function: ease-out;
+  }
+
+  [data-starting-style][data-slot='dropdown-menu-content'],
+  [data-starting-style][data-slot='dropdown-menu-sub-content'] {
+    scale: 0.95;
+    opacity: 0;
+    filter: blur(2px);
+  }
+
+  [data-ending-style][data-slot='dropdown-menu-content'],
+  [data-ending-style][data-slot='dropdown-menu-sub-content'] {
+    scale: 0.95;
+    opacity: 0;
+    filter: blur(2px);
+    transition-duration: 100ms;
+    transition-timing-function: ease-in;
+  }
+}

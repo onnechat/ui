@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Input } from './input';
 
-const meta = {
+const meta: Meta<typeof Input> = {
   title: 'UI/Input',
-  component: typeof Input !== 'undefined' ? Input : undefined,
+  component: Input,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

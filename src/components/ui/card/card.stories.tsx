@@ -1,18 +1,31 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Card } from './card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card';
 
-const meta = {
+const meta: Meta<typeof Card> = {
   title: 'UI/Card',
-  component: typeof Card !== 'undefined' ? Card : undefined,
+  component: Card,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
   argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {
-  args: {},
+  render: () => (
+    <Card className="w-96">
+      <CardHeader>
+        <CardTitle>Card Title</CardTitle>
+        <CardDescription>Card description text.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>Card content goes here.</p>
+      </CardContent>
+      <CardFooter>
+        <p className="text-muted-foreground text-sm">Card footer</p>
+      </CardFooter>
+    </Card>
+  ),
 };

@@ -118,12 +118,12 @@ function SubNavListItem({
           </div>
         ) : variant === 'drawer' ? (
           <DrawerClose asChild>
-            <a href={item.href} scroll={false} className={linkClassName}>
+            <a href={item.href} className={linkClassName}>
               {row}
             </a>
           </DrawerClose>
         ) : (
-          <a href={item.href} scroll={false} className={linkClassName}>
+          <a href={item.href} className={linkClassName}>
             {row}
           </a>
         )}

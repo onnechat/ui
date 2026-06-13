@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { KeyboardShortcut } from './keyboard-shortcut';
 
-const meta = {
+const meta: Meta<typeof KeyboardShortcut> = {
   title: 'UI/KeyboardShortcut',
-  component: typeof KeyboardShortcut !== 'undefined' ? KeyboardShortcut : undefined,
+  component: KeyboardShortcut,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

@@ -1,18 +1,49 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
+import type { IconType } from '@/components/icon';
 import { ActionGroup } from './action-group';
 
-const meta = {
+const meta: Meta<typeof ActionGroup> = {
   title: 'UI/ActionGroup',
-  component: typeof ActionGroup !== 'undefined' ? ActionGroup : undefined,
+  component: ActionGroup,
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+  argTypes: {
+    disabled: {
+      control: 'boolean',
+      description: 'Disable the trigger button',
+    },
+    align: {
+      control: 'select',
+      options: ['start', 'center', 'end'],
+      description: 'Dropdown alignment relative to trigger',
+    },
+  },
+  args: {
+    disabled: false,
+    align: 'end',
+  },
+};
 
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {
-  args: {},
+  render: (args) => (
+    <div className="flex justify-center">
+      <ActionGroup {...args} />
+    </div>
+  ),
+  args: {
+    items: [
+      [
+        { label: 'Edit', icon: 'Pencil' as IconType, onClick: fn() },
+        { label: 'Duplicate', icon: 'Copy' as IconType, onClick: fn() },
+      ],
+      [
+        { label: 'Delete', icon: 'Trash' as IconType, onClick: fn(), variant: 'destructive' },
+      ],
+    ],
+  },
 };

@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Switch } from './switch';
 
-const meta = {
+const meta: Meta<typeof Switch> = {
   title: 'UI/Switch',
-  component: typeof Switch !== 'undefined' ? Switch : undefined,
+  component: Switch,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

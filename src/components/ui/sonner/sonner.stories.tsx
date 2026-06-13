@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Toaster } from './sonner';
 
-const meta = {
+const meta: Meta<typeof Toaster> = {
   title: 'UI/Toaster',
-  component: typeof Toaster !== 'undefined' ? Toaster : undefined,
+  component: Toaster,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

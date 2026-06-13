@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PwaUpdater } from './pwa-updater';
 
-const meta = {
+const meta: Meta<typeof PwaUpdater> = {
   title: 'UI/PwaUpdater',
-  component: typeof PwaUpdater !== 'undefined' ? PwaUpdater : undefined,
+  component: PwaUpdater,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Popover } from './popover';
 
-const meta = {
+const meta: Meta<typeof Popover> = {
   title: 'UI/Popover',
-  component: typeof Popover !== 'undefined' ? Popover : undefined,
+  component: Popover,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

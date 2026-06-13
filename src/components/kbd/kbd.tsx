@@ -46,7 +46,7 @@ export type KbdKey =
   | 'F10'
   | 'F11'
   | 'F12'
-  | (string & {})
+  | (string & Record<string, never>)
 
 const arrowIconMap: Record<string, IconType> = {
   arrowup: 'ArrowUp',

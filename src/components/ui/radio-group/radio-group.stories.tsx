@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { RadioGroup } from './radio-group';
 
-const meta = {
+const meta: Meta<typeof RadioGroup> = {
   title: 'UI/RadioGroup',
-  component: typeof RadioGroup !== 'undefined' ? RadioGroup : undefined,
+  component: RadioGroup,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Partners } from './partners';
 
-const meta = {
+const meta: Meta<typeof Partners> = {
   title: 'UI/Partners',
-  component: typeof Partners !== 'undefined' ? Partners : undefined,
+  component: Partners,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { ChevronDownIcon, XIcon } from 'lucide-react'
+import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
 
@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 
-import { Icon } from './icon'
+import { Icon } from '@/components/icon'
 
 export interface SelectMultiProps<T extends object> {
   values: string[]
@@ -50,9 +50,9 @@ function SelectMulti<T extends object>({
   renderItem,
   getBadgeLabel,
   filterFn,
-  placeholder = 'Selecionar…',
-  searchPlaceholder = 'Buscar…',
-  emptyText = 'Nenhum resultado encontrado.',
+  placeholder = 'Select…',
+  searchPlaceholder = 'Search…',
+  emptyText = 'No results found.',
   contentTitle,
 }: SelectMultiProps<T>) {
   const isMobile = useIsMobile()
@@ -145,7 +145,7 @@ function SelectMulti<T extends object>({
                       }
                     }}
                   >
-                    <XIcon size={10} />
+                    <Icon name="Xmark" size={10} />
                   </div>
                 </span>
               )
@@ -165,7 +165,8 @@ function SelectMulti<T extends object>({
       {isLoading ? (
         <span className="size-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin shrink-0" />
       ) : (
-        <ChevronDownIcon
+        <Icon
+          name="ChevronDown"
           size={16}
           className="text-muted-foreground/80 shrink-0 ml-auto"
         />
@@ -178,7 +179,7 @@ function SelectMulti<T extends object>({
       <div className="p-2">
         <div className="relative">
           <Icon
-            name="Search"
+            name="Magnifier"
             className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none size-4 z-1"
           />
 
@@ -197,7 +198,7 @@ function SelectMulti<T extends object>({
               onClick={() => setSearch('')}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg"
             >
-              <XIcon size={13} />
+              <Icon name="Xmark" size={13} />
             </button>
           )}
         </div>

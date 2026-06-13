@@ -104,7 +104,7 @@ export const Phone = ({
   flag?: boolean
   className?: string
 }) => {
-  const locale = "pt-BR"; as AvailableLocales
+  const locale = "pt-BR" as AvailableLocales
   const safePhone = typeof phone === 'string' ? phone : ''
   const { countryCode, phoneDigits } = resolveCountryAndDigits(phone)
 

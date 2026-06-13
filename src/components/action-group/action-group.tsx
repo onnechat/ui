@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import type { ComponentVariant } from '@/types'
 
 type ActionItem = {
   label: string
@@ -21,94 +22,105 @@ type ActionItem = {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
   className?: string
+  variant?: ComponentVariant
 }
 
+type ActionGroupAlign = 'start' | 'center' | 'end'
+
 export function ActionGroup({
-  items,
+  items = [],
   disabled,
   children,
   className,
+  align = 'end',
 }: {
-  items: ActionItem[][]
+  items?: ActionItem[][]
   disabled?: boolean
   className?: string
   children?: React.ReactNode
+  align?: ActionGroupAlign
 }) {
-  const itemsLength = items?.flat().length ?? 0
+  const itemsLength = items.flat().length
   const isDisabled = !!disabled || itemsLength === 0
 
   return (
-    <div className="flex justify-end">
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          asChild
-          disabled={isDisabled}
-          className={className}
-          data-action-group-trigger
-          onClick={(e) => e.stopPropagation()}
-        >
-          {children ?? (
-            <Button
-              variant="ghost"
-              disabled={isDisabled}
-              className=" min-h-8 min-w-8 max-h-8 max-w-8 p-0 shrink-0"
-            >
-              <Icon className="h-4 w-4" name="MoreHorizontal" />
-            </Button>
-          )}
-        </DropdownMenuTrigger>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        asChild
+        disabled={isDisabled}
+        className={className}
+        data-action-group-trigger
+        onClick={(e) => e.stopPropagation()}
+      >
+        {children ?? (
+          <Button
+            variant="ghost"
+            disabled={isDisabled}
+            className="relative min-h-8 min-w-8 max-h-8 max-w-8 p-0 shrink-0 disabled:opacity-50"
+          >
+            <Icon className="h-4 w-4" name="MenuBars" />
 
-        <DropdownMenuContent
-          align="end"
-          className="min-w-36 w-(--radix-dropdown-menu-trigger-width) bg-sidebar/50 rounded-2xl overflow-hidden"
-        >
-          {items.map((group, groupIndex) => {
-            const isLastGroup = groupIndex === items.length - 1
+            {isDisabled && (
+              <div className="absolute top-0 right-0 bg-card rounded-full p-1">
+                <Icon className="size-2 shrink-0" name="Lock" />
+              </div>
+            )}
+          </Button>
+        )}
+      </DropdownMenuTrigger>
 
-            return (
-              <React.Fragment key={groupIndex}>
-                <DropdownMenuGroup key={groupIndex} className="flex flex-col">
-                  {group.map((item, itemIndex) => {
-                    const isFirst = groupIndex === 0 && itemIndex === 0
-                    const isLast = isLastGroup && itemIndex === group.length - 1
+      <DropdownMenuContent
+        align={align}
+        className="min-w-36 w-(--radix-dropdown-menu-trigger-width) bg-sidebar/50 rounded-2xl overflow-hidden"
+      >
+        {items.map((group, groupIndex) => {
+          const isLastGroup = groupIndex === items.length - 1
 
-                    return (
-                      <DropdownMenuItem
-                        key={`${item.label}-${itemIndex}`}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          item.onClick?.(
-                            e as unknown as React.MouseEvent<HTMLButtonElement>,
-                          )
-                        }}
-                        className={cn(
-                          'text-muted-foreground',
-                          isFirst && 'rounded-t-xl',
-                          isLast && 'rounded-b-xl',
-                          item.disabled && 'opacity-50 cursor-not-allowed',
-                          'flex items-center gap-2 w-full relative z-10 group/menu-button hover:bg-muted! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] outline-none cursor-pointer ring-0!',
-                          item.className,
-                        )}
-                      >
-                        <Icon
-                          name={item.icon ?? 'MoreHorizontal'}
-                          className="size-4 text-current"
-                        />
+          return (
+            <React.Fragment key={groupIndex}>
+              <DropdownMenuGroup key={groupIndex} className="flex flex-col">
+                {group.map((item, itemIndex) => {
+                  const isFirst = groupIndex === 0 && itemIndex === 0
+                  const isLast = isLastGroup && itemIndex === group.length - 1
 
-                        {item.label}
-                      </DropdownMenuItem>
-                    )
-                  })}
-                </DropdownMenuGroup>
+                  return (
+                    <DropdownMenuItem
+                      key={`${item.label}-${itemIndex}`}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        item.onClick?.(
+                          e as unknown as React.MouseEvent<HTMLButtonElement>,
+                        )
+                      }}
+                      data-variant={item.variant ?? 'default'}
+                      className={cn(
+                        'text-muted-foreground',
+                        isFirst && 'rounded-t-xl',
+                        isLast && 'rounded-b-xl',
+                        item.disabled && 'opacity-50 cursor-not-allowed',
+                        'flex items-center gap-2 w-full relative z-10 group/menu-button hover:bg-muted! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] outline-none cursor-pointer ring-0!',
+                        'data-[variant=destructive]:text-destructive data-[variant=destructive]:hover:text-destructive/80 data-[variant=destructive]:hover:bg-destructive/10! data-[variant=destructive]:hover:border-destructive/20',
+                        item.className,
+                      )}
+                    >
+                      <Icon
+                        name={item.icon ?? 'MoreHorizontal'}
+                        className="size-4 text-current"
+                      />
 
-                {!isLastGroup && (
-                  <DropdownMenuSeparator className="max-lg:hidden" />
-                )}
-              </React.Fragment>
-            )
-          })}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+                      {item.label}
+                    </DropdownMenuItem>
+                  )
+                })}
+              </DropdownMenuGroup>
+
+              {!isLastGroup && (
+                <DropdownMenuSeparator className="max-lg:hidden" />
+              )}
+            </React.Fragment>
+          )
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

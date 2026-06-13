@@ -84,8 +84,8 @@ export const SidebarWorkspaceSelectPrompt = ({
   return (
     <SidebarMenu className={className}>
       <SidebarMenuButton asChild size="lg" className="h-12 cursor-pointer">
-        <a href="/workspace?select=1" scroll={false}>
-          <Icon name="Building2" className="size-5 shrink-0" />
+        <a href="/workspace?select=1">
+          <Icon name="ApartmentBuilding" className="size-5 shrink-0" />
 
           <span className="truncate text-left font-medium">{'title'}</span>
 
@@ -103,7 +103,7 @@ export const SidebarWorkspace = ({
   slug: string
   className?: string
 }) => {
-  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
+  const router = useMemo(() => ({ push: (_url: string) => {}, replace: (_url: string) => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: (_url: string) => {} }), []);
 
   const { has, isLoading: isLoadingRoles } = useRoles()
   const { workspace, isLoading: isLoadingWorkspace } = useWorkspace(slug)
@@ -183,7 +183,7 @@ export const SidebarWorkspace = ({
             : []),
         ] as Option[],
       ].filter((group) => group.length > 0),
-    [t, isPagePublic, handle, has, basePath, router],
+    [isPagePublic, handle, has, basePath, router],
   )
 
   const trialEndInDays = useMemo(() => {
@@ -326,7 +326,7 @@ export const SidebarWorkspace = ({
                             option[option.length - 1] === item
 
                           const isLink = !!('url' in item && item.url)
-                          const Component: React.ElementType = !!isLink
+                          const Component: React.ElementType = isLink
                             ? Link
                             : 'button'
 
@@ -427,7 +427,7 @@ export const SidebarWorkspace = ({
                       />
 
                       <span className="text-sm">
-                        {'trialEndsOn', { days: trialEndInDays }}
+                        {'trialEndsOn'}
                       </span>
                     </div>
 

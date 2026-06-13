@@ -46,7 +46,7 @@ function DropdownMenu({
   const handleOpenChange = React.useCallback(
     (isOpen: boolean) => {
       setDrawerOpen(isOpen)
-      onOpenChangeProp?.(isOpen, {} as any)
+      onOpenChangeProp?.(isOpen)
 
       if (!isOpen) {
         setTimeout(() => setView(null), 200)
@@ -205,7 +205,9 @@ function DropdownMenuContent({
           data-slot="dropdown-menu-content"
           className={cn(
             'z-50! max-h-(--available-height) min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg glass-popover p-1 text-popover-foreground shadow-md outline-none',
-            'transition-[transform,scale,opacity] duration-150 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0',
+            'transition-[transform,scale,opacity,filter] duration-150 ease-out',
+            'data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[starting-style]:blur-[2px]',
+            'data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:blur-[2px] data-[ending-style]:duration-100 data-[ending-style]:ease-in',
             className,
           )}
         >
@@ -572,7 +574,9 @@ function DropdownMenuSubContent({
           data-slot="dropdown-menu-sub-content"
           className={cn(
             'z-50! min-w-32 origin-(--transform-origin) overflow-hidden rounded-lg glass-popover p-1 text-popover-foreground shadow-lg',
-            'transition-[transform,scale,opacity] duration-150 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0',
+            'transition-[transform,scale,opacity,filter] duration-150 ease-out',
+            'data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[starting-style]:blur-[2px]',
+            'data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:blur-[2px] data-[ending-style]:duration-100 data-[ending-style]:ease-in',
             className,
           )}
         >

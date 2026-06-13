@@ -60,7 +60,7 @@ export function HeaderActions({
                 bottom && 'w-full text-base py-4 h-12 lg:h-auto',
               )}
             >
-              <a href="/workspace" scroll={false}>
+              <a href="/workspace">
                 {'dashboard'}
                 <Icon
                   name="ChevronRight"
@@ -108,7 +108,7 @@ export function HeaderActions({
                   className,
                 )}
               >
-                <a href={href} scroll={false}>
+                <a href={href}>
                   {label}
                 </a>
               </Button>

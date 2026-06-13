@@ -263,7 +263,7 @@ function SetupStepRow({
   toggleExpanded,
   compact,
 }: SetupStepRowProps) {
-  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
+  const router = { push: (_url: string) => {}, replace: (_url: string) => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: (_url: string) => {} };
   const { slug } = useParams()
 
   const isCompleted = step.isCompleted(setup)
@@ -338,7 +338,7 @@ function SetupStepRow({
 }
 
 export function SetupWidget({ placement, className }: SetupWidgetProps) {
-  const params = {} as any;
+  const params = {} as { slug?: string };
 
   const { isAdmin } = useWorkspaceRole()
   const { trigger } = useHaptics()
@@ -446,7 +446,7 @@ export function SetupWidget({ placement, className }: SetupWidgetProps) {
                     onClick={closeSidebar}
                     aria-label={'dismiss'}
                   >
-                    <Icon name="X" className="size-4" />
+                    <Icon name="Xmark" className="size-4" />
                   </Button>
                 </div>
 
@@ -501,7 +501,7 @@ export function SetupWidget({ placement, className }: SetupWidgetProps) {
         isOpen={isExpanded}
         onOpenChange={handleToggle}
         title={'title'}
-        description={'description', { name: env.brand.name }}
+        description={'description'}
       >
         <SetupWidgetContent
           setup={setup}

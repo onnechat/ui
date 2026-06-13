@@ -4,8 +4,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { AnimatePresence, motion } from 'motion/react'
 
-import { env } from '@/lib/env'
-
 import { ANIMATION } from '@/constants/animations'
 import { STORAGE_KEYS } from '@/constants/keys'
 
@@ -98,7 +96,7 @@ export const PwaInstallBanner = () => {
                 </div>
 
                 <p className="text-sm text-muted-foreground">
-                  {'description', { brand: env.brand.name }}
+                  {'description'}
                 </p>
               </div>
 

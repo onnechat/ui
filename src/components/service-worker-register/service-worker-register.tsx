@@ -44,7 +44,7 @@ export function ServiceWorkerRegister() {
         })
       })
     })
-  }, [t])
+  }, [])
 
   return null
 }

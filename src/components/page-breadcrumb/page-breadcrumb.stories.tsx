@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PageBreadcrumb } from './page-breadcrumb';
 
-const meta = {
+const meta: Meta<typeof PageBreadcrumb> = {
   title: 'UI/PageBreadcrumb',
-  component: typeof PageBreadcrumb !== 'undefined' ? PageBreadcrumb : undefined,
+  component: PageBreadcrumb,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

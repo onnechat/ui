@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DropdownMenu } from './dropdown-menu';
 
-const meta = {
+const meta: Meta<typeof DropdownMenu> = {
   title: 'UI/DropdownMenu',
-  component: typeof DropdownMenu !== 'undefined' ? DropdownMenu : undefined,
+  component: DropdownMenu,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

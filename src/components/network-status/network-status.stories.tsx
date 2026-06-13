@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { NetworkStatus } from './network-status';
 
-const meta = {
+const meta: Meta<typeof NetworkStatus> = {
   title: 'UI/NetworkStatus',
-  component: typeof NetworkStatus !== 'undefined' ? NetworkStatus : undefined,
+  component: NetworkStatus,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

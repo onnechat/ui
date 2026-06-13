@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
 import { createPortal } from 'react-dom'
-import { Controller, useForm, useWatch } from 'react-hook-form'
+import { Controller, useForm, useWatch, type Path } from 'react-hook-form'
 
 import { motion } from 'motion/react'
 
@@ -25,7 +25,7 @@ import { Label } from '@/components/ui/label'
 import { PhoneInput } from '@/components/ui/phone-input'
 
 interface RegisterFormProps {
-  onSubmit: (data: any) => Promise<void> | void
+  onSubmit: (data: Record<string, unknown>) => Promise<void> | void
   isPending?: boolean
   submitButtonText?: string
   includeEmail?: boolean
@@ -74,14 +74,14 @@ function TermsCheckbox({
   error,
   disabled: checkboxDisabled,
   shaking = false,
-  t,
+  t: _t,
 }: {
   error?: string
   disabled?: boolean
   shaking?: boolean
   checked: boolean
   onChange: (v: boolean) => void
-  t: ReturnType<typeof useTranslations<'auth.register'>>
+  t?: (key: string, params?: Record<string, unknown>) => string
 }) {
   return (
     <div className={cn('flex flex-col gap-2', shaking && 'animate-shake-x')}>
@@ -159,6 +159,7 @@ export function RegisterForm({
   const [isPasswordFocused, setIsPasswordFocused] = useState(false)
 
   const mounted = useIsClient()
+  const tSchema = (key: string) => key
   const [termsShaking, setTermsShaking] = useState(false)
 
   const changeStep = useCallback(
@@ -200,14 +201,16 @@ export function RegisterForm({
           }),
         }),
     })
-  }, [tSchema, includeEmail, readonlyEmail, isTwoStep, showTerms, t])
+  }, [includeEmail, readonlyEmail, isTwoStep, showTerms])
+
+  type FormValues = z.infer<typeof formSchema>;
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isValid },
-  } = useForm<z.infer<typeof formSchema>>({
+  } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       phone: '',
@@ -234,7 +237,7 @@ export function RegisterForm({
       try {
         setIsSubmitting(true)
 
-        const mappedData: Record<string, any> = {
+        const mappedData: Record<string, unknown> = {
           ...formData,
           ...(isTwoStep && { termsAccepted: true }),
         }
@@ -303,7 +306,7 @@ export function RegisterForm({
           placeholder: 'placeholders.password',
         },
       ] as const,
-    [t, includeEmail, readonlyEmail],
+    [includeEmail, readonlyEmail],
   )
 
   const renderField = useCallback(
@@ -378,7 +381,7 @@ export function RegisterForm({
                 : {})}
               autoComplete={autoCompleteMap[name]}
               placeholder={placeholder}
-              defaultValue={!!isReadonlyEmail ? readonlyEmail : undefined}
+              defaultValue={isReadonlyEmail ? readonlyEmail : undefined}
               {...(isPasswordField && {
                 sufix: (
                   <button
@@ -424,7 +427,7 @@ export function RegisterForm({
                     <li key={key} className="flex items-center gap-2">
                       <Icon
                         aria-hidden
-                        name="CheckCheck"
+                        name="CheckDouble"
                         className={cn(
                           'size-3.5 shrink-0 transition-colors fill-transparent',
                           met ? 'text-success' : 'text-muted-foreground/15',
@@ -462,7 +465,6 @@ export function RegisterForm({
       register,
       showPassword,
       showPasswordRequirements,
-      t,
     ],
   )
 
@@ -498,12 +500,11 @@ export function RegisterForm({
           onClick={() => withTermsGuard(() => changeStep('email'))}
           className="w-full h-12 rounded-2xl px-6 py-3 text-sm sm:text-base active:scale-[99.35%]"
         >
-          <Icon name="Mail" size={18} className="mb-0.5" />
+          <Icon name="Envelope" size={18} className="mb-0.5" />
           {'withEmail'}
         </Button>
 
         <TermsCheckbox
-          t={t}
           disabled={isPending}
           checked={termsAccepted}
           onChange={setTermsAccepted}
@@ -550,7 +551,7 @@ export function RegisterForm({
         <div className="flex flex-col gap-2">
           <div className="flex items-start gap-3">
             <Controller
-              name={'termsAccepted' as any}
+              name={'termsAccepted' as Path<FormValues>}
               control={control}
               render={({ field }) => (
                 <Checkbox
@@ -585,11 +586,15 @@ export function RegisterForm({
             </Label>
           </div>
 
-          {(errors as any).termsAccepted && (
-            <p className="text-sm text-destructive min-h-[20px]">
-              {(errors as any).termsAccepted.message}
-            </p>
-          )}
+          {(() => {
+            const err = errors as Partial<Record<string, { message?: string }>>;
+            if (!err.termsAccepted) return null;
+            return (
+              <p className="text-sm text-destructive min-h-[20px]">
+                {err.termsAccepted.message}
+              </p>
+            );
+          })()}
         </div>
       )}
 

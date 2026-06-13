@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import { DayPicker } from 'react-day-picker'
 
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
 
@@ -71,9 +71,9 @@ function Calendar({
       orientation?: 'left' | 'right' | 'up' | 'down'
     }) => {
       if (props.orientation === 'left') {
-        return <ChevronLeftIcon size={16} {...props} aria-hidden="true" />
+        return <Icon name="ChevronLeft" size={16} {...props} aria-hidden="true" />
       }
-      return <ChevronRightIcon size={16} {...props} aria-hidden="true" />
+      return <Icon name="ChevronRight" size={16} {...props} aria-hidden="true" />
     },
   }
 

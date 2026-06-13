@@ -97,7 +97,7 @@ export const SidebarUser = ({
   triggerClassName?: string
 }) => {
   const pathname = "/";
-  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
+  const router = useMemo(() => ({ push: (_url: string) => {}, replace: (_url: string) => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: (_url: string) => {} }), []);
 
   const locale = "pt-BR";
 
@@ -236,12 +236,9 @@ export const SidebarUser = ({
     [
       isMobile,
       openCommandPalette,
-      t,
       theme,
       locale,
-      tProfile,
       pathname,
-      tSidebar,
       isSystem,
       setTheme,
       isLoggingOut,
@@ -391,7 +388,7 @@ export const SidebarUser = ({
                         }
 
                         const isLink = !!('url' in item && item.url)
-                        const Component: React.ElementType = !!isLink
+                        const Component: React.ElementType = isLink
                           ? Link
                           : 'button'
 

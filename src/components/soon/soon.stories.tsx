@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Soon } from './soon';
 
-const meta = {
+const meta: Meta<typeof Soon> = {
   title: 'UI/Soon',
-  component: typeof Soon !== 'undefined' ? Soon : undefined,
+  component: Soon,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

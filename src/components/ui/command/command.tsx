@@ -4,7 +4,7 @@ import { Command as CommandPrimitive } from 'cmdk'
 
 import * as React from 'react'
 
-import { SearchIcon } from 'lucide-react'
+import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
 
@@ -91,7 +91,7 @@ function CommandInput({
       data-slot="command-input-wrapper"
       className="flex h-9 min-h-14 items-center gap-4 border-b border-border [--card-content-padding:1rem] px-(--card-content-padding)"
     >
-      <SearchIcon className="size-4 shrink-0 opacity-50" />
+      <Icon name="Magnifier" className="size-4 shrink-0 opacity-50" />
 
       <CommandPrimitive.Input
         data-slot="command-input"

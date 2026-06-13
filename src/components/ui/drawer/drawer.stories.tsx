@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Drawer } from './drawer';
 
-const meta = {
+const meta: Meta<typeof Drawer> = {
   title: 'UI/Drawer',
-  component: typeof Drawer !== 'undefined' ? Drawer : undefined,
+  component: Drawer,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

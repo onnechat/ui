@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Dialog } from './dialog';
 
-const meta = {
+const meta: Meta<typeof Dialog> = {
   title: 'Components/Dialog',
-  component: typeof Dialog !== 'undefined' ? Dialog : undefined,
+  component: Dialog,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

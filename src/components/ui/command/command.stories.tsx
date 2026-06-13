@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Command } from './command';
 
-const meta = {
+const meta: Meta<typeof Command> = {
   title: 'UI/Command',
-  component: typeof Command !== 'undefined' ? Command : undefined,
+  component: Command,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

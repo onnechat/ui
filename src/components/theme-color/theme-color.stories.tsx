@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ThemeColor } from './theme-color';
 
-const meta = {
+const meta: Meta<typeof ThemeColor> = {
   title: 'UI/ThemeColor',
-  component: typeof ThemeColor !== 'undefined' ? ThemeColor : undefined,
+  component: ThemeColor,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

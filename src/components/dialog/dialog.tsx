@@ -343,7 +343,7 @@ function Dialog({
               aria-label={'close'}
               className="ml-auto rounded-md p-1 bg-muted/50 hover:bg-muted hover:opacity-100 text-muted-foreground"
             >
-              <Icon name="X" className="size-4" />
+              <Icon name="Xmark" className="size-4" />
             </Button>
           </UiDialogHeader>
         )}

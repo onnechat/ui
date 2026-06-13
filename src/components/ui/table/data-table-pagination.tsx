@@ -60,14 +60,14 @@ export function DataTablePagination<TData>({
     <div className="flex gap-4 sm:items-center sm:justify-between">
       {hasRowsSelected && (
         <div className="hidden sm:block text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} {'of'}{' '}
-          {table.getFilteredRowModel().rows.length} {'rowsSelected'}
+          {table.getFilteredSelectedRowModel().rows.length} of{' '}
+          {table.getFilteredRowModel().rows.length} selected
         </div>
       )}
 
       <div className="flex items-center space-x-2 w-fit">
         <p className="hidden sm:block text-sm text-muted-foreground text-nowrap">
-          {'rowsPerPage'}
+          Rows per page
         </p>
 
         <Select
@@ -98,8 +98,8 @@ export function DataTablePagination<TData>({
                 disabled={!hasPrevious}
                 onClick={() => table.setPageIndex(0)}
               >
-                <span className="sr-only">{'goToFirstPage'}</span>
-                <Icon name="ChevronsLeft" className="h-4 w-4" />
+                <span className="sr-only">Go to first page</span>
+                <Icon name="ChevronLeftToLine" className="h-4 w-4" />
               </Button>
             )}
 
@@ -109,7 +109,7 @@ export function DataTablePagination<TData>({
               onClick={handlePrevious}
               disabled={!hasPrevious}
             >
-              <span className="sr-only">{'goToPreviousPage'}</span>
+              <span className="sr-only">Go to previous page</span>
               <Icon name="ChevronLeft" className="h-4 w-4" />
             </Button>
           </div>
@@ -121,7 +121,7 @@ export function DataTablePagination<TData>({
               onClick={handleNext}
               disabled={!hasNext}
             >
-              <span className="sr-only">{'goToNextPage'}</span>
+              <span className="sr-only">Go to next page</span>
               <Icon name="ChevronRight" className="h-4 w-4" />
             </Button>
 
@@ -132,8 +132,8 @@ export function DataTablePagination<TData>({
                 disabled={!hasNext}
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               >
-                <span className="sr-only">{'goToLastPage'}</span>
-                <Icon name="ChevronsRight" className="h-4 w-4" />
+                <span className="sr-only">Go to last page</span>
+                <Icon name="ChevronRightToLine" className="h-4 w-4" />
               </Button>
             )}
           </div>

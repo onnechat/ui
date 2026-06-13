@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Marquee } from './marquee';
 
-const meta = {
+const meta: Meta<typeof Marquee> = {
   title: 'UI/Marquee',
-  component: typeof Marquee !== 'undefined' ? Marquee : undefined,
+  component: Marquee,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

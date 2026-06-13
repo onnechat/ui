@@ -6,7 +6,7 @@ import { RemoveScroll } from 'react-remove-scroll'
 
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 
-import { XIcon } from 'lucide-react'
+import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
 
@@ -122,7 +122,8 @@ function DialogContent({
               closeButtonClassName,
             )}
           >
-            <XIcon
+            <Icon
+              name="Xmark"
               size={16}
               className="opacity-60 transition-opacity group-hover:opacity-100"
             />

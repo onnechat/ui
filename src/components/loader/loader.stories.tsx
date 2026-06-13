@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Loader } from './loader';
 
-const meta = {
+const meta: Meta<typeof Loader> = {
   title: 'UI/Loader',
-  component: typeof Loader !== 'undefined' ? Loader : undefined,
+  component: Loader,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
-} satisfies Meta<any>;
+};
 
 export default meta;
 

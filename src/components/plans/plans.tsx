@@ -66,7 +66,7 @@ const usePlansContext = () => {
 
 const usePlansData = (locale: AvailableLocale) => {
 
-  const { data: plansData, isLoading: isPlansLoading } = useCustomQuery<any[]>({
+  const { data: plansData, isLoading: isPlansLoading } = useCustomQuery<Array<{ name: string; limits: Record<string, number>; pricingOptions: unknown }>>({
     queryKey: ['plans'],
     queryFn: () => api.get('/billing/plans'),
   })
@@ -129,7 +129,7 @@ const usePlansData = (locale: AvailableLocale) => {
           .filter((feature): feature is string => !!feature),
       }
     })
-  }, [locale, externalPlanData, t, pricingEnabled])
+  }, [locale, externalPlanData, pricingEnabled])
 
   return { plans, isPlansLoading }
 }
@@ -152,7 +152,7 @@ const PlansProvider = ({
   workspaceName,
   onSelectPlan,
 }: PlansProviderProps) => {
-  const locale = "pt-BR"; as AvailableLocale
+  const locale = "pt-BR" as AvailableLocale
   const [period, setPeriod] = useState<BillingPeriod>(BILLING_PERIODS.ANNUAL)
 
   const { plans, isPlansLoading } = usePlansData(locale)
@@ -259,9 +259,7 @@ const PlansSwitch = ({ ...props }: PlansSwitchProps) => {
             onClick={handleClickSwitch}
             onCheckedChange={handleSwitchPeriod}
             checked={period === BILLING_PERIODS.ANNUAL}
-            aria-label={'switchAriaLabel', {
-              period: `switch.${period}`,
-            }}
+            aria-label={'switchAriaLabel'}
           />
 
           <Label
@@ -278,9 +276,7 @@ const PlansSwitch = ({ ...props }: PlansSwitchProps) => {
             onClick={handleClickSwitch}
             onCheckedChange={handleSwitchPeriod}
             checked={period === BILLING_PERIODS.ANNUAL}
-            aria-label={'switchAriaLabel', {
-              period: `switch.${period}`,
-            }}
+            aria-label={'switchAriaLabel'}
           />
 
           <Label
@@ -296,7 +292,7 @@ const PlansSwitch = ({ ...props }: PlansSwitchProps) => {
 }
 
 const PlansList = ({ className }: { className?: string }) => {
-  const router = { push: () => {}, replace: () => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: () => {} } as any;
+  const router = { push: (_url: string) => {}, replace: (_url: string) => {}, back: () => {}, forward: () => {}, refresh: () => {}, prefetch: (_url: string) => {} };
   const pathname = "/";
 
   const locale = "pt-BR";
@@ -331,22 +327,22 @@ const PlansList = ({ className }: { className?: string }) => {
 
     const message = encodeURIComponent(
       isLoggedIn
-        ? hasWorkspaceSelected
-          ? 'loggedIn.withWorkspace', {
+        ? (hasWorkspaceSelected
+          ? ('loggedIn.withWorkspace', {
               plan: planName,
               workspace: workspace?.name ?? '',
               period: `switch.${period}`,
-            }
-          : 'loggedIn.withoutWorkspace', {
+            })
+          : ('loggedIn.withoutWorkspace', {
               plan: planName,
               period: `switch.${period}`,
               brand: env.brand.name,
-            }
-        : 'loggedOut', {
+            }))
+        : ('loggedOut', {
             plan: planName,
             period: `switch.${period}`,
             brand: env.brand.name,
-          },
+          }),
     )
 
     const url = `https://wa.me/${clean}?text=${message}`
@@ -522,14 +518,14 @@ const PlansList = ({ className }: { className?: string }) => {
                         >
                           {isConsultation
                             ? 'onConsultation.note'
-                            : 'plan.singlePayment', {
+                            : ('plan.singlePayment', {
                                 price: format.currency({
                                   value:
                                     period === BILLING_PERIODS.ANNUAL
                                       ? yearlyPrice
                                       : monthlyPrice * 12,
                                   cents: true,
-                                },
+                                }),
                               })}
                         </motion.span>
                       )}
@@ -557,7 +553,7 @@ const PlansList = ({ className }: { className?: string }) => {
                         className="flex items-center gap-3 pr-4 text-sm"
                       >
                         <Icon
-                          name="CheckCheck"
+                          name="CheckDouble"
                           strokeWidth={3}
                           className={cn(
                             'shrink-0 size-4 fill-transparent!',
@@ -608,7 +604,7 @@ const PlansList = ({ className }: { className?: string }) => {
                       : isCurrentPlan
                         ? 'manage'
                         : isAvailable
-                          ? plan.cta || 'subscribe', { plan: plan.name }
+                          ? (plan.cta || 'subscribe', { plan: plan.name })
                           : 'comingSoon'}
 
                   {(isCurrentPlan || isConsultation) && !isLoading && (

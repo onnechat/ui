@@ -81,7 +81,7 @@ export function AppNavbar() {
   ]
 
   const extractSlugFromPathname = useCallback((path: string): string => {
-    const match = path.match(/^\/workspace\/([^\/]+)/)
+    const match = path.match(/^\/workspace\/([^/]+)/)
     return match ? match[1] : ''
   }, [])
 
@@ -149,7 +149,7 @@ export function AppNavbar() {
                 className="size-14 flex items-center justify-center p-4.5 rounded-xl transition-colors cursor-pointer bg-accent/50"
               >
                 <Icon
-                  name="RefreshCw"
+                  name="Refresh2"
                   strokeWidth={1.25}
                   className="size-6 animate-spin fill-transparent"
                 />
@@ -209,7 +209,6 @@ export function AppNavbar() {
                       transition={{ duration: ANIMATION.DURATION_FLOAT }}
                     >
                       <a
-                        scroll={false}
                         href={computedUrl}
                         className={className}
                         onClick={() => {

@@ -47,7 +47,10 @@ type InternalVariantProps = VariantProps<typeof buttonVariants> & {
 
 export type ButtonVariants = InternalVariantProps['variant']
 
-function Button({
+const Button = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<'button'> & InternalVariantProps
+>(function Button({
   variant,
   size = 'default',
   asChild = false,
@@ -56,19 +59,31 @@ function Button({
   className,
   children,
   ...props
-}: React.ComponentProps<'button'> & InternalVariantProps) {
+}, forwardedRef) {
   const { trigger } = useHaptics()
 
   const Comp = asChild ? Slot : 'button'
 
-  const ref = React.useRef<HTMLButtonElement>(null)
+  const internalRef = React.useRef<HTMLButtonElement>(null)
 
   const buttonWidth = React.useRef<number | null>(null)
   const buttonHeight = React.useRef<number | null>(null)
 
+  const ref = React.useCallback(
+    (node: HTMLButtonElement | null) => {
+      internalRef.current = node
+      if (typeof forwardedRef === 'function') {
+        forwardedRef(node)
+      } else if (forwardedRef) {
+        (forwardedRef as React.MutableRefObject<HTMLButtonElement | null>).current = node
+      }
+    },
+    [forwardedRef],
+  )
+
   React.useEffect(() => {
-    if (ref.current && !isLoading) {
-      const bounds = ref.current.getBoundingClientRect()
+    if (internalRef.current && !isLoading) {
+      const bounds = internalRef.current.getBoundingClientRect()
 
       buttonWidth.current = bounds.width
       buttonHeight.current = bounds.height
@@ -104,5 +119,5 @@ function Button({
       )}
     </Comp>
   )
-}
+})
 export { Button, buttonVariants }
