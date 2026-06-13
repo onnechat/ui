@@ -81,14 +81,6 @@
   }
 }
 
-@layer utilities {
-  body {
-    color: var(--foreground);
-    background: var(--background);
-    font-family: Arial, Helvetica, sans-serif;
-  }
-}
-
 @layer base {
   :root {
     --background: 0 0% 94%;
@@ -187,6 +179,15 @@
   #nprogress .spinner-icon {
     @apply border-primary!;
   }
+}
+
+.sbdocs.sbdocs-wrapper {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.sbdocs .docs-story {
+  background: hsl(var(--background));
 }
 
 /*

@@ -29,7 +29,7 @@ const preview: Preview = {
         Dark: 'dark',
       },
       defaultTheme: 'Dark',
-      parentSelector: 'body',
+      parentSelector: 'html',
     }),
   ],
 };
