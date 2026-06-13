@@ -14,6 +14,17 @@ const TIME_INPUT_TYPES = {
 
 type TimeInputType = (typeof TIME_INPUT_TYPES)[keyof typeof TIME_INPUT_TYPES]
 
+/**
+ * Native HTML date/time input with a custom icon instead of the browser's picker indicator.
+ *
+ * Hides `::-webkit-calendar-picker-indicator` via CSS, then overlays a themed icon
+ * ({@link IconType}) that opens the native picker on click.
+ *
+ * In Firefox, which lacks `::-webkit-calendar-picker-indicator`, a colored overlay
+ * sits on top of the native affordance to keep the visual consistent.
+ *
+ * @param type - One of `'date'`, `'time'`, or `'datetime-local'`.
+ */
 function TimeInput({
   type,
   className,
@@ -31,6 +42,13 @@ function TimeInput({
   const [hasValue, setHasValue] = React.useState(
     !!(props.value ?? props.defaultValue),
   )
+
+  const getPlaceholder = () => {
+    if (isDate) return 'AAAA-MM-DD'
+    if (isTime) return 'HH:MM'
+    if (isDateTimeLocal) return 'AAAA-MM-DD HH:MM'
+    return ''
+  }
 
   const getIconName = () => {
     if (isDate) return 'Calendar'
@@ -50,6 +68,7 @@ function TimeInput({
       <Input
         ref={inputRef}
         type={type}
+        placeholder={getPlaceholder()}
         className={cn(
           'text-end pr-12 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:none] appearance-none',
           !hasValue && 'text-sm text-muted-foreground/50',

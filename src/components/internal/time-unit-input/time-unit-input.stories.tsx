@@ -1,0 +1,98 @@
+import { useState } from 'react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect, userEvent } from 'storybook/test'
+import { TimeUnitInput } from './time-unit-input'
+
+const meta: Meta<typeof TimeUnitInput> = {
+  title: 'UI/TimeUnitInput',
+  component: TimeUnitInput,
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <div className="w-64">
+        <Story />
+      </div>
+    ),
+  ],
+}
+
+export default meta
+
+export const Default: StoryObj<typeof meta> = {
+  args: {
+    placeholder: 'Enter duration',
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByPlaceholderText('Enter duration')).toBeVisible()
+  },
+}
+
+export const WithValue: StoryObj<typeof meta> = {
+  args: {
+    value: 120,
+    placeholder: 'Duration',
+  },
+}
+
+export const RestrictedUnits: StoryObj<typeof meta> = {
+  args: {
+    allowedUnits: ['hours', 'days'],
+    defaultUnit: 'hours',
+    placeholder: 'Duration',
+  },
+}
+
+export const DisabledUnitSelect: StoryObj<typeof meta> = {
+  args: {
+    disableUnitSelect: true,
+    defaultUnit: 'minutes',
+    placeholder: 'Duration (minutes only)',
+  },
+}
+
+export const Controlled: StoryObj<typeof meta> = {
+  render: () => {
+    const [value, setValue] = useState<number | undefined>(undefined)
+
+    return (
+      <div className="flex flex-col gap-2">
+        <TimeUnitInput
+          value={value}
+          onChange={setValue}
+          placeholder="Pick a duration"
+        />
+        <span className="text-xs text-muted-foreground">
+          Minutes: {value ?? '—'}
+        </span>
+      </div>
+    )
+  },
+}
+
+export const PickUnit: StoryObj<typeof meta> = {
+  render: () => {
+    const [value, setValue] = useState<number | undefined>(30)
+
+    return (
+      <TimeUnitInput
+        value={value}
+        onChange={setValue}
+        defaultUnit="hours"
+        placeholder="Duration"
+      />
+    )
+  },
+  play: async ({ canvas }) => {
+    const trigger = canvas.getByRole('combobox')
+    await userEvent.click(trigger)
+
+    const daysOption = canvas.getByText('days.label')
+    await expect(daysOption).toBeVisible()
+    await userEvent.click(daysOption)
+
+    await expect(trigger).toHaveTextContent('days.short')
+  },
+}

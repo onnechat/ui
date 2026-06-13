@@ -13,11 +13,24 @@ import {
 } from '../select';
 
 interface TimePickerProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The currently selected date. When `undefined`, the picker starts with empty selects. */
   date: Date | undefined;
+  /** Callback invoked with a new `Date` whenever the hour or minute changes. Only the respective unit is mutated; seconds/millis are preserved. */
   setDate: (date: Date | undefined) => void;
+  /** When `true`, both hour and minute selects are disabled. */
   disabled?: boolean;
 }
 
+/**
+ * Controlled hour:minute picker composed of two {@link Select} dropdowns.
+ *
+ * Displays a single-row selector with hours (00–23) on the left,
+ * a colon separator, and minutes (00–59) on the right.
+ *
+ * If {@link TimePickerProps.date} is `undefined`, both selects start empty.
+ * When the user picks a value, a new `Date` is created — or the existing one is
+ * mutated — and passed to {@link TimePickerProps.setDate}.
+ */
 const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
   ({ date, setDate, disabled, className, ...props }, ref) => {
     const hours = React.useMemo(() => {
@@ -49,7 +62,7 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
       <div
         ref={ref}
         className={cn(
-          'flex h-12 w-full items-center justify-between rounded-lg bg-input text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 md:text-sm min-w-24',
+          'flex h-12 w-full items-center justify-between rounded-lg bg-input text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 md:text-sm min-w-24 px-0.5',
           'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
           className,
         )}
@@ -62,11 +75,11 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
         >
           <SelectTrigger
             removeIcon
-            aria-label={'timePicker.hour'}
-            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
+            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3 rounded-lg"
           >
-            <SelectValue placeholder={'timePicker.hourPlaceholder'} />
+            <SelectValue placeholder='Hour' />
           </SelectTrigger>
+
           <SelectContent>
             {hours.map(hour => (
               <SelectItem key={hour} value={hour}>
@@ -85,11 +98,11 @@ const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
         >
           <SelectTrigger
             removeIcon
-            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
-            aria-label={'timePicker.minute'}
+            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3 rounded-lg"
           >
-            <SelectValue placeholder={'timePicker.minutePlaceholder'} />
+            <SelectValue placeholder='Minute' />
           </SelectTrigger>
+
           <SelectContent>
             {minutes.map(minute => (
               <SelectItem key={minute} value={minute}>

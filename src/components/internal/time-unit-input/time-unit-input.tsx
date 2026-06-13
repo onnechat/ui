@@ -27,10 +27,13 @@ export type TimeUnit =
   | 'years'
 
 export interface TimeUnitOption {
+  /** Unit identifier used in the Select value. */
   value: TimeUnit
+  /** Number of minutes in one unit of this type. */
   toMinutes: number
 }
 
+/** All supported time units with their minute-conversion factors. Months are 30 days, years are 365 days. */
 const TIME_UNITS: TimeUnitOption[] = [
   { value: 'seconds', toMinutes: 1 / 60 },
   { value: 'minutes', toMinutes: 1 },
@@ -45,16 +48,50 @@ export interface TimeUnitInputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'onChange'
 > {
+  /** Current value in **minutes**. Drives the input display via conversion. */
   value?: number
+  /** Unit selected by default when no user interaction has occurred. */
   defaultUnit?: TimeUnit
+  /** When `true`, the unit Select is disabled — only the numeric input is editable. */
   disableUnitSelect?: boolean
+  /** Restrict which units appear in the dropdown. Empty array = all units. */
   allowedUnits?: TimeUnit[]
+  /** Called with the total value in **minutes** (or `undefined` when the input is empty/invalid). */
   onChange?: (valueInMinutes: number | undefined) => void
+  /** Called whenever the user picks a different unit. */
   onUnitChange?: (unit: TimeUnit) => void
+  /** Alignment of the unit dropdown relative to the trigger. */
   align?: SelectPrimitive.SelectContentProps['align']
+  /** Extra classes for the outermost wrapper. */
   containerClassName?: string
 }
 
+/**
+ * Numeric input paired with a time-unit Select.
+ *
+ * Accepts and emits values in **minutes**, converting the displayed number
+ * based on the selected unit (seconds, minutes, hours, days, weeks, months, years).
+ *
+ * On the left, an {@link Input} for the numeric quantity (validated to numbers only).
+ * On the right, a {@link Select} for the time unit, showing a short abbreviation.
+ *
+ * When the user picks a different unit, the displayed value is re-computed
+ * so the underlying minute value stays constant — only the representation changes.
+ *
+ * @example
+ * // Basic usage: pick a duration in minutes
+ * <TimeUnitInput
+ *   value={5}
+ *   onChange={(minutes) => console.log(minutes)}
+ * />
+ *
+ * @example
+ * // Restrict to hours and days only
+ * <TimeUnitInput
+ *   allowedUnits={['hours', 'days']}
+ *   defaultUnit="hours"
+ * />
+ */
 const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
   (props, ref) => {
     const {
@@ -89,6 +126,7 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
       return TIME_UNITS.filter((unit) => allowedUnits.includes(unit.value))
     }, [allowedUnits])
 
+    /** Resolves the selected unit to its {@link TimeUnitOption}, falling back to the first available. */
     const selectedUnitOption = React.useMemo(
       () =>
         availableUnits.find((u) => u.value === selectedUnit) ??
@@ -96,6 +134,11 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
       [selectedUnit, availableUnits],
     )
 
+    /**
+     * Sanitizes the raw input (only digits, dots, commas → dot),
+     * then converts to minutes via the currently selected unit
+     * and calls {@link TimeUnitInputProps.onChange}.
+     */
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value.replace(/[^0-9.,]/g, '').replace(',', '.')
       setInputValue(rawValue)
@@ -113,6 +156,11 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
       }
     }
 
+    /**
+     * Switches the selected unit, marks it as user-picked (to ignore future
+     * `defaultUnit` changes), and re-computes the displayed value from the
+     * current minute value so the actual amount stays the same.
+     */
     const handleUnitChange = (newUnit: TimeUnit) => {
       setUserPickedUnit(true)
       setSelectedUnit(newUnit)
@@ -134,12 +182,14 @@ const TimeUnitInput = React.forwardRef<HTMLInputElement, TimeUnitInputProps>(
       }
     }
 
+    /** Syncs the selected unit to `defaultUnit` as long as the user hasn't manually picked one. */
     React.useLayoutEffect(() => {
       if (!userPickedUnit) {
         setSelectedUnit(defaultUnit)
       }
     }, [defaultUnit, userPickedUnit])
 
+    /** Converts the controlled `value` (in minutes) back to a display string using the current unit. */
     React.useEffect(() => {
       if (value === undefined || value === null) {
         setInputValue('')
