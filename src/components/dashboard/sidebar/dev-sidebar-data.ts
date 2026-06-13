@@ -8,8 +8,8 @@ export const DEV_SIDEBAR_MENUS: Menu[] = [
     id: 'dev-tools',
     title: 'Tools',
     items: [
-      { title: 'Overview', icon: 'LayoutDashboard', url: '/dev' },
-      { title: 'SEO tester', icon: 'Search', url: '/dev/seo' },
+      { title: 'Overview', icon: 'HouseDashboard', url: '/dev' },
+      { title: 'SEO tester', icon: 'Magnifier', url: '/dev/seo' },
       { title: 'Toast playground', icon: 'Bell', url: '/dev/toast' },
     ],
   },

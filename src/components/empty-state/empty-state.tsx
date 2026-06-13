@@ -7,25 +7,17 @@ import { Icon, type IconType } from '@/components/icon'
 import { Card } from '@/components/card'
 
 export function EmptyState({
-  icon,
+  icon = 'Archive',
   title,
   description,
   children,
   variant = 'default',
   className,
 }: {
-  icon: IconType
+  icon?: IconType
   title?: string
   description?: string
   children?: React.ReactNode
-  /**
-   * - `embedded` — removes outer `Card` padding (`p-0`) when nested in another
-   *   `Card` or padded region.
-   * - `flat` — same as `embedded`, plus strips inner content chrome
-   *   (`bg-muted`, default padding) so the empty state does not look like a
-   *   second card (dialogs, dropzones, dev tools). Add spacing with
-   *   `className` (e.g. `p-6`, `py-8`).
-   */
   variant?: 'default' | 'embedded' | 'flat'
   className?: string
 }) {

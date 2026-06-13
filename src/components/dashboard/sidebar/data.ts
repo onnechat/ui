@@ -33,7 +33,7 @@ function getSidebarMenu(t: (key: string) => string): Menu[] {
       items: [
         {
           title: t('items.overview'),
-          icon: 'Home',
+          icon: 'House',
           url: '/',
         },
         {
@@ -49,7 +49,7 @@ function getSidebarMenu(t: (key: string) => string): Menu[] {
       items: [
         {
           title: t('items.contacts'),
-          icon: 'BookUser',
+          icon: 'AddressBook',
           url: '/contacts',
         },
         {
@@ -59,7 +59,7 @@ function getSidebarMenu(t: (key: string) => string): Menu[] {
         },
         {
           title: t('items.professionals'),
-          icon: 'IdCardLanyard',
+          icon: 'IdBadge',
           url: '/professionals',
         },
         // {
@@ -115,7 +115,7 @@ function getInternalMenus(slug?: string): Menu[] {
       items: [
         {
           title: 'Home',
-          icon: 'Home',
+          icon: 'House',
           url: '/admin',
         },
       ],
@@ -125,14 +125,14 @@ function getInternalMenus(slug?: string): Menu[] {
       items: [
         {
           title: 'Workspace',
-          icon: 'Building2',
+          icon: 'ApartmentBuilding',
           url: workspaceSlug
             ? `/workspace/${workspaceSlug}`
             : '/workspace?select=1',
         },
         {
           title: 'Onboarding',
-          icon: 'Footprints',
+          icon: 'StepsIndicator',
           url: '/onboarding/welcome',
         },
       ],

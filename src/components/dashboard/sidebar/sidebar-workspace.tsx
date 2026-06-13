@@ -154,7 +154,7 @@ export const SidebarWorkspace = ({
         [
           {
             label: 'switchWorkspace',
-            icon: 'ArrowRightLeft',
+            icon: 'Swap',
             onClick: () => {
               Cookies.remove(COOKIES_KEYS.WORKSPACE_SLUG)
               router.push('/workspace?select=1')
@@ -176,7 +176,7 @@ export const SidebarWorkspace = ({
             ? ([
                 {
                   label: 'settings',
-                  icon: 'Settings',
+                  icon: 'Gear',
                   url: `${basePath}/settings`,
                 },
               ] as Option[])

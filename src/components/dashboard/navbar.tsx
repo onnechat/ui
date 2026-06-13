@@ -64,7 +64,7 @@ export function AppNavbar() {
   const NAVBAR_MENU: NavbarMenuItem[] = [
     {
       title: 'Visão Geral',
-      icon: 'Home',
+      icon: 'House',
       url: '/',
     },
     {
@@ -74,7 +74,7 @@ export function AppNavbar() {
     },
     {
       title: workspace?.name || 'Estabelecimento',
-      icon: 'Building2',
+      icon: 'ApartmentBuilding',
       url: '/menu',
       catchAll: true,
     },

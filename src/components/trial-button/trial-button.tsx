@@ -54,7 +54,7 @@ export const TrialButton = ({ className }: { className?: string }) => {
           <TextMorph as="span" className="absolute">
             {isLoading
               ? 'trialLoading'
-              : 'trial', { days: data?.trialDays ?? FALLBACK_TRIAL_DAYS }}
+              : `trial ${data?.trialDays ?? FALLBACK_TRIAL_DAYS} days`}
           </TextMorph>
         </a>
       </Button>
@@ -62,11 +62,11 @@ export const TrialButton = ({ className }: { className?: string }) => {
       <div className="flex flex-col md:flex-row lg:flex-col items-center lg:items-start gap-4 animate-fade-in">
         {[
           {
-            icon: 'CheckCheck',
+            icon: 'CheckDouble',
             label: 'noCreditCard',
           },
           {
-            icon: 'CheckCheck',
+            icon: 'CheckDouble',
             label: 'noCommitment',
           },
         ].map((item) => (

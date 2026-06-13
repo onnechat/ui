@@ -54,7 +54,7 @@ const SETUP_STEPS: SetupStepConfig[] = [
   },
   {
     key: 'professionals',
-    icon: 'IdCardLanyard',
+    icon: 'IdBadge',
     url: {
       basePath: '/workspace',
       path: '/professionals',
@@ -63,7 +63,7 @@ const SETUP_STEPS: SetupStepConfig[] = [
   },
   {
     key: 'professionals-services',
-    icon: 'Briefcase',
+    icon: 'Suitcase',
     url: {
       basePath: '/workspace',
       path: '/professionals/services',
@@ -82,7 +82,7 @@ const SETUP_STEPS: SetupStepConfig[] = [
   },
   {
     key: 'channels',
-    icon: 'MessageCircle',
+    icon: 'ChatBubble',
     url: {
       basePath: '/workspace/settings',
       path: '/channels',

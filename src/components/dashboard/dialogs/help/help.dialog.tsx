@@ -230,19 +230,19 @@ const HelpDialog = () => {
               {
                 value: 'question',
                 label: 'types.question',
-                icon: 'HelpCircle',
+                icon: 'CircleQuestion',
                 color: 'var(--info)',
               },
               {
                 value: 'feedback',
                 label: 'types.feedback',
-                icon: 'MessageSquare',
+                icon: 'ChatBubble',
                 color: 'var(--success)',
               },
               {
                 value: 'bug',
                 label: 'types.bug',
-                icon: 'AlertTriangle',
+                icon: 'AlertWarning',
                 color: 'var(--destructive)',
               },
             ].map((item) => (

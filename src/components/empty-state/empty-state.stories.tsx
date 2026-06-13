@@ -19,6 +19,7 @@ const meta: Meta<typeof EmptyState> = {
   },
   args: {
     variant: 'default',
+    icon: 'Archive',
   },
 };
 
@@ -26,7 +27,7 @@ export default meta;
 
 export const Default: StoryObj<typeof meta> = {
   args: {
-    icon: 'Search',
+    icon: 'Magnifier',
     title: 'No results found',
     description: 'Try adjusting your search or filters.',
   },
@@ -34,14 +35,14 @@ export const Default: StoryObj<typeof meta> = {
 
 export const IconDescription: StoryObj<typeof meta> = {
   args: {
-    icon: 'FolderOpen',
+    icon: 'Archive',
     description: 'Create your first project to get started.',
   },
 };
 
 export const IconTitle: StoryObj<typeof meta> = {
   args: {
-    icon: 'FolderOpen',
+    icon: 'Archive',
     title: 'No projects yet',
   },
 };
@@ -55,7 +56,7 @@ export const TitleDescription: StoryObj<typeof meta> = {
 
 export const WithAction: StoryObj<typeof meta> = {
   args: {
-    icon: 'FolderOpen',
+    icon: 'Archive',
     title: 'No projects yet',
     description: 'Create your first project to get started.',
     children: (

@@ -149,7 +149,7 @@ export const SidebarUser = ({
             [
               {
                 label: 'Pesquisar',
-                icon: 'Search' as IconType,
+                icon: 'Magnifier' as IconType,
                 onClick: openCommandPalette,
               },
             ],
@@ -163,7 +163,7 @@ export const SidebarUser = ({
         },
         {
           label: 'preferences',
-          icon: 'Settings2',
+          icon: 'Gear2',
           url: '/user/preferences',
         },
       ],
@@ -189,7 +189,7 @@ export const SidebarUser = ({
                   }
                 : {
                     label: 'Workspace',
-                    icon: 'Home' as IconType,
+                    icon: 'House' as IconType,
                     url: Cookies.get(COOKIES_KEYS.WORKSPACE_SLUG)
                       ? `/workspace/${Cookies.get(COOKIES_KEYS.WORKSPACE_SLUG)}`
                       : '/workspace?select=1',
@@ -226,7 +226,7 @@ export const SidebarUser = ({
         {
           id: 'logout',
           label: isLoggingOut ? 'loggingOut' : 'logout',
-          icon: 'LogOut',
+          icon: 'ExitDoor',
           className:
             'text-destructive hover:!text-destructive hover:!bg-destructive/5',
           onClick: handleLogout,
