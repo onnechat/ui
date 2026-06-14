@@ -3,10 +3,10 @@ import { expect } from 'storybook/test';
 import { Tracker } from './tracker';
 
 const COLORS = [
-  'var(--color-emerald-300)',
-  'var(--color-emerald-400)',
-  'var(--color-emerald-500)',
   'var(--color-emerald-600)',
+  'var(--color-emerald-500)',
+  'var(--color-emerald-400)',
+  'var(--color-emerald-300)',
 ];
 
 const meta: Meta<typeof Tracker> = {
@@ -67,7 +67,7 @@ export const SingleColor: StoryObj<typeof meta> = {
   args: {
     data: Array.from({ length: 20 }, (_, i) => ({
       key: i,
-      color: 'bg-primary',
+      color: COLORS[0],
       tooltip: `Event ${i + 1}`,
     })),
   },
