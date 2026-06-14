@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn'
 
 import { useIsMobile } from '@/hooks/use-mobile'
 
-import { Input } from '../input'
+import { Input } from '@/components/ui/input'
 
 export const BrandDomainInput = React.forwardRef<
   HTMLInputElement,

@@ -98,7 +98,7 @@ const resolveCountryAndDigits = (
   }
 }
 
-interface PhoneProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface PhoneProps extends React.HTMLAttributes<HTMLSpanElement> {
   phone: string | null | undefined
   flag?: boolean
 }

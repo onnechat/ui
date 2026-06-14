@@ -1,7 +1,7 @@
 
 import { cn } from '@/lib/cn'
 
-interface CellProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface CellProps extends React.HTMLAttributes<HTMLSpanElement> {
   wrap?: boolean
   emptyText?: string
 }
