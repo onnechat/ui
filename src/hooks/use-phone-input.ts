@@ -5,7 +5,7 @@ import {
   parsePhoneNumberFromString,
 } from 'libphonenumber-js'
 
-import { applyPhoneMask, getDefaultMask, phoneMasks } from '@/components/ui/input-phone/masks'
+import { applyPhoneMask, getDefaultMask, getDisplayMask, phoneMasks } from '@/components/ui/input-phone/masks'
 
 export interface Country {
   code: string
@@ -68,7 +68,7 @@ export const usePhoneInput = (props: Record<string, unknown>) => {
 
   const maskConfig = phoneMasks[countryCode] ?? getDefaultMask()
 
-  const formattedPhoneNumber = applyPhoneMask(phone, maskConfig.mask)
+  const formattedPhoneNumber = applyPhoneMask(phone, getDisplayMask(countryCode, phone.length))
 
   const handleCountryChange = (code: string) => {
     setCountryCode(code)
@@ -77,7 +77,6 @@ export const usePhoneInput = (props: Record<string, unknown>) => {
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, '')
-    const masked = applyPhoneMask(raw, maskConfig.mask)
     setPhone(raw.slice(0, maskConfig.maxLength))
   }
 

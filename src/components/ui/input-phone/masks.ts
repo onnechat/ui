@@ -7,7 +7,7 @@ export interface PhoneMask {
 export const phoneMasks: Record<string, PhoneMask> = {
   BR: {
     mask: '(##) #####-####',
-    placeholder: '(11) 9 8765-4321',
+    placeholder: '(11) 98765-4321',
     maxLength: 11,
   },
 
@@ -83,6 +83,16 @@ export const applyPhoneMask = (value: string, mask: string): string => {
   }
 
   return maskedValue
+}
+
+export const getDisplayMask = (countryCode: string, digitCount: number): string => {
+  const mask = phoneMasks[countryCode]
+
+  if (countryCode === 'BR' && digitCount <= 10) {
+    return '(##) ####-####'
+  }
+
+  return mask?.mask ?? getDefaultMask().mask
 }
 
 export const removePhoneMask = (value: string | null | undefined): string => {
