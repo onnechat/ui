@@ -19,7 +19,7 @@ import {
   TableRow,
 } from './table'
 import { DataTablePagination } from './data-table-pagination'
-import { Skeleton } from '@/components/internal/skeleton'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface CursorPaginationMeta {
   hasNext?: boolean
