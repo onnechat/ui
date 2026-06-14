@@ -65,7 +65,7 @@ export const WithLabel: StoryObj = {
 export const WithDescription: StoryObj = {
   render: () => (
     <div className="flex items-start gap-2">
-      <Checkbox id="notifications" onCheckedChange={fn()} />
+      <Checkbox id="notifications" onCheckedChange={fn()} className="-mt-0.5" />
       <div className="grid gap-1">
         <Label htmlFor="notifications">Enable notifications</Label>
         <p className="text-sm text-muted-foreground">
