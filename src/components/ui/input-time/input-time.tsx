@@ -2,11 +2,20 @@
 
 import * as React from 'react';
 
+import * as SelectPrimitive from '@radix-ui/react-select';
+
 import { cn } from '@/lib/cn';
 
 import { Icon } from '@/components/icon';
 import type { FillIconName, CustomIconName } from '@/components/icon';
-import { Button } from '@/components/ui/button';
+import { useElementSize } from '@/hooks/use-element-size';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 import { Input } from '../input';
 
@@ -24,25 +33,52 @@ const INPUT_TIME_ICONS: Record<InputTimeType, FillIconName | CustomIconName> = {
   'datetime-local': 'CalendarClock',
 };
 
+const INPUT_TIME_LABELS: Record<InputTimeType, string> = {
+  date: 'Date',
+  time: 'Time',
+  'datetime-local': 'Date & Time',
+};
+
+export interface InputTimeProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
+  type?: InputTimeType;
+  defaultType?: InputTimeType;
+  onTypeChange?: (type: InputTimeType) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  align?: SelectPrimitive.SelectContentProps['align'];
+}
+
 function InputTime({
-  type,
+  type: typeProp,
+  defaultType = 'date',
+  onTypeChange,
   className,
   placeholder,
+  align = 'start',
   ...props
-}: React.ComponentProps<'input'> & {
-  type: InputTimeType;
-}) {
+}: InputTimeProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const { width: triggerWidth } = useElementSize(triggerRef);
+
   const [hasValue, setHasValue] = React.useState(
     !!(props.value ?? props.defaultValue),
   );
+
+  const [internalType, setInternalType] = React.useState(defaultType);
+  const type = typeProp ?? internalType;
 
   const iconName = INPUT_TIME_ICONS[type] ?? INPUT_TIME_ICONS.date;
   const resolvedPlaceholder =
     placeholder ?? INPUT_TIME_PLACEHOLDERS[type] ?? '';
 
-  const handleButtonClick = () => {
-    inputRef.current?.showPicker?.() || inputRef.current?.focus();
+  const handleTypeChange = (newType: string) => {
+    setInternalType(newType as InputTimeType);
+    onTypeChange?.(newType as InputTimeType);
+  };
+
+  const handleInputClick = () => {
+    inputRef.current?.showPicker?.();
   };
 
   return (
@@ -51,8 +87,9 @@ function InputTime({
         ref={inputRef}
         type={type}
         placeholder={resolvedPlaceholder}
+        onClick={handleInputClick}
         className={cn(
-          'rounded-r-none focus:z-10 appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden',
+          'rounded-r-none focus:z-10 [-moz-appearance:textfield] [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden pr-3',
           !hasValue && 'text-sm text-muted-foreground/50',
           className,
         )}
@@ -64,14 +101,43 @@ function InputTime({
         {...props}
       />
 
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handleButtonClick}
-        className="rounded-l-none border-l-0 shrink-0 bg-accent h-12! w-12!"
-      >
-        <Icon variant="fill" name={iconName} className="size-4" />
-      </Button>
+      <div className="relative shrink-0">
+        <Select value={type} onValueChange={handleTypeChange} disabled={typeProp !== undefined}>
+          <SelectTrigger
+            ref={triggerRef}
+            className={cn(
+              'w-fit! rounded-l-none border-l-0 focus:z-10 bg-accent',
+              typeProp !== undefined && '[&>svg]:hidden',
+            )}
+          >
+            <SelectValue>
+              <Icon variant="fill" name={iconName} className="size-4" />
+            </SelectValue>
+          </SelectTrigger>
+
+          <SelectContent
+            align={align}
+            className="min-w-max"
+            style={triggerWidth > 0 ? { width: triggerWidth } : {}}
+          >
+            {(Object.keys(INPUT_TIME_ICONS) as InputTimeType[]).map((t) => (
+              <SelectItem key={t} value={t}>
+                <div className="flex items-center gap-2">
+                  <Icon variant="fill" name={INPUT_TIME_ICONS[t]} className="size-4" />
+                  <span className="text-sm">{INPUT_TIME_LABELS[t]}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {typeProp !== undefined && (
+          <div
+            className="absolute inset-0 cursor-pointer"
+            onClick={handleInputClick}
+          />
+        )}
+      </div>
     </div>
   );
 }
