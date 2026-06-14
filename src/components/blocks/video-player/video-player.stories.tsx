@@ -16,7 +16,7 @@ import {
 const SAMPLE_VIDEO = '/video.mp4';
 
 const meta: Meta<typeof VideoPlayer> = {
-  title: 'UI/VideoPlayer',
+  title: 'Blocks/VideoPlayer',
   component: VideoPlayer,
   parameters: {
     layout: 'centered',

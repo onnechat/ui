@@ -10,7 +10,7 @@ const COLORS = [
 ];
 
 const meta: Meta<typeof Tracker> = {
-  title: 'UI/Tracker',
+  title: 'Blocks/Tracker',
   component: Tracker,
   parameters: {
     layout: 'centered',
