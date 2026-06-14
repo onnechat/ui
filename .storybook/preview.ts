@@ -10,7 +10,7 @@ const preview: Preview = {
         method: 'alphabetical',
       },
     },
-    actions: { argTypesRegex: '^on[A-Z].*' },
+    actions: {},
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -23,8 +23,17 @@ const preview: Preview = {
         inline: true,
       },
     },
-    backgrounds: { disabled: true },
+    backgrounds: {
+      grid: {
+        cellSize: 32,
+        opacity: 0.1,
+        cellAmount: 15,
+      },
+    },
     layout: 'fullscreen',
+  },
+  initialGlobals: {
+    backgrounds: { grid: true },
   },
   tags: ['autodocs'],
   decorators: [
