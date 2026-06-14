@@ -52,7 +52,7 @@ export * from './ui/avatar';
 export * from './internal/calendar';
 export * from './internal/chart';
 export * from './internal/collapsible';
-export * from './internal/command';
+export * from './ui/command';
 export * from './ui/drawer';
 export * from './internal/image-upload';
 export * from './ui/label';

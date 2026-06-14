@@ -22,7 +22,7 @@ function Command({
     <CommandPrimitive
       data-slot="command"
       className={cn(
-        'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
+        'flex h-full w-full flex-col overflow-hidden rounded-md border bg-popover text-popover-foreground',
         className,
       )}
       {...props}
@@ -142,7 +142,7 @@ function CommandGroup({
     <CommandPrimitive.Group
       data-slot="command-group"
       className={cn(
-        'overflow-hidden py-2 text-foreground **:[[cmdk-group-heading]]:py-2',
+        'overflow-hidden p-2 text-foreground **:[[cmdk-group-heading]]:py-2',
         className,
       )}
       {...props}
