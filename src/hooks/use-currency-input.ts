@@ -92,12 +92,13 @@ export const useCurrencyInput = (props: Record<string, unknown>) => {
     [rawDigits, currencyCode, centsMode],
   )
 
-  useEffect(() => {
-    if (!centsMode && inputRef.current) {
-      const pos = rawDigits.length
-      inputRef.current.setSelectionRange(pos, pos)
-    }
-  }, [displayValue, centsMode])
+  const decimalSep = useMemo(() => {
+    const locale = CURRENCY_LOCALE[currencyCode] ?? 'en-US'
+    return locale.startsWith('pt') || locale.startsWith('de') || locale.startsWith('fr') ||
+      locale.startsWith('es') || locale.startsWith('it')
+      ? ','
+      : '.'
+  }, [currencyCode])
 
   const handleCurrencyChange = (code: string) => {
     setCurrencyCode(code)
@@ -115,11 +116,19 @@ export const useCurrencyInput = (props: Record<string, unknown>) => {
     setRawDigits(inputValue.replace(DIGITS_ONLY, ''))
   }
 
+  useEffect(() => {
+    if (!centsMode && inputRef.current) {
+      const pos = rawDigits.length
+      inputRef.current.setSelectionRange(pos, pos)
+    }
+  }, [displayValue, centsMode, rawDigits.length])
+
   return {
     displayValue,
     selectedCurrency,
     currencies,
     inputRef,
+    placeholder: `0${decimalSep}00`,
     handleCurrencyChange,
     handleAmountChange,
     handleFocus: () => {},

@@ -60,6 +60,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       selectedCurrency,
       currencies,
       inputRef,
+      placeholder: defaultPlaceholder,
       handleCurrencyChange,
       handleAmountChange,
       handleFocus,
@@ -123,7 +124,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           disabled={disabled}
           value={displayValue}
           onFocus={handleFocus}
-          placeholder={placeholder}
+          placeholder={placeholder ?? defaultPlaceholder}
           onChange={handleAmountChange}
           className={cn('rounded-l-none focus:z-10', className)}
           containerClassName="rounded-l-none"
