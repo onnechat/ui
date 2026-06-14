@@ -13,5 +13,10 @@ const meta: Meta<typeof ChartContainer> = {
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {
-  args: {},
+  args: {
+    config: {
+      desktop: { label: 'Desktop', color: 'hsl(var(--chart-1))' },
+    },
+    className: 'min-h-[200px] w-full max-w-md',
+  },
 };
