@@ -2,16 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 import { Alert, AlertTitle, AlertDescription } from './alert';
 import { Icon, type IconType } from '@/components/icon';
+import { fillIcons } from '@/components/icon/variants';
 
 const ICON_OPTIONS: (IconType | null)[] = [
   null,
-  'Bell',
-  'CircleCheck',
-  'CircleInfo',
-  'CircleWarning',
-  'Lock',
-  'TriangleWarning',
-  'User',
+  ...(Object.keys(fillIcons).sort() as IconType[]),
 ];
 
 const meta: Meta<typeof Alert> = {
@@ -24,7 +19,7 @@ const meta: Meta<typeof Alert> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'destructive', 'warning', 'info'],
+      options: ['default', 'destructive', 'warning', 'info', 'success'],
     },
   },
 };
@@ -108,6 +103,22 @@ export const Info: StoryObj<typeof meta> = {
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText('New feature available')).toBeVisible();
+  },
+};
+
+export const Success: StoryObj<typeof meta> = {
+  args: { variant: 'success' },
+  render: (args) => (
+    <Alert {...args}>
+      <Icon name="CircleCheck" />
+      <AlertTitle>Operation completed</AlertTitle>
+      <AlertDescription>
+        Your changes have been saved successfully.
+      </AlertDescription>
+    </Alert>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('Operation completed')).toBeVisible();
   },
 };
 
