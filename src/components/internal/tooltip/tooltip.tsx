@@ -112,11 +112,11 @@ function TooltipContent({
         style={
           {
             '--content-background': contentBackground
-              ? `var(--${contentBackground})`
-              : 'var(--color-primary)',
+              ? `hsl(var(--${contentBackground}))`
+              : 'hsl(var(--primary))',
             '--content-foreground': contentForeground
-              ? `var(--${contentForeground})`
-              : 'var(--color-primary-foreground)',
+              ? `hsl(var(--${contentForeground}))`
+              : 'hsl(var(--primary-foreground))',
           } as React.CSSProperties
         }
         className={cn(
@@ -127,7 +127,7 @@ function TooltipContent({
       >
         {children}
 
-        <TooltipPrimitive.Arrow className="bg-(--content-background) fill-(--content-foreground) [&>polygon]:fill-(--content-background) size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px]" />
+        <TooltipPrimitive.Arrow className="fill-(--content-background)" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   )
