@@ -16,7 +16,7 @@ import { Icon, type IconSharedProps } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/internal/separator'
+import { Separator } from '@/components/ui/separator'
 import {
   Sheet,
   SheetContent,

@@ -67,13 +67,13 @@ function useChart() {
   const context = React.useContext(ChartContext)
 
   if (!context) {
-    throw new Error('useChart must be used within a <ChartContainer />')
+    throw new Error('useChart must be used within a <Chart />')
   }
 
   return context
 }
 
-function ChartContainer({
+function Chart({
   id,
   className,
   children,
@@ -413,7 +413,7 @@ function getPayloadConfigFromPayload(
 }
 
 export {
-  ChartContainer,
+  Chart,
   ChartLegend,
   ChartLegendContent,
   ChartStyle,

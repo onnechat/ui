@@ -49,12 +49,12 @@ export * from './ui/tracker';
 export * from './ui/video-player';
 
 export * from './ui/avatar';
-export * from './internal/calendar';
-export * from './internal/chart';
-export * from './internal/collapsible';
+export * from './ui/calendar';
+export * from './ui/chart';
+export * from './ui/collapsible';
 export * from './ui/command';
 export * from './ui/drawer';
 export * from './internal/image-upload';
 export * from './ui/label';
-export * from './internal/scroll-area';
-export * from './internal/separator';
+export * from './ui/scroll-area';
+export * from './ui/separator';

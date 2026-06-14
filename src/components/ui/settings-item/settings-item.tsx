@@ -14,7 +14,7 @@ import {
   collapsibleTriggerSettingsOverlayVariants,
   useCollapsibleOpen,
   useOptionalCollapsibleContext,
-} from '@/components/internal/collapsible'
+} from '@/components/ui/collapsible'
 import { Label } from '@/components/ui/label'
 
 const settingsItemVariants = cva(
