@@ -42,7 +42,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       locale,
       className,
       disabled,
-      disableCurrencySelect = true,
+      disableCurrencySelect = false,
       placeholder,
       defaultCurrency,
       allowZero = true,
@@ -81,7 +81,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
             ref={triggerRef}
             className={cn(
               'w-fit! rounded-r-none border-r-0 focus:z-10 bg-accent',
-              disableCurrencySelect && '[&_svg]:hidden',
+              disableCurrencySelect && '[&>svg]:hidden',
               className,
             )}
           >
