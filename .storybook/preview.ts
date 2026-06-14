@@ -33,7 +33,7 @@ const preview: Preview = {
         Light: 'light',
         Dark: 'dark',
       },
-      defaultTheme: 'Dark',
+      defaultTheme: 'Light',
       parentSelector: 'html',
     }),
   ],
