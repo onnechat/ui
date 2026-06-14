@@ -82,11 +82,11 @@ export function DataCustomTable<T>({
       id: 'select',
       header: ({ table }) => (
         <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          checked={table.getIsAllPageRowsSelected()}
+          indeterminate={
+            table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
           }
-          onCheckedChange={(value: boolean | 'indeterminate') =>
+          onCheckedChange={(value) =>
             table.toggleAllPageRowsSelected(!!value)
           }
           aria-label={'selectAll'}
@@ -95,7 +95,7 @@ export function DataCustomTable<T>({
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value: boolean | 'indeterminate') =>
+          onCheckedChange={(value) =>
             row.toggleSelected(!!value)
           }
           aria-label={'selectRow'}
