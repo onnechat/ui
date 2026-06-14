@@ -1,5 +1,6 @@
 export * from './icon';
 
+export * from './ui/alert';
 export * from './ui/accordion';
 export * from './ui/action-group';
 export * from './ui/announcement-banner';
@@ -31,7 +32,6 @@ export * from './ui/shimmer-text';
 export * from './ui/text';
 export * from './ui/video-player';
 
-export * from './internal/alert';
 export * from './internal/avatar';
 export * from './internal/badge';
 export * from './internal/brand-domain-input';
