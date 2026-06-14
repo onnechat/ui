@@ -89,6 +89,7 @@ function AvatarFallback({
   ...props
 }: React.ComponentProps<'span'> & { name?: string }) {
   const { status } = React.useContext(AvatarCtx)
+  if (status === 'loaded') return null
 
   const initials =
     name && name.length > 0
@@ -99,8 +100,6 @@ function AvatarFallback({
           .join('')
           .toUpperCase()
       : '?'
-
-  if (status === 'loaded') return null
 
   return (
     <span
