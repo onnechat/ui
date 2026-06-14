@@ -19,15 +19,15 @@ import { cn } from '@/lib/cn'
 export type VideoPlayerProps = ComponentProps<typeof MediaController>
 
 const variables = {
-  '--media-primary-color': 'var(--primary)',
-  '--media-secondary-color': 'var(--background)',
-  '--media-text-color': 'var(--foreground)',
-  '--media-background-color': 'var(--background)',
-  '--media-control-hover-background': 'var(--accent)',
+  '--media-primary-color': 'hsl(var(--primary))',
+  '--media-secondary-color': 'hsl(var(--background))',
+  '--media-text-color': 'hsl(var(--foreground))',
+  '--media-background-color': 'hsl(var(--background))',
+  '--media-control-hover-background': 'hsl(var(--accent))',
   '--media-font-family': 'var(--font-sans)',
-  '--media-live-button-icon-color': 'var(--muted-foreground)',
-  '--media-live-button-indicator-color': 'var(--destructive)',
-  '--media-range-track-background': 'var(--border)',
+  '--media-live-button-icon-color': 'hsl(var(--muted-foreground))',
+  '--media-live-button-indicator-color': 'hsl(var(--destructive))',
+  '--media-range-track-background': 'hsl(var(--border))',
 } as CSSProperties
 
 export const VideoPlayer = ({ style, ...props }: VideoPlayerProps) => (
