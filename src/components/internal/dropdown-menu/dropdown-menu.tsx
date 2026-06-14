@@ -32,7 +32,7 @@ const DropdownMenuContext =
 
 function DropdownMenu({
   open: openProp,
-  onOpenChange: onOpenChangeProp,
+  onOpenChange,
   defaultOpen,
   children,
   ...props
@@ -47,13 +47,13 @@ function DropdownMenu({
   const handleOpenChange = React.useCallback(
     (isOpen: boolean) => {
       setDrawerOpen(isOpen)
-      onOpenChangeProp?.(isOpen)
+      onOpenChange?.(isOpen)
 
       if (!isOpen) {
         setTimeout(() => setView(null), 200)
       }
     },
-    [onOpenChangeProp],
+    [onOpenChange],
   )
 
   return (
@@ -207,8 +207,8 @@ function DropdownMenuContent({
           className={cn(
             'z-50! max-h-(--available-height) min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg glass-popover p-1 text-popover-foreground shadow-md outline-none',
             'transition-[transform,scale,opacity,filter] duration-150 ease-out',
-            'data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[starting-style]:blur-[2px]',
-            'data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:blur-[2px] data-[ending-style]:duration-100 data-[ending-style]:ease-in',
+            'data-starting-style:scale-95 data-starting-style:opacity-0 data-starting-style:blur-[2px]',
+            'data-ending-style:scale-95 data-ending-style:opacity-0 data-ending-style:blur-[2px] data-ending-style:duration-100 data-ending-style:ease-in',
             className,
           )}
         >
@@ -246,7 +246,7 @@ function DropdownMenuItem({
 
   const itemClassName = cn(
     !resetClassName &&
-      "relative flex items-center gap-2 rounded-sm p-4 lg:px-2 lg:py-2 text-sm font-medium outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-inset:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:data-highlighted:bg-destructive/5 data-[variant=destructive]:data-highlighted:text-destructive dark:data-[variant=destructive]:data-highlighted:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive! cursor-pointer",
+    "relative flex items-center gap-2 rounded-sm p-4 lg:px-2 lg:py-2 text-sm font-medium outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-inset:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:data-highlighted:bg-destructive/5 data-[variant=destructive]:data-highlighted:text-destructive dark:data-[variant=destructive]:data-highlighted:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive! cursor-pointer",
     className,
   )
 
@@ -258,7 +258,7 @@ function DropdownMenuItem({
 
     const mobileItemClassName = cn(
       !resetClassName &&
-        "relative flex items-center gap-2 rounded-sm p-4 lg:px-2 lg:py-2 text-sm font-medium outline-hidden select-none hover:bg-accent hover:text-accent-foreground active:bg-accent active:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:hover:bg-destructive/5 data-[variant=destructive]:hover:text-destructive dark:data-[variant=destructive]:hover:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground cursor-pointer w-full text-left",
+      "relative flex items-center gap-2 rounded-sm p-4 lg:px-2 lg:py-2 text-sm font-medium outline-hidden select-none hover:bg-accent hover:text-accent-foreground active:bg-accent active:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:hover:bg-destructive/5 data-[variant=destructive]:hover:text-destructive dark:data-[variant=destructive]:hover:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground cursor-pointer w-full text-left",
       className,
     )
 
@@ -576,8 +576,8 @@ function DropdownMenuSubContent({
           className={cn(
             'z-50! min-w-32 origin-(--transform-origin) overflow-hidden rounded-lg glass-popover p-1 text-popover-foreground shadow-lg',
             'transition-[transform,scale,opacity,filter] duration-150 ease-out',
-            'data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[starting-style]:blur-[2px]',
-            'data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:blur-[2px] data-[ending-style]:duration-100 data-[ending-style]:ease-in',
+            'data-starting-style:scale-95 data-starting-style:opacity-0 data-starting-style:blur-[2px]',
+            'data-ending-style:scale-95 data-ending-style:opacity-0 data-ending-style:blur-[2px] data-ending-style:duration-100 data-ending-style:ease-in',
             className,
           )}
         >

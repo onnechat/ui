@@ -11,7 +11,6 @@ export * from './ui/card';
 export * from './ui/checkbox';
 export * from './ui/chat-preview';
 export * from './ui/datatable';
-export * from './ui/development';
 export * from './ui/devices';
 export * from './ui/dialog';
 export * from './ui/emoji-picker';

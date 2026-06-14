@@ -102,7 +102,7 @@ function SafariIPad({ url, children }: SafariProps) {
               className="relative flex items-center justify-center gap-2 rounded-md bg-muted text-muted-foreground px-3 py-1.5 w-full h-full max-w-1/2 mx-auto"
             >
               <Icon
-                name="ALargeSmall"
+                name="TextSizeChange"
                 className="size-4 absolute left-3 fill-transparent!"
               />
 
@@ -177,7 +177,7 @@ function SafariIPhone({ url, children }: SafariProps) {
                   className={cn(
                     'rounded-md bg-muted text-muted-foreground h-10 w-24',
                     'absolute',
-                    index === 0 ? '-left-[30%]' : '-right-[30%]',
+                    index === 0 ? 'left-[-30%]' : 'right-[-30%]',
                   )}
                 />
               ))}

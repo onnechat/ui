@@ -108,7 +108,7 @@ function EmojiPickerList({
         ),
         Emoji: ({ emoji, ...props }) => (
           <button
-            className="flex size-8 items-center justify-center rounded-md text-lg transition-colors data-[active]:bg-accent"
+            className="flex size-8 items-center justify-center rounded-md text-lg transition-colors data-active:bg-accent"
             {...props}
           >
             {emoji.emoji}
@@ -156,15 +156,18 @@ function EmojiPickerFooter({
 function EmojiPickerActiveEmoji({
   className,
   ...props
-}: React.ComponentProps<typeof EmojiPickerPrimitive.ActiveEmoji>) {
+}: React.ComponentProps<typeof EmojiPickerPrimitive.ActiveEmoji> & { className?: string }) {
   return (
-    <EmojiPickerPrimitive.ActiveEmoji
+    <span
       className={cn(
         'min-w-0 truncate text-xs text-muted-foreground',
         className,
       )}
-      {...props}
-    />
+    >
+      <EmojiPickerPrimitive.ActiveEmoji
+        {...(props as React.ComponentProps<typeof EmojiPickerPrimitive.ActiveEmoji>)}
+      />
+    </span>
   )
 }
 
