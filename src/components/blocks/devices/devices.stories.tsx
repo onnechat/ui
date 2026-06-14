@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Safari } from './safari';
 
 const meta: Meta<typeof Safari> = {
-  title: 'UI/Devices',
+  title: 'Blocks/Devices',
   component: Safari,
   parameters: { layout: 'fullscreen' },
   tags: ['ai-generated'],

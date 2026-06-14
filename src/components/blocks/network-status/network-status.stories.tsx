@@ -4,7 +4,7 @@ import { Icon } from '@/components/icon'
 import { NetworkStatus } from './network-status'
 
 const meta: Meta<typeof NetworkStatus> = {
-  title: 'UI/NetworkStatus',
+  title: 'Blocks/NetworkStatus',
   component: NetworkStatus,
   parameters: {
     layout: 'fullscreen',

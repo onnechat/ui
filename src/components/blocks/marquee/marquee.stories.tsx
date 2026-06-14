@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Marquee, MarqueeContent, MarqueeFade, MarqueeItem } from './marquee'
 
 const meta: Meta<typeof Marquee> = {
-  title: 'UI/Marquee',
+  title: 'Blocks/Marquee',
   component: Marquee,
   parameters: {
     layout: 'centered',
