@@ -58,7 +58,7 @@ export * from './internal/select';
 export * from './internal/separator';
 export * from './internal/sheet';
 export * from './internal/skeleton';
-export * from './internal/sonner';
+export * from './internal/toast';
 export * from './internal/switch';
 export * from './internal/table';
 export * from './internal/textarea';

@@ -15,6 +15,6 @@ export const LISTABLE_THEMES = [
   { id: 'system', icon: 'Monitor', labelKey: 'theme.system' },
 ] as const
 
-export function themeIdToSonnerTheme(themeId: string): 'light' | 'dark' | 'system' {
+export function themeIdToToastTheme(themeId: string): 'light' | 'dark' | 'system' {
   return themeId as 'light' | 'dark' | 'system'
 }

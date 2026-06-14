@@ -1,0 +1,53 @@
+/* Sonner: border & padding */
+[data-sonner-toast][data-styled='true'] {
+  border-width: var(--toast-border-width, 1px) !important;
+  padding: var(--toast-padding, 1rem) !important;
+  /*
+   * Row layout (Sonner default): [icon] [content: title + description stacked].
+   * flex-start — icon aligns with the title row; description sits below the title inside [data-content].
+   */
+  align-items: flex-start !important;
+  gap: 0.5rem;
+}
+
+[data-sonner-toast][data-styled='true'] [data-content] {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+}
+
+[data-sonner-toast][data-styled='true'] [data-icon] {
+  flex-shrink: 0;
+  /* Optical alignment with first line of title */
+  margin-top: 0.125rem;
+}
+
+/*
+ * Toast action/cancel buttons are plain <button> from Sonner (not @/components/ui/button).
+ * Sonner's stylesheet uses fixed height/radius and inverted --normal-* colors; we restyle to match Button.
+ */
+.toaster [data-sonner-toast][data-styled='true'] [data-button][data-action] {
+  @apply inline-flex items-center justify-center shrink-0 gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-colors cursor-pointer select-none outline-none border-0 shadow-none;
+
+  @apply h-8 px-3;
+  @apply bg-primary text-primary-foreground hover:brightness-95;
+
+  @apply focus-visible:border-transparent focus-visible:ring-[3px] focus-visible:ring-ring/50;
+}
+
+.toaster [data-sonner-toast][data-styled='true'] [data-button][data-cancel] {
+  @apply inline-flex items-center justify-center shrink-0 gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-colors cursor-pointer select-none outline-none border-0 shadow-none;
+
+  @apply h-8 px-3;
+  @apply bg-transparent text-foreground hover:bg-card hover:text-muted-foreground;
+
+  @apply focus-visible:border-transparent focus-visible:ring-[3px] focus-visible:ring-ring/50;
+}
+
+/* Sonner: card-like toasts — muted description only when not using rich semantic colors */
+[data-sonner-toast][data-styled='true']:not([data-rich-colors='true'])
+  [data-description] {
+  color: var(--color-muted-foreground);
+}
