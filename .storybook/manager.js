@@ -20,7 +20,6 @@ addons.setConfig({
     inputBorder: '#1a1a1a',
     inputTextColor: '#e0e0e0',
     brandTitle: '@onne/ui',
-    brandUrl: 'https://onne.chat',
     brandImage: 'https://onne.chat/favicon.ico',
   }),
 });
