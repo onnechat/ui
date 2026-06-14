@@ -10,6 +10,16 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['default', 'destructive', 'success', 'outline', 'primary', 'secondary', 'ghost', 'link'],
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'default', 'lg', 'icon-sm', 'icon'],
+    },
+  },
   args: {
     children: 'Button',
     onClick: fn(),

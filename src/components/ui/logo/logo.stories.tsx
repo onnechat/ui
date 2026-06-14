@@ -9,6 +9,12 @@ const meta: Meta<typeof Logo> = {
     layout: 'centered',
   },
   tags: ['ai-generated'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['default', 'icon'],
+    },
+  },
 };
 
 export default meta;

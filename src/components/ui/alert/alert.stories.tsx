@@ -1,7 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 import { Alert, AlertTitle, AlertDescription } from './alert';
-import { Icon } from '@/components/icon';
+import { Icon, type IconType } from '@/components/icon';
+
+const ICON_OPTIONS: (IconType | null)[] = [
+  null,
+  'Bell',
+  'CircleCheck',
+  'CircleInfo',
+  'CircleWarning',
+  'Lock',
+  'TriangleWarning',
+  'User',
+];
 
 const meta: Meta<typeof Alert> = {
   title: 'UI/Alert',
@@ -10,126 +21,133 @@ const meta: Meta<typeof Alert> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['default', 'destructive', 'warning', 'info'],
+    },
+  },
 };
 
 export default meta;
 
-export const Default: StoryObj<typeof meta> = {
-  args: {
-    children: (
-      <AlertDescription>
-        Default alert — used for neutral information.
-      </AlertDescription>
-    ),
+export const Default: StoryObj<typeof Alert> = {
+  argTypes: {
+    iconType: {
+      control: 'select',
+      options: ICON_OPTIONS,
+    },
+    title: {
+      control: 'text',
+    },
+    description: {
+      control: 'text',
+    },
   },
+  args: {
+    iconType: 'CircleInfo' as IconType | null,
+    title: 'Alert Title',
+    description: 'This is the alert description text.',
+  },
+  render: ({ iconType, title, description, ...args }) => (
+    <Alert {...args}>
+      {iconType && <Icon name={iconType} />}
+      {title && <AlertTitle>{title}</AlertTitle>}
+      {description && <AlertDescription>{description}</AlertDescription>}
+    </Alert>
+  ),
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('alert')).toBeVisible();
   },
 };
 
 export const Destructive: StoryObj<typeof meta> = {
-  args: {
-    variant: 'destructive',
-    children: (
-      <>
-        <Icon name="TriangleWarning" />
-
-        <AlertTitle>Account suspended</AlertTitle>
-        <AlertDescription>
-          Your account has been suspended due to a violation of our terms of
-          service.
-        </AlertDescription>
-      </>
-    ),
-  },
+  args: { variant: 'destructive' },
+  render: (args) => (
+    <Alert {...args}>
+      <Icon name="TriangleWarning" />
+      <AlertTitle>Account suspended</AlertTitle>
+      <AlertDescription>
+        Your account has been suspended due to a violation of our terms of
+        service.
+      </AlertDescription>
+    </Alert>
+  ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText('Account suspended')).toBeVisible();
   },
 };
 
 export const Warning: StoryObj<typeof meta> = {
-  args: {
-    variant: 'warning',
-    children: (
-      <>
-        <Icon name="TriangleWarning" />
-
-        <AlertTitle>Subscription expiring</AlertTitle>
-        <AlertDescription>
-          Your subscription will expire in 3 days. Update your payment method
-          to avoid interruption.
-        </AlertDescription>
-      </>
-    ),
-  },
+  args: { variant: 'warning' },
+  render: (args) => (
+    <Alert {...args}>
+      <Icon name="TriangleWarning" />
+      <AlertTitle>Subscription expiring</AlertTitle>
+      <AlertDescription>
+        Your subscription will expire in 3 days. Update your payment method
+        to avoid interruption.
+      </AlertDescription>
+    </Alert>
+  ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText('Subscription expiring')).toBeVisible();
   },
 };
 
 export const Info: StoryObj<typeof meta> = {
-  args: {
-    variant: 'info',
-    children: (
-      <>
-        <Icon name="CircleInfo" />
-
-        <AlertTitle>New feature available</AlertTitle>
-        <AlertDescription>
-          We have released dark mode support. Go to settings to enable it.
-        </AlertDescription>
-      </>
-    ),
-  },
+  args: { variant: 'info' },
+  render: (args) => (
+    <Alert {...args}>
+      <Icon name="CircleInfo" />
+      <AlertTitle>New feature available</AlertTitle>
+      <AlertDescription>
+        We have released dark mode support. Go to settings to enable it.
+      </AlertDescription>
+    </Alert>
+  ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText('New feature available')).toBeVisible();
   },
 };
 
 export const TitleOnly: StoryObj<typeof meta> = {
-  args: {
-    variant: 'info',
-    children: (
-      <>
-        <Icon name="CircleCheck" />
-        <AlertTitle>Update completed successfully.</AlertTitle>
-      </>
-    ),
-  },
+  args: { variant: 'info' },
+  render: (args) => (
+    <Alert {...args}>
+      <Icon name="CircleCheck" />
+      <AlertTitle>Update completed successfully.</AlertTitle>
+    </Alert>
+  ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText('Update completed successfully.')).toBeVisible();
   },
 };
 
 export const DescriptionOnly: StoryObj<typeof meta> = {
-  args: {
-    variant: 'destructive',
-    children: (
-      <>
-        <Icon name="TriangleWarning" />
-
-        <AlertDescription>
-          Payment failed. Please try again or use a different card.
-        </AlertDescription>
-      </>
-    ),
-  },
+  args: { variant: 'destructive' },
+  render: (args) => (
+    <Alert {...args}>
+      <Icon name="TriangleWarning" />
+      <AlertDescription>
+        Payment failed. Please try again or use a different card.
+      </AlertDescription>
+    </Alert>
+  ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText(/Payment failed/)).toBeVisible();
   },
 };
 
 export const WithoutIcon: StoryObj<typeof meta> = {
-  args: {
-    children: (
-      <>
-        <AlertTitle>Plain message</AlertTitle>
-        <AlertDescription>
-          This alert has no icon, just a title and description.
-        </AlertDescription>
-      </>
-    ),
-  },
+  render: (args) => (
+    <Alert {...args}>
+      <AlertTitle>Plain message</AlertTitle>
+      <AlertDescription>
+        This alert has no icon, just a title and description.
+      </AlertDescription>
+    </Alert>
+  ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText('Plain message')).toBeVisible();
   },

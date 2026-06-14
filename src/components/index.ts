@@ -5,7 +5,7 @@ export * from './ui/accordion';
 export * from './ui/action-group';
 export * from './ui/announcement-banner';
 export * from './ui/auth';
-export * from './ui/badges';
+export * from './ui/badge';
 export * from './ui/button';
 export * from './ui/card';
 export * from './ui/chat-preview';
@@ -33,7 +33,6 @@ export * from './ui/text';
 export * from './ui/video-player';
 
 export * from './internal/avatar';
-export * from './internal/badge';
 export * from './internal/brand-domain-input';
 export * from './internal/calendar';
 export * from './internal/chart';

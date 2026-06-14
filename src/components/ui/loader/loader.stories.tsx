@@ -9,6 +9,12 @@ const meta: Meta<typeof Loader> = {
     layout: 'centered',
   },
   tags: ['ai-generated'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['default', 'screen', 'center', 'button', 'clean'],
+    },
+  },
 };
 
 export default meta;

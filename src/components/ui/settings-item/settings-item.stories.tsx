@@ -9,6 +9,16 @@ const meta: Meta<typeof SettingsItem> = {
     layout: 'centered',
   },
   tags: ['ai-generated'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['row', 'card'],
+    },
+    align: {
+      control: 'select',
+      options: ['center', 'start'],
+    },
+  },
 };
 
 export default meta;
