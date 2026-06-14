@@ -16,7 +16,6 @@ export * from './ui/devices';
 export * from './ui/dialog';
 export * from './ui/emoji-picker';
 export * from './ui/empty-state';
-export * from './ui/header';
 export * from './ui/input';
 export * from './ui/input-time';
 export * from './ui/input-time-picker';
