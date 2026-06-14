@@ -56,7 +56,7 @@ export const OnnebookLogo = ({
   }
   style?: React.CSSProperties
 }) => {
-  const name = 'Onnebook'
+  const name = 'OnneBook'
 
   return (
     <div
