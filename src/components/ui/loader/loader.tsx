@@ -15,22 +15,28 @@ export function Loader({
 }) {
   const defaultClasses = cn(
     /**
+     * Default inline layout: icon and text centered
+     * side by side.
+     */
+    variant === 'default' &&
+    'flex flex-col justify-center items-center gap-2',
+    /**
      * Center the loader in the center of the screen
      * if the variant is 'center'.
      */
     variant === 'center' &&
-      'flex flex-col flex-1 justify-center items-center gap-4 min-h-dvh',
+    'flex flex-col flex-1 justify-center items-center gap-4 min-h-dvh',
     /**
      * Center the loader in the center of the screen
      * if the variant is 'screen'.
      */
     variant === 'screen' &&
-      'flex flex-col flex-1 justify-center items-center gap-4 min-h-dvh min-w-dvw',
+    'flex flex-col flex-1 justify-center items-center gap-4 min-h-dvh min-w-dvw',
     /**
      * Add padding to the loader if the variant is 'clean'.
      */
     variant === 'clean' &&
-      'flex flex-col flex-1 justify-center items-center gap-4 p-24',
+    'flex flex-col flex-1 justify-center items-center gap-4 p-24',
     /**
      * Add text color to the loader if the variant
      * is not 'button' to make it less visible.
