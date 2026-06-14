@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Logo } from '@/components/ui/logo/logo'
+import { OnnebookLogo } from '@/components/ui/logo/onnebook/logo'
 import { env } from '@/lib/env'
 import { products } from '@/config/products'
 
@@ -28,19 +28,6 @@ const Wrapper = ({ children, label }: { children: React.ReactNode; label: string
   </div>
 )
 
-const Wordmark = () => (
-  <span
-    style={{
-      fontSize: '28px',
-      fontWeight: 700,
-      background: `linear-gradient(135deg, ${onnebook.colors.gradient.join(', ')})`,
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-    }}
-  >
-    {env.brand.name}
-  </span>
-)
 
 const meta: Meta = {
   title: 'Products/Onnebook/Logo',
@@ -56,13 +43,13 @@ export const Default: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '32px', maxWidth: '400px' }}>
       <Wrapper label="Default">
-        <Logo />
+        <OnnebookLogo />
       </Wrapper>
       <Wrapper label="Icon Only">
-        <Logo variant="icon" />
+        <OnnebookLogo variant="icon" />
       </Wrapper>
       <Wrapper label="Wordmark">
-        <Wordmark />
+        <OnnebookLogo variant="text" />
       </Wrapper>
     </div>
   ),

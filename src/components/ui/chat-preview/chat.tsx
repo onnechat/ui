@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/cn';
 
-import { Logo } from '@/components/ui/logo';
+import { OnnebookLogo } from '@/components/ui/logo';
 import { TextShimmer } from '@/components/ui/shimmer-text';
 
 export type ChatMessage = {
@@ -338,7 +338,7 @@ export const AssistantChat = ({
           )}
         >
           <div className="flex items-center gap-2 w-full">
-            <Logo
+            <OnnebookLogo
               variant="icon"
               classNames={{ icon: { container: 'size-5' } }}
             />
@@ -444,7 +444,7 @@ export const AssistantChat = ({
                     </span>
 
                     {isAssistant && (
-                      <Logo
+                      <OnnebookLogo
                         variant="icon"
                         classNames={{
                           icon: { container: 'size-4 mb-1 -scale-x-100' },

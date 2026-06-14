@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { HoldingLogo } from '@/components/ui/logo/logo'
+import { OnneLogo } from '@/components/ui/logo/onne/logo'
 
 const Wrapper = ({ children, label }: { children: React.ReactNode; label: string }) => (
   <div
@@ -38,13 +38,13 @@ export const Default: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '32px', maxWidth: '400px' }}>
       <Wrapper label="Default">
-        <HoldingLogo />
+        <OnneLogo />
       </Wrapper>
       <Wrapper label="Icon">
-        <HoldingLogo variant="icon" />
+        <OnneLogo variant="icon" />
       </Wrapper>
       <Wrapper label="Text">
-        <HoldingLogo variant="text" />
+        <OnneLogo variant="text" />
       </Wrapper>
     </div>
   ),

@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
-import { Logo, HoldingLogo } from './logo'
+import { OnneLogo } from '@/components/ui/logo/onne/logo'
+import { OnnebookLogo } from '@/components/ui/logo/onnebook/logo'
 
-const meta: Meta<typeof Logo> = {
+const meta: Meta<typeof OnnebookLogo> = {
   title: 'UI/Logo',
-  component: Logo,
+  component: OnnebookLogo,
   parameters: {
     layout: 'centered',
   },
@@ -28,14 +29,14 @@ export const IconOnly: Story = {
   args: { variant: 'icon' },
 }
 
-export const HoldingLogoDefault: Story = {
-  render: () => <HoldingLogo />,
+export const OnneLogoDefault: Story = {
+  render: () => <OnneLogo />,
 }
 
-export const HoldingLogoIcon: Story = {
-  render: () => <HoldingLogo variant="icon" />,
+export const OnneLogoIcon: Story = {
+  render: () => <OnneLogo variant="icon" />,
 }
 
-export const HoldingLogoText: Story = {
-  render: () => <HoldingLogo variant="text" />,
+export const OnneLogoText: Story = {
+  render: () => <OnneLogo variant="text" />,
 }
