@@ -94,15 +94,45 @@ function TooltipContent({
   children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content>) {
-  const contentBackground = className
-    ?.split(' ')
-    .find((cls) => cls.startsWith('bg-'))
-    ?.replace('bg-', '')
+  const classes = className?.split(' ') ?? []
 
-  const contentForeground = className
-    ?.split(' ')
-    .find((cls) => cls.startsWith('text-'))
-    ?.replace('text-', '')
+  const contentBackground = classes.find((cls) => cls.startsWith('bg-'))?.replace('bg-', '')
+  const contentForeground = classes.find((cls) => cls.startsWith('text-'))?.replace('text-', '')
+
+  const shadowClass = classes.find((cls) => cls.startsWith('shadow-'))
+  const borderClasses = classes.filter((cls) => cls.startsWith('border'))
+
+  const shadowMap: Record<string, string> = {
+    'shadow-sm':  'drop-shadow(0 1px 1px rgb(0 0 0 / 0.05))',
+    'shadow':     'drop-shadow(0 1px 3px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 2px rgb(0 0 0 / 0.06))',
+    'shadow-md':  'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
+    'shadow-lg':  'drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))',
+    'shadow-xl':  'drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08))',
+    'shadow-2xl': 'drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))',
+  }
+
+  const borderColorClass = classes.find((cls) => cls.startsWith('border-') && cls !== 'border')
+  const borderColor = borderColorClass?.replace('border-', '')
+
+  const filters: string[] = []
+
+  if (shadowClass && shadowMap[shadowClass]) {
+    filters.push(shadowMap[shadowClass])
+  }
+
+  if (borderClasses.length > 0) {
+    const color = borderColor
+      ? `hsl(var(--${borderColor}))`
+      : 'hsl(var(--border))'
+    filters.push(`drop-shadow(0 0 0 1px ${color})`)
+  }
+
+  const cleanedClassName = classes
+    .filter((cls) =>
+      !cls.startsWith('shadow-') &&
+      !cls.startsWith('border')
+    )
+    .join(' ')
 
   return (
     <TooltipPrimitive.Portal>
@@ -117,11 +147,12 @@ function TooltipContent({
             '--content-foreground': contentForeground
               ? `hsl(var(--${contentForeground}))`
               : 'hsl(var(--primary-foreground))',
+            ...(filters.length > 0 && { filter: filters.join(' ') }),
           } as React.CSSProperties
         }
         className={cn(
           'bg-(--content-background) text-(--content-foreground) animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-lg px-3 py-2 text-sm text-balance',
-          className,
+          cleanedClassName,
         )}
         {...props}
       >
