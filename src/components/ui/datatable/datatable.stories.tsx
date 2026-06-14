@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn, expect } from 'storybook/test';
 import React from 'react';
-import { DataCustomTable } from './data-custom-table';
+import { DataCustomTable } from './datatable';
 import { ColumnDef } from '@tanstack/react-table';
 
 type User = { id: number; name: string; email: string; role: string };
@@ -35,7 +35,7 @@ const COLUMNS: ColumnDef<User>[] = [
 ];
 
 const meta: Meta<typeof DataCustomTable<User>> = {
-  title: 'UI/DataCustomTable',
+  title: 'UI/DataTable',
   component: DataCustomTable,
   parameters: {
     layout: 'padded',
