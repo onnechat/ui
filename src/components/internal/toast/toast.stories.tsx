@@ -152,10 +152,16 @@ export const LoadingState: StoryObj = {
       <Toaster {...args} />
       <Button
         variant="primary"
-        onClick={() => {
-          toast.loading('Processing payment...', { id: 'payment' })
-          setTimeout(() => toast.success('Payment completed', { id: 'payment' }), 3000)
-        }}
+        onClick={() =>
+          toast.promise(
+            new Promise<string>((resolve) => setTimeout(() => resolve('Payment completed'), 1500)),
+            {
+              loading: 'Processing payment...',
+              success: (data) => data,
+              error: 'Payment failed',
+            },
+          )
+        }
       >
         Simulate Payment
       </Button>
