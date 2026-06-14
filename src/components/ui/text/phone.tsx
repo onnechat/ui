@@ -15,7 +15,7 @@ import { cn } from '@/lib/cn'
 
 import { getCountryName } from '@/hooks/use-phone-input'
 
-import { Text } from '@/components/ui/text'
+import { Cell } from '@/components/ui/text/cell'
 
 import { countryDialCodes } from '@/components/internal/phone-input/dial-codes'
 import {
@@ -121,7 +121,7 @@ export const Phone = ({ phone, flag = true, className }: PhoneProps) => {
   }
 
   return (
-    <Text.Cell
+    <Cell
       title={safePhone ? formatted.phone : undefined}
       className={cn('min-w-32', className)}
     >
@@ -142,6 +142,6 @@ export const Phone = ({ phone, flag = true, className }: PhoneProps) => {
       ) : (
         formatted.phone
       )}
-    </Text.Cell>
+    </Cell>
   )
 }
