@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../select';
+} from '@/components/ui/select';
 
 export interface InputTimePickerProps
   extends React.HTMLAttributes<HTMLDivElement> {

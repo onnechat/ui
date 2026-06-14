@@ -8,7 +8,7 @@ import { cn } from '@/lib/cn';
 
 import { useElementSize } from '@/hooks/use-element-size';
 
-import { Input } from '@/components/internal/input';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,

@@ -11,7 +11,7 @@ import { useElementSize } from '@/hooks/use-element-size'
 import type { Country } from '@/hooks/use-phone-input'
 import { usePhoneInput } from '@/hooks/use-phone-input'
 
-import { Input } from '@/components/internal/input'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,

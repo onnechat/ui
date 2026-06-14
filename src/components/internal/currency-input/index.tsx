@@ -10,7 +10,7 @@ import type { Currency } from '@/hooks/use-currency-input'
 import { useCurrencyInput } from '@/hooks/use-currency-input'
 import { useElementSize } from '@/hooks/use-element-size'
 
-import { Input } from '@/components/internal/input'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,

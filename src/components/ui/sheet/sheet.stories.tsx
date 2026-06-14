@@ -11,7 +11,7 @@ import {
   SheetClose,
 } from './sheet';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/internal/input';
+import { Input } from '@/components/ui/input';
 
 const meta: Meta<typeof Sheet> = {
   title: 'UI/Sheet',

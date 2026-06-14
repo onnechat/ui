@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { Dialog, DialogStack, useDialogStack } from './dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/internal/input';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/internal/label';
 import { CardSlider } from '@/components/ui/card';
 

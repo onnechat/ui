@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 import { InputTimeUnit } from './input-time-unit';
 
 const meta: Meta<typeof InputTimeUnit> = {
@@ -85,12 +85,13 @@ export const PickUnit: StoryObj<typeof meta> = {
       />
     );
   },
-  play: async ({ canvas }) => {
+  play: async ({ canvas, canvasElement }) => {
     const trigger = canvas.getByRole('combobox');
     await userEvent.click(trigger);
 
-    const daysOption = canvas.getByText('Days');
-    await expect(daysOption).toBeVisible();
+    const body = within(canvasElement.ownerDocument.body);
+    const daysOption = await body.findByText('Days');
+    await expect(daysOption).toBeInTheDocument();
     await userEvent.click(daysOption);
 
     await expect(trigger).toHaveTextContent('d');

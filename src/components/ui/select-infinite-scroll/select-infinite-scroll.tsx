@@ -12,7 +12,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { Loader } from '@/components/ui/loader'
 
 import { Drawer, DrawerContent } from '@/components/internal/drawer'
-import { Input } from '@/components/internal/input'
+import { Input } from '@/components/ui/input'
 import {
   Popover,
   PopoverContent,

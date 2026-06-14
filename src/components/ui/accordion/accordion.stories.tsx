@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Accordion } from './accordion';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/internal/input';
+import { Input } from '@/components/ui/input';
 
 const meta: Meta<typeof Accordion> = {
   title: 'UI/Accordion',
