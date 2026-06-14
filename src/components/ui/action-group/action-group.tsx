@@ -54,7 +54,7 @@ export function ActionGroup({
       >
         {children ?? (
           <Button
-            variant="ghost"
+            variant="secondary"
             disabled={isDisabled}
             className="relative min-h-8 min-w-8 max-h-8 max-w-8 p-0 shrink-0 disabled:opacity-50"
           >
