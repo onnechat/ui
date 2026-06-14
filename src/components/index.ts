@@ -55,7 +55,6 @@ export * from './internal/collapsible';
 export * from './internal/command';
 export * from './internal/drawer';
 export * from './internal/image-upload';
-export * from './internal/keyboard-shortcut';
 export * from './internal/label';
 export * from './internal/scroll-area';
 export * from './internal/separator';
