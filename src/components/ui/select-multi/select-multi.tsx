@@ -16,7 +16,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/internal/popover'
+} from '@/components/ui/popover'
 
 export interface SelectMultiProps<T extends object> {
   values: string[]

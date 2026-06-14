@@ -17,7 +17,7 @@ function Progress({
       className={cn('flex flex-wrap gap-3', className)}
       style={
         {
-          '--progress-color': 'var(--primary)',
+          '--progress-color': 'hsl(var(--primary))',
         } as React.CSSProperties
       }
       {...props}
