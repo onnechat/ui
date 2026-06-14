@@ -12,6 +12,7 @@ import type { Country } from '@/hooks/use-phone-input'
 import { usePhoneInput } from '@/hooks/use-phone-input'
 
 import { Input } from '@/components/ui/input'
+import { FlagIcon } from '@/components/icon/flag'
 import {
   Select,
   SelectContent,
@@ -74,19 +75,14 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             ref={triggerRef}
             className={cn(
               'w-fit! rounded-r-none border-r-0 focus:z-10 bg-accent select-none',
-              disableCountrySelect && '[&_svg]:hidden',
+              disableCountrySelect && '[&>svg]:hidden',
               className,
             )}
           >
             <SelectValue>
-              <img
-                loading="lazy"
-                width={20}
-                height={20}
-                src={selectedCountry.flag}
-                alt={selectedCountry.name}
-                title={selectedCountry.name}
-                className="size-5 rounded-sm object-cover mb-0.5 pointer-events-none select-none"
+              <FlagIcon
+                code={selectedCountry.code}
+                className="size-5 rounded-sm mb-0.5 pointer-events-none select-none"
               />
 
               <span className="text-sm font-mono">
@@ -103,14 +99,9 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             {countries.map((country) => (
               <SelectItem key={country.code} value={country.code}>
                 <div className="flex items-center gap-2">
-                  <img
-                    loading="lazy"
-                    width={20}
-                    height={20}
-                    src={country.flag}
-                    alt={country.name}
-                    title={country.name}
-                    className="size-5 rounded-sm object-cover pointer-events-none select-none"
+                  <FlagIcon
+                    code={country.code}
+                    className="size-5 rounded-sm pointer-events-none select-none"
                   />
 
                   <span className="text-sm font-mono text-muted-foreground">

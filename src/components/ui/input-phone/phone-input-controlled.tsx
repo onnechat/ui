@@ -10,24 +10,21 @@ import {
   useFormContext,
 } from 'react-hook-form'
 
-import {
-  CurrencyInput,
-  CurrencyInputProps,
-} from '@/components/ui/currency-input/index'
+import { PhoneInput, PhoneInputProps } from '@/components/ui/input-phone/index'
 
-interface CurrencyInputControlledProps<T extends FieldValues> extends Omit<
-  CurrencyInputProps,
+interface PhoneInputControlledProps<T extends FieldValues> extends Omit<
+  PhoneInputProps,
   'value' | 'onChange'
 > {
   name: Path<T>
   control: Control<T>
 }
 
-const CurrencyInputControlled = <T extends FieldValues>({
+const PhoneInputControlled = <T extends FieldValues>({
   name,
   control,
   ...props
-}: CurrencyInputControlledProps<T>) => {
+}: PhoneInputControlledProps<T>) => {
   const { clearErrors } = useFormContext<T>()
   const errorClearedRef = React.useRef(false)
 
@@ -35,11 +32,12 @@ const CurrencyInputControlled = <T extends FieldValues>({
   clearErrorsRef.current = clearErrors
 
   const handleChange = React.useCallback(
-    (value: number, onChange: (value: number) => void) => {
+    (value: string, onChange: (value: string) => void) => {
       if (!errorClearedRef.current) {
         errorClearedRef.current = true
         clearErrorsRef.current(name)
       }
+
       onChange(value)
     },
     [name],
@@ -50,9 +48,9 @@ const CurrencyInputControlled = <T extends FieldValues>({
       name={name}
       control={control}
       render={({ field }) => (
-        <CurrencyInput
+        <PhoneInput
           {...props}
-          value={field.value as number}
+          value={field.value as string}
           onChange={(value) => handleChange(value, field.onChange)}
         />
       )}
@@ -60,4 +58,4 @@ const CurrencyInputControlled = <T extends FieldValues>({
   )
 }
 
-export { CurrencyInputControlled }
+export { PhoneInputControlled }
