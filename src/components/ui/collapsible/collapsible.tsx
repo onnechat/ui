@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 
-import { AnimatePresence, motion } from 'motion/react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/cn'
@@ -166,29 +165,62 @@ function CollapsibleContent({
 }) {
   const { variant, open, contentId } =
     useCollapsibleContext('CollapsibleContent')
+  const contentRef = React.useRef<HTMLDivElement>(null)
+  const [measuredHeight, setMeasuredHeight] = React.useState(0)
+  const [animating, setAnimating] = React.useState(false)
+
+  React.useEffect(() => {
+    const el = contentRef.current
+    if (!el) return
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const h = entry.target.scrollHeight
+        if (h > 0) setMeasuredHeight(h)
+      }
+    })
+    ro.observe(el)
+
+    const initialH = el.scrollHeight
+    if (initialH > 0) setMeasuredHeight(initialH)
+
+    return () => ro.disconnect()
+  }, [])
+
+  React.useEffect(() => {
+    if (open) setAnimating(true)
+  }, [open])
+
+  const height = open ? measuredHeight : 0
+
+  const isCard = variant === 'card'
 
   return (
-    <AnimatePresence initial={false}>
-      {open && (
-        <motion.div
-          key="collapsible-panel"
-          id={contentId}
-          role="region"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: ANIMATION.DURATION_FLOAT }}
-          data-slot="collapsible-content"
-          className={cn(
-            'overflow-hidden',
-            collapsibleContentVariants({ variant }),
-            className,
-          )}
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div
+      id={contentId}
+      role="region"
+      data-slot="collapsible-content"
+      style={{
+        height,
+        overflow: 'hidden',
+        opacity: open ? 1 : 0,
+        transition: `height ${ANIMATION.DURATION_FLOAT}s ease-in-out, opacity ${ANIMATION.DURATION_FLOAT / 2}s ease`,
+        transitionDelay: open ? `0s, ${ANIMATION.DURATION_FLOAT / 2}s` : '0s, 0s',
+      }}
+      onTransitionEnd={() => {
+        if (!open) setAnimating(false)
+      }}
+      className={cn(className)}
+    >
+      <div
+        ref={contentRef}
+        className={cn(
+          isCard && 'border-t border-border/50 px-4 pb-4 pt-4',
+        )}
+      >
+        {children}
+      </div>
+    </div>
   )
 }
 
