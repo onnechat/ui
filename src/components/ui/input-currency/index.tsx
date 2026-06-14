@@ -28,6 +28,7 @@ export interface CurrencyInputProps extends Omit<
   allowZero?: boolean
   defaultCurrency?: string
   disableCurrencySelect?: boolean
+  centsMode?: boolean
   onChange?: (value: number) => void
   onCurrencyChange?: (currency: Currency) => void
   align?: SelectPrimitive.SelectContentProps['align']
@@ -43,6 +44,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       className,
       disabled,
       disableCurrencySelect = false,
+      centsMode = true,
       placeholder,
       defaultCurrency,
       allowZero = true,
@@ -57,11 +59,13 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       displayValue,
       selectedCurrency,
       currencies,
+      inputRef,
       handleCurrencyChange,
       handleAmountChange,
       handleFocus,
       handleBlur,
     } = useCurrencyInput({
+      centsMode,
       value,
       onChange,
       onCurrencyChange,
@@ -108,7 +112,11 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         </Select>
 
         <Input
-          ref={ref}
+          ref={(node) => {
+            inputRef.current = node
+            if (typeof ref === 'function') ref(node)
+            else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node
+          }}
           type="text"
           inputMode="decimal"
           onBlur={handleBlur}

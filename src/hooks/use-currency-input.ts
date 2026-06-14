@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 export type Currency = {
   code: string
@@ -49,56 +49,77 @@ const currencies: Currency[] = [
 
 const DIGITS_ONLY = /[^\d]/g
 
-const formatAmount = (digits: string, currencyCode: string): string => {
+const formatAmount = (digits: string, currencyCode: string, centsMode: boolean): string => {
   if (!digits) return ''
+
+  const locale = CURRENCY_LOCALE[currencyCode] ?? 'en-US'
+  const decimalSep =
+    locale.startsWith('pt') || locale.startsWith('de') || locale.startsWith('fr') ||
+    locale.startsWith('es') || locale.startsWith('it')
+      ? ','
+      : '.'
+
+  if (!centsMode) {
+    const intNum = parseInt(digits, 10)
+    if (isNaN(intNum)) return digits
+    return `${intNum}${decimalSep}00`
+  }
 
   const padded = digits.padStart(3, '0')
   const integerPart = padded.slice(0, -2)
   const decimalPart = padded.slice(-2)
-
-  const locale = CURRENCY_LOCALE[currencyCode] ?? 'en-US'
   const intNum = parseInt(integerPart, 10)
 
-  try {
-    const formattedInt = new Intl.NumberFormat(locale, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(intNum)
+  const formattedInt = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(intNum)
 
-    const decimalSep = locale.startsWith('pt') || locale.startsWith('de') || locale.startsWith('fr') || locale.startsWith('es') || locale.startsWith('it')
-      ? ','
-      : '.'
-
-    return `${formattedInt}${decimalSep}${decimalPart}`
-  } catch {
-    return digits
-  }
+  return `${formattedInt}${decimalSep}${decimalPart}`
 }
 
 export const useCurrencyInput = (props: Record<string, unknown>) => {
+  const centsMode = (props.centsMode as boolean) ?? true
   const [rawDigits, setRawDigits] = useState('')
   const [currencyCode, setCurrencyCode] = useState('BRL')
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   const selectedCurrency =
     currencies.find((c) => c.code === currencyCode) ?? currencies[0]
 
   const displayValue = useMemo(
-    () => formatAmount(rawDigits, currencyCode),
-    [rawDigits, currencyCode],
+    () => formatAmount(rawDigits, currencyCode, centsMode),
+    [rawDigits, currencyCode, centsMode],
   )
+
+  useEffect(() => {
+    if (!centsMode && inputRef.current) {
+      const pos = rawDigits.length
+      inputRef.current.setSelectionRange(pos, pos)
+    }
+  }, [displayValue, centsMode])
 
   const handleCurrencyChange = (code: string) => {
     setCurrencyCode(code)
   }
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRawDigits(e.target.value.replace(DIGITS_ONLY, ''))
+  const handleAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value
+
+    if (!centsMode) {
+      const cleaned = inputValue.replace(/[.,]\d*$/, '').replace(DIGITS_ONLY, '')
+      setRawDigits(cleaned)
+      return
+    }
+
+    setRawDigits(inputValue.replace(DIGITS_ONLY, ''))
   }
 
   return {
     displayValue,
     selectedCurrency,
     currencies,
+    inputRef,
     handleCurrencyChange,
     handleAmountChange,
     handleFocus: () => {},

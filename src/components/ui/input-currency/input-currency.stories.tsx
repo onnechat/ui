@@ -27,3 +27,11 @@ export const Disabled: StoryObj<typeof meta> = {
 export const WithPlaceholder: StoryObj<typeof meta> = {
   args: { placeholder: '0.00' },
 }
+
+export const DisableCurrencySelect: StoryObj<typeof meta> = {
+  args: { disableCurrencySelect: true },
+}
+
+export const NoCentsMode: StoryObj<typeof meta> = {
+  args: { centsMode: false },
+}
