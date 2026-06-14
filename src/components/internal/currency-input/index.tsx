@@ -116,7 +116,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           value={displayValue}
           onFocus={handleFocus}
           placeholder={placeholder}
-          onChange={(e) => handleAmountChange(e.target.value)}
+          onChange={handleAmountChange}
           className={cn('rounded-l-none focus:z-10', className)}
           containerClassName="rounded-l-none"
           {...inputProps}
