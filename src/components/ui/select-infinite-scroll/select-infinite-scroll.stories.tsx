@@ -1,6 +1,16 @@
 import * as React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SelectInfiniteScroll } from './select-infinite-scroll'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      staleTime: Infinity,
+    },
+  },
+})
 
 type Item = { id: string; label: string; category: string }
 
@@ -31,6 +41,13 @@ const meta: Meta<typeof SelectInfiniteScroll> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <QueryClientProvider client={queryClient}>
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
 }
 
 export default meta
