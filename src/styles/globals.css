@@ -1,7 +1,10 @@
 @import 'tailwindcss';
+
 @import './utilities.css';
 @import './glass.css';
 @import './toast.css';
+
+@import './storybook.css';
 
 @plugin 'tailwindcss-animate';
 
@@ -193,14 +196,7 @@
   }
 }
 
-.sbdocs.sbdocs-wrapper {
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
-}
-
-.sbdocs .docs-story {
-  background: hsl(var(--background));
-}
+@import './storybook.css';
 
 /*
   This is a workaround to make the text color transparent in the input

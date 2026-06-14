@@ -1,0 +1,212 @@
+.sbdocs.sbdocs-wrapper {
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.sbdocs .docs-story {
+  background: hsl(var(--background)) !important;
+}
+
+.sbdocs.sbdocs-preview {
+  background: hsl(var(--background)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.sbdocs.sbdocs-preview [role="toolbar"],
+.sbdocs.sbdocs-preview [role="toolbar"] *,
+.sbdocs.sbdocs-preview .docblock-source {
+  color: hsl(var(--foreground)) !important;
+  background: transparent !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.sbdocs.sbdocs-preview [role="toolbar"] button,
+.sbdocs.sbdocs-preview [role="toolbar"] [data-action] {
+  color: hsl(var(--muted-foreground)) !important;
+  background: transparent !important;
+}
+
+.sbdocs.sbdocs-preview [role="toolbar"] button:hover,
+.sbdocs.sbdocs-preview [role="toolbar"] [data-action]:hover {
+  color: hsl(var(--foreground)) !important;
+}
+
+.sbdocs.sbdocs-preview [role="toolbar"] button[data-active="true"],
+.sbdocs.sbdocs-preview [role="toolbar"] [data-active="true"] {
+  color: hsl(var(--primary)) !important;
+}
+
+.sbdocs .sbdocs-title,
+.sbdocs h1,
+.sbdocs h2,
+.sbdocs h3,
+.sbdocs h4,
+.sbdocs h5,
+.sbdocs h6 {
+  color: hsl(var(--foreground)) !important;
+}
+
+.sbdocs .sbdocs-p,
+.sbdocs p,
+.sbdocs .sbdocs-li,
+.sbdocs li,
+.sbdocs .sbdocs-description {
+  color: hsl(var(--foreground)) !important;
+}
+
+.sbdocs .toc-list {
+  border-left-color: hsl(var(--border)) !important;
+}
+
+.sbdocs .sbdocs-a,
+.sbdocs li > a {
+  color: hsl(var(--foreground)) !important;
+}
+
+.sbdocs li > a:hover {
+  color: hsl(var(--primary)) !important;
+}
+
+.sbdocs .sbdocs-a,
+.sbdocs li.is-active-li > a {
+  color: hsl(var(--primary)) !important;
+}
+
+.sbdocs .sbdocs-pre,
+.sbdocs pre,
+.sbdocs .sbdocs-code,
+.sbdocs code {
+  background: hsl(var(--muted)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.docblock-argstable {
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+  border-radius: var(--radius) !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.docblock-argstable thead tr:first-child th:first-child {
+  border-top-left-radius: var(--radius) !important;
+}
+
+.docblock-argstable thead tr:first-child th:last-child {
+  border-top-right-radius: var(--radius) !important;
+}
+
+.docblock-argstable tbody tr:last-child td:first-child {
+  border-bottom-left-radius: var(--radius) !important;
+}
+
+.docblock-argstable tbody tr:last-child td:last-child {
+  border-bottom-right-radius: var(--radius) !important;
+}
+
+.docblock-argstable thead th {
+  color: hsl(var(--muted-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.docblock-argstable tbody td {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.docblock-argstable tbody td span,
+.docblock-argstable tbody td code,
+.docblock-argstable tbody td label,
+.docblock-argstable tbody td div span,
+.docblock-argstable tbody td div div span {
+  color: hsl(var(--foreground)) !important;
+}
+
+.docblock-argstable button {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--muted)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.docblock-argstable button:hover {
+  background: hsl(var(--accent)) !important;
+}
+
+.docblock-argstable fieldset {
+  border-color: hsl(var(--border)) !important;
+}
+
+.docblock-argstable label {
+  color: hsl(var(--foreground)) !important;
+}
+
+.docblock-argstable input[type="radio"] {
+  accent-color: hsl(var(--primary)) !important;
+}
+
+.docblock-argstable input,
+.docblock-argstable select,
+.docblock-argstable textarea {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.docblock-argstable input:focus,
+.docblock-argstable select:focus,
+.docblock-argstable textarea:focus {
+  border-color: hsl(var(--ring)) !important;
+  outline: none !important;
+}
+
+.sbdocs .docblock-typeset,
+.sbdocs .docblock-description {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.sbdocs .sbdocs-hr,
+.sbdocs hr {
+  border-color: hsl(var(--border)) !important;
+}
+
+.sbdocs .sbdocs-table,
+.sbdocs table {
+  color: hsl(var(--foreground)) !important;
+}
+
+.sbdocs .sbdocs-table th,
+.sbdocs table th {
+  color: hsl(var(--muted-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.sbdocs .sbdocs-table td,
+.sbdocs table td {
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+nav.sbdocs-toc,
+.sbdocs-toc {
+  color: hsl(var(--foreground)) !important;
+}
+
+nav.sbdocs-toc a,
+.sbdocs-toc a {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+nav.sbdocs-toc a[data-active="true"],
+nav.sbdocs-toc [aria-current],
+.sbdocs-toc a.active,
+.sbdocs-toc [data-active="true"] {
+  color: hsl(var(--primary)) !important;
+}
+
+.sbdocs .sb-bar,
+.sbdocs .sb-bar * {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background)) !important;
+  border-color: hsl(var(--border)) !important;
+}
