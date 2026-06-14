@@ -30,19 +30,23 @@ type DropdownMenuContextValue = {
 const DropdownMenuContext =
   React.createContext<DropdownMenuContextValue | null>(null)
 
+type DropdownMenuProps = Omit<MenuPrimitive.Root.Props, 'onOpenChange'> & {
+  onOpenChange?: (open: boolean) => void
+}
+
 function DropdownMenu({
-  open: openProp,
+  open,
   onOpenChange,
   defaultOpen,
   children,
   ...props
-}: MenuPrimitive.Root.Props) {
+}: DropdownMenuProps) {
   const isMobile = useIsMobile()
 
   const [drawerOpen, setDrawerOpen] = React.useState(defaultOpen ?? false)
   const [view, setView] = React.useState<React.ReactNode | null>(null)
 
-  const open = openProp ?? drawerOpen
+  const internalOpen = open ?? drawerOpen
 
   const handleOpenChange = React.useCallback(
     (isOpen: boolean) => {
@@ -58,11 +62,11 @@ function DropdownMenu({
 
   return (
     <DropdownMenuContext.Provider
-      value={{ isMobile, open, onOpenChange: handleOpenChange, view, setView }}
+      value={{ isMobile, open: internalOpen, onOpenChange: handleOpenChange, view, setView }}
     >
       <MenuPrimitive.Root
         data-slot="dropdown-menu"
-        open={isMobile ? false : open}
+        open={isMobile ? false : internalOpen}
         onOpenChange={handleOpenChange}
         {...props}
       >
