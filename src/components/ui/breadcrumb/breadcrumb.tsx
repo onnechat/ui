@@ -10,12 +10,12 @@ interface BreadcrumbItem {
   href?: string
 }
 
-interface PageBreadcrumbProps {
+interface BreadcrumbProps {
   items: BreadcrumbItem[]
   className?: string
 }
 
-export function PageBreadcrumb({ items, className }: PageBreadcrumbProps) {
+export function Breadcrumb({ items, className }: BreadcrumbProps) {
   const penultimate = items.length > 1 ? items[items.length - 2] : null
 
   return (

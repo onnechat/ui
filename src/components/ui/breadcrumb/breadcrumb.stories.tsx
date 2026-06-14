@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
-import { PageBreadcrumb } from './page-breadcrumb';
+import { Breadcrumb } from './breadcrumb';
 
-const meta: Meta<typeof PageBreadcrumb> = {
-  title: 'UI/PageBreadcrumb',
-  component: PageBreadcrumb,
+const meta: Meta<typeof Breadcrumb> = {
+  title: 'UI/Breadcrumb',
+  component: Breadcrumb,
   parameters: {
     layout: 'centered',
   },
