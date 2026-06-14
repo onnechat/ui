@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Command } from './command';
 
 const meta: Meta<typeof Command> = {
-  title: 'UI/Command',
+  title: 'Internal/Command',
   component: Command,
   parameters: {
     layout: 'centered',

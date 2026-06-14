@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Collapsible } from './collapsible';
 
 const meta: Meta<typeof Collapsible> = {
-  title: 'UI/Collapsible',
+  title: 'Internal/Collapsible',
   component: Collapsible,
   parameters: {
     layout: 'centered',
