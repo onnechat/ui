@@ -30,6 +30,7 @@ export * from './ui/select-multi';
 export * from './ui/seo';
 export * from './ui/seo';
 export * from './ui/shimmer-text';
+export * from './ui/tabs';
 export * from './ui/text';
 export * from './ui/video-player';
 

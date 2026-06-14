@@ -17,6 +17,6 @@ export const Default: StoryObj<typeof meta> = {
     config: {
       desktop: { label: 'Desktop', color: 'hsl(var(--chart-1))' },
     },
-    className: 'min-h-[200px] w-full max-w-md',
+    className: 'min-h-[200px] w-full min-w-(--container-md) max-w-(--container-md)',
   },
 };
