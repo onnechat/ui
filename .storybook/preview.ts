@@ -8,7 +8,7 @@ const preview: Preview = {
     options: {
       storySort: {
         method: 'alphabetical',
-        order: ['Products', ['Onne', ['Logo', 'Colors']], ['Onnebook', ['Logo', 'Colors']], 'UI'],
+        order: ['Products', 'UI'],
       },
     },
     actions: {},

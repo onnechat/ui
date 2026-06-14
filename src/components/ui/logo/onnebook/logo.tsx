@@ -1,5 +1,4 @@
 import { cn } from '@/lib/cn'
-import { env } from '@/lib/env'
 
 const Icon = ({
   classNames,
@@ -35,8 +34,8 @@ const Icon = ({
   )
 }
 
-const Text = ({ className }: { className?: string }) => (
-  <span className={cn('text-xl text-title', className)}>{env.brand.name}</span>
+const Text = ({ className, name }: { className?: string; name: string }) => (
+  <span className={cn('text-xl text-title', className)}>{name}</span>
 )
 
 export const OnnebookLogo = ({
@@ -46,6 +45,7 @@ export const OnnebookLogo = ({
   style,
 }: {
   variant?: 'default' | 'icon' | 'text'
+  name?: string
   className?: string
   classNames?: {
     icon?: {
@@ -56,6 +56,8 @@ export const OnnebookLogo = ({
   }
   style?: React.CSSProperties
 }) => {
+  const name = 'Onnebook'
+
   return (
     <div
       style={style}
@@ -64,11 +66,11 @@ export const OnnebookLogo = ({
       {variant === 'icon' ? (
         <Icon classNames={classNames} />
       ) : variant === 'text' ? (
-        <Text className={classNames?.text} />
+        <Text className={classNames?.text} name={name} />
       ) : (
         <>
           <Icon classNames={classNames} />
-          <Text className={classNames?.text} />
+          <Text className={classNames?.text} name={name} />
         </>
       )}
     </div>

@@ -1,9 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { OnnebookLogo } from '@/components/ui/logo/onnebook/logo'
-import { env } from '@/lib/env'
-import { products } from '@/config/products'
-
-const onnebook = products.find((p) => p.id === 'onnebook')!
 
 const Wrapper = ({ children, label }: { children: React.ReactNode; label: string }) => (
   <div
@@ -28,7 +24,6 @@ const Wrapper = ({ children, label }: { children: React.ReactNode; label: string
   </div>
 )
 
-
 const meta: Meta = {
   title: 'Products/Onnebook/Logo',
   parameters: {
@@ -48,7 +43,7 @@ export const Default: Story = {
       <Wrapper label="Icon Only">
         <OnnebookLogo variant="icon" />
       </Wrapper>
-      <Wrapper label="Wordmark">
+      <Wrapper label="Text Only">
         <OnnebookLogo variant="text" />
       </Wrapper>
     </div>
