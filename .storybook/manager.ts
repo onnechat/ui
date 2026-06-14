@@ -4,7 +4,7 @@ import { create } from 'storybook/theming';
 addons.setConfig({
   theme: create({
     base: 'dark',
-    colorPrimary: '#1EA7FD',
+    colorPrimary: '#d1385c',
     appBg: '#000000',
     appContentBg: '#000000',
     appBorderColor: '#1a1a1a',
@@ -12,11 +12,13 @@ addons.setConfig({
     textColor: '#e0e0e0',
     textInverseColor: '#ffffff',
     barTextColor: '#999999',
-    barSelectedColor: '#1EA7FD',
+    barSelectedColor: '#d1385c',
     barBg: '#000000',
     inputBg: '#111111',
     inputBorder: '#222222',
     inputTextColor: '#e0e0e0',
     brandTitle: '@onne/ui',
+    brandUrl: 'https://onne.chat',
+    brandImage: 'https://www.google.com/s2/favicons?domain=onne.chat&sz=64',
   }),
 });
