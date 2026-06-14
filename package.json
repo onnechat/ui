@@ -116,6 +116,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.0.0",
     "cmdk": "^1.1.1",
+    "frimousse": "^0.3.0",
     "js-cookie": "^3.0.5",
     "libphonenumber-js": "^1.13.6",
     "media-chrome": "^4.19.0",
