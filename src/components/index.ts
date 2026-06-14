@@ -44,6 +44,7 @@ export * from './ui/table';
 export * from './ui/tabs';
 export * from './ui/text';
 export * from './ui/textarea';
+export * from './ui/toast';
 export * from './ui/tracker';
 export * from './ui/video-player';
 
