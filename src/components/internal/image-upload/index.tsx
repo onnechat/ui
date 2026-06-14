@@ -62,13 +62,15 @@ const ImageUpload = ({
   const validate = useCallback(
     (file: File): boolean => {
       if (!ACCEPTED_TYPES.includes(file.type)) {
-        toast.error('errors.invalidType')
+        toast.error('Invalid file type')
         return false
       }
+
       if (file.size > MAX_SIZE_BYTES) {
-        toast.error('errors.tooLarge', { max: MAX_SIZE_MB })
+        toast.error('File is too large')
         return false
       }
+
       return true
     },
     [],
@@ -203,15 +205,10 @@ const ImageUpload = ({
             icon={isDragging ? 'Upload' : 'Image'}
             title={isDragging ? 'dropNow' : 'clickOrDrag'}
             description={'hint'}
-            classNames={{
-              card: 'bg-transparent',
-              content: 'p-6',
-              title: 'text-sm',
-              description: 'text-xs',
-              icon: cn(
-                isDragging ? 'text-(--success-drop)' : 'text-muted-foreground',
-              ),
-            }}
+            className={cn(
+              'bg-transparent p-6',
+              isDragging ? '[--success-drop]' : '',
+            )}
           />
         )}
       </div>

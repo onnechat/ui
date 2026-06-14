@@ -64,7 +64,7 @@ const Button = React.forwardRef<
 
   const Comp = asChild ? Slot : 'button'
 
-  const internalRef = React.useRef<HTMLButtonElement>(null)
+  const internalRef = React.useRef<HTMLButtonElement | null>(null)
 
   const buttonWidth = React.useRef<number | null>(null)
   const buttonHeight = React.useRef<number | null>(null)
