@@ -1,0 +1,22 @@
+import { addons } from 'storybook/manager-api';
+import { create } from 'storybook/theming';
+
+addons.setConfig({
+  theme: create({
+    base: 'dark',
+    colorPrimary: '#1EA7FD',
+    appBg: '#000000',
+    appContentBg: '#000000',
+    appBorderColor: '#1a1a1a',
+    appBorderRadius: 8,
+    textColor: '#e0e0e0',
+    textInverseColor: '#ffffff',
+    barTextColor: '#999999',
+    barSelectedColor: '#1EA7FD',
+    barBg: '#000000',
+    inputBg: '#111111',
+    inputBorder: '#222222',
+    inputTextColor: '#e0e0e0',
+    brandTitle: '@onne/ui',
+  }),
+});
