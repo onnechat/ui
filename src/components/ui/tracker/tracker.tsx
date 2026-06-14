@@ -4,7 +4,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/internal/tooltip'
+} from '@/components/ui/tooltip'
 
 interface TrackerBlockProps {
   key?: string | number

@@ -10,7 +10,7 @@ import {
   useFormContext,
 } from 'react-hook-form'
 
-import { PhoneInput, PhoneInputProps } from '@/components/internal/phone-input/index'
+import { PhoneInput, PhoneInputProps } from '@/components/ui/phone-input/index'
 
 interface PhoneInputControlledProps<T extends FieldValues> extends Omit<
   PhoneInputProps,

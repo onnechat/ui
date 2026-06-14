@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/internal/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 
 interface DataTableColumnHeaderProps<
   TData,

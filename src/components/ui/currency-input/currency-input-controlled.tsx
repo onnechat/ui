@@ -13,7 +13,7 @@ import {
 import {
   CurrencyInput,
   CurrencyInputProps,
-} from '@/components/internal/currency-input/index'
+} from '@/components/ui/currency-input/index'
 
 interface CurrencyInputControlledProps<T extends FieldValues> extends Omit<
   CurrencyInputProps,

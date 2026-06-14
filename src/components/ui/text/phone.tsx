@@ -17,13 +17,13 @@ import { getCountryName } from '@/hooks/use-phone-input'
 import { FlagIcon } from '@/components/icon/flag'
 import { Cell } from '@/components/ui/text/cell'
 
-import { countryDialCodes } from '@/components/internal/phone-input/dial-codes'
+import { countryDialCodes } from '@/components/ui/phone-input/dial-codes'
 import {
   applyPhoneMask,
   getDefaultMask,
   phoneMasks,
   removePhoneMask,
-} from '@/components/internal/phone-input/masks'
+} from '@/components/ui/phone-input/masks'
 
 const getPhoneDigitsForCountry = (
   parsed: PhoneNumber,
