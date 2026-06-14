@@ -23,7 +23,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@/components/internal/sheet'
+} from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Tooltip,
