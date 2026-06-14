@@ -19,6 +19,7 @@ import {
   TableRow,
 } from '@/components/internal/table'
 import { DataTablePagination } from '@/components/internal/table/data-table-pagination'
+import { Skeleton } from '@/components/internal/skeleton'
 
 interface CursorPaginationMeta {
   hasNext?: boolean
@@ -33,7 +34,7 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   cursorMeta?: CursorPaginationMeta
   onNavigate?: (direction: 'next' | 'previous') => void
   showPagination?: boolean
-  // isLoading?: boolean
+  isLoading?: boolean
 }
 
 export function DataTable<TData>({
@@ -43,7 +44,7 @@ export function DataTable<TData>({
   cursorMeta,
   onNavigate,
   showPagination = true,
-  // isLoading,
+  isLoading,
   emptyMessage,
   ...props
 }: DataTableProps<TData>) {
@@ -51,6 +52,9 @@ export function DataTable<TData>({
 
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const [showShadow, setShowShadow] = React.useState(false)
+
+  const defaultEmptyMessage = emptyMessage || 'noResults'
+  const rows = table.getRowModel().rows
 
   React.useEffect(() => {
     const el = scrollRef.current
@@ -72,10 +76,6 @@ export function DataTable<TData>({
       ro.disconnect()
     }
   }, [])
-
-  const defaultEmptyMessage = emptyMessage || 'noResults'
-
-  const rows = table.getRowModel().rows
 
   return (
     <div className={cn('space-y-4', className)} {...props}>
@@ -116,97 +116,117 @@ export function DataTable<TData>({
           </TableHeader>
 
           <TableBody>
-            <AnimatePresence>
-              {rows?.length ? (
-                rows.map((row, rowIndex) => {
-                  const isLastRow = rowIndex === rows.length - 1
+            {isLoading ? (
+              Array.from({ length: 10 }).map((_, i) => (
+                <TableRow
+                  key={i}
+                  className="border-b border-border/50 transition-none odd:bg-accent/15 even:bg-accent/50"
+                >
+                  {Array.from({
+                    length: table.getAllColumns().length,
+                  }).map((_, j) => (
+                    <TableCell
+                      key={j}
+                      className="h-12 max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis"
+                    >
+                      <Skeleton className="h-4 w-[80%] bg-accent" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <AnimatePresence>
+                {rows?.length ? (
+                  rows.map((row, rowIndex) => {
+                    const isLastRow = rowIndex === rows.length - 1
 
-                  return (
-                    <motion.tr
-                      key={row.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{
-                        duration: 0.2,
-                        delay: rowIndex * 0.05,
-                        ease: 'easeOut',
-                      }}
-                      data-state={row.getIsSelected() && 'selected'}
-                      className="group border-b border-border/50 transition-colors odd:bg-accent/15 even:bg-accent/50 hover:bg-accent data-[state=selected]:bg-card touch-callout-none transition-none"
-                      onContextMenu={(e) => {
-                        const trigger = e.currentTarget.querySelector(
-                          '[data-action-group-trigger]',
-                        ) as HTMLElement | null
-
-                        if (trigger) {
-                          e.preventDefault()
-                          trigger.click()
-                        }
-                      }}
-                      onTouchStart={(e) => {
-                        const el = e.currentTarget
-
-                        const timer = window.setTimeout(() => {
-                          const trigger = el.querySelector(
+                    return (
+                      <motion.tr
+                        key={row.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{
+                          duration: 0.2,
+                          delay: rowIndex * 0.05,
+                          ease: 'easeOut',
+                        }}
+                        data-state={row.getIsSelected() && 'selected'}
+                        className="group border-b border-border/50 transition-colors odd:bg-accent/15 even:bg-accent/50 hover:bg-accent data-[state=selected]:bg-card touch-callout-none transition-none"
+                        onContextMenu={(e) => {
+                          const trigger = e.currentTarget.querySelector(
                             '[data-action-group-trigger]',
                           ) as HTMLElement | null
 
-                          if (trigger) trigger.click()
-                        }, 500)
+                          if (trigger) {
+                            e.preventDefault()
+                            trigger.click()
+                          }
+                        }}
+                        onTouchStart={(e) => {
+                          const el = e.currentTarget
 
-                        ;(el as HTMLElement & { _longPressTimer?: number })._longPressTimer = timer
-                      }}
-                      onTouchEnd={(e) => {
-                        window.clearTimeout(
-                          (e.currentTarget as HTMLElement & { _longPressTimer?: number })._longPressTimer,
-                        )
-                      }}
-                      onTouchMove={(e) => {
-                        window.clearTimeout(
-                          (e.currentTarget as HTMLElement & { _longPressTimer?: number })._longPressTimer,
-                        )
-                      }}
+                          const timer = window.setTimeout(() => {
+                            const trigger = el.querySelector(
+                              '[data-action-group-trigger]',
+                            ) as HTMLElement | null
+
+                            if (trigger) trigger.click()
+                          }, 500)
+
+                          ;(el as HTMLElement & { _longPressTimer?: number })._longPressTimer = timer
+                        }}
+                        onTouchEnd={(e) => {
+                          window.clearTimeout(
+                            (e.currentTarget as HTMLElement & { _longPressTimer?: number })._longPressTimer,
+                          )
+                        }}
+                        onTouchMove={(e) => {
+                          window.clearTimeout(
+                            (e.currentTarget as HTMLElement & { _longPressTimer?: number })._longPressTimer,
+                          )
+                        }}
+                      >
+                        {row.getVisibleCells().map((cell, cellIndex) => {
+                          const isLast =
+                            cellIndex === row.getVisibleCells().length - 1
+
+                          const shouldSticky = isLast && isMobile && showShadow
+
+                          return (
+                            <TableCell
+                              key={cell.id}
+                              className={cn(
+                                'h-12 max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis',
+                                shouldSticky &&
+                                  cn(
+                                    'sticky right-0 bg-card z-20 shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1),-4px_0_6px_-2px_rgba(0,0,0,0.05)] border-l border-border/10 pr-4',
+                                    isLastRow && 'rounded-br-2xl',
+                                  ),
+                              )}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                            </TableCell>
+                          )
+                        })}
+                      </motion.tr>
+                    )
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={table.getAllColumns().length}
+                      className="h-24 text-center text-card-foreground"
                     >
-                      {row.getVisibleCells().map((cell, cellIndex) => {
-                        const isLast =
-                          cellIndex === row.getVisibleCells().length - 1
-
-                        const shouldSticky = isLast && isMobile && showShadow
-
-                        return (
-                          <TableCell
-                            key={cell.id}
-                            className={cn(
-                              'h-12 max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis',
-                              shouldSticky &&
-                                cn(
-                                  'sticky right-0 bg-card z-20 shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1),-4px_0_6px_-2px_rgba(0,0,0,0.05)] border-l border-border/10 pr-4',
-                                  isLastRow && 'rounded-br-2xl',
-                                ),
-                            )}
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
-                            )}
-                          </TableCell>
-                        )
-                      })}
-                    </motion.tr>
-                  )
-                })
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={table.getAllColumns().length}
-                    className="h-24 text-center text-card-foreground"
-                  >
-                    {defaultEmptyMessage}
-                  </TableCell>
-                </TableRow>
-              )}
-            </AnimatePresence>
+                      {defaultEmptyMessage}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </AnimatePresence>
+            )}
           </TableBody>
         </Table>
       </div>

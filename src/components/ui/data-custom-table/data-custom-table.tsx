@@ -9,17 +9,8 @@ import { cn } from '@/lib/cn'
 import { useDataTable } from '@/hooks/use-data-table'
 
 import { Checkbox } from '@/components/internal/checkbox'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/internal/table'
 import { DataTable } from '@/components/internal/table/data-table'
 import { DataTableToolbar } from '@/components/internal/table/data-table-toolbar'
-import { Skeleton } from '@/index'
 
 export const DATA_CUSTOM_TABLE_VARIANTS = ['default', 'inset'] as const
 export const DEFAULT_DATA_CUSTOM_TABLE_VARIANT = 'default'
@@ -137,8 +128,8 @@ export function DataCustomTable<T>({
     rowCount: totalItems ?? data.length,
     onPaginationChange: onPaginationChange
       ? (limit, cursor, direction) => {
-          onPaginationChange(1, limit, cursor, direction)
-        }
+        onPaginationChange(1, limit, cursor, direction)
+      }
       : undefined,
     defaultPerPage: pageSizeOptions[0],
     hasNextPage: cursorMeta?.hasNext ?? false,
@@ -151,6 +142,14 @@ export function DataCustomTable<T>({
 
   const rowSelectionState = table.getState().rowSelection
 
+  const handleNavigate = (direction: 'next' | 'previous') => {
+    if (direction === 'next') {
+      goToNextPage()
+    } else {
+      goToPreviousPage()
+    }
+  }
+
   useEffect(() => {
     if (onRowSelectionChange) {
       const selectedRows = table
@@ -161,75 +160,30 @@ export function DataCustomTable<T>({
     }
   }, [rowSelectionState, onRowSelectionChange, table])
 
-  const handleNavigate = (direction: 'next' | 'previous') => {
-    if (direction === 'next') {
-      goToNextPage()
-    } else {
-      goToPreviousPage()
-    }
-  }
 
   return (
     <div
       suppressHydrationWarning
       className={cn(
         'space-y-6 w-full',
-        variant === 'inset' && 'bg-card border rounded-xl p-6',
         isLoading && 'overflow-hidden',
+        variant === 'inset' && 'bg-card border rounded-xl p-6',
       )}
     >
-      {isLoading ? (
-          <div className="rounded-2xl bg-card overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-border/25 bg-card!">
-                  {tableColumns.map((col) => (
-                    <TableHead
-                      key={col.id}
-                      className="max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis"
-                    >
-                      {typeof col.header === 'string'
-                        ? col.header
-                        : col.id}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              
-              <TableBody>
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <TableRow
-                    key={i}
-                    className="border-b border-border/50 transition-none odd:bg-accent/15 even:bg-accent/50"
-                  >
-                    {tableColumns.map((col) => (
-                      <TableCell
-                        key={col.id}
-                        className="h-12 max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis"
-                      >
-                        <Skeleton className="h-4 w-[80%]" />
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        ) : (
-            <DataTable
-              table={table}
-              emptyMessage={emptyMessage}
-              showPagination={showPagination}
-              cursorMeta={{
-                ...cursorMeta,
-                hasNext: hasNextPage,
-                hasPrevious: hasPreviousPage,
-              }}
-              onNavigate={handleNavigate}
-            >
-              <DataTableToolbar table={table} />
-            </DataTable>
-        )}
+      <DataTable
+        table={table}
+        isLoading={isLoading}
+        emptyMessage={emptyMessage}
+        onNavigate={handleNavigate}
+        showPagination={showPagination}
+        cursorMeta={{
+          ...cursorMeta,
+          hasNext: hasNextPage,
+          hasPrevious: hasPreviousPage,
+        }}
+      >
+        <DataTableToolbar table={table} />
+      </DataTable>
     </div>
   )
 }

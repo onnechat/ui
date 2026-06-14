@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import { fn, expect } from 'storybook/test';
+import React from 'react';
 import { DataCustomTable } from './data-custom-table';
 import { ColumnDef } from '@tanstack/react-table';
 
@@ -11,6 +12,11 @@ const NAMES = [
   'Charlie',
   'Diana',
   'Edward',
+  'Fiona',
+  'George',
+  'Hannah',
+  'Isaac',
+  'James',
 ];
 
 const ROLES = ['Admin', 'Editor', 'Viewer'] as const;
@@ -66,5 +72,33 @@ export const Empty: StoryObj<typeof meta> = {
     data: [],
     columns: COLUMNS,
     emptyMessage: 'No users found.',
+  },
+};
+
+export const LoadingToLoaded: StoryObj<typeof meta> = {
+  render: function Render() {
+    const [isLoading, setIsLoading] = React.useState(true);
+
+    React.useEffect(() => {
+      const timer = setTimeout(() => setIsLoading(false), 1500);
+      return () => clearTimeout(timer);
+    }, []);
+
+    return (
+      <DataCustomTable
+        isLoading={isLoading}
+        columns={COLUMNS}
+        data={isLoading ? [] : DATA}
+        onRowSelectionChange={fn()}
+        onRowSelectionStateChange={fn()}
+        onPaginationChange={fn()}
+      />
+    );
+  },
+  play: async ({ canvas }) => {
+    await new Promise((r) => setTimeout(r, 2500));
+    await expect(
+      canvas.getByText('Alice'),
+    ).toBeInTheDocument();
   },
 };
