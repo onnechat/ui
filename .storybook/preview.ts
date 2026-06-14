@@ -25,9 +25,9 @@ const preview: Preview = {
     },
     backgrounds: {
       grid: {
-        cellSize: 32,
-        opacity: 0.5,
-        cellAmount: 15,
+        cellSize: 30,
+        opacity: 0.15,
+        cellAmount: 32,
       },
     },
     layout: 'fullscreen',
