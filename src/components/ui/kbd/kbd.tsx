@@ -112,11 +112,11 @@ function normalize(input: KbdKey | KbdKey[] | KbdKey[][]): KbdInput {
   return input as KbdInput[]
 }
 
-function SingleKey({ kbdKey, kbdClassName }: { kbdKey: KbdKey; kbdClassName?: string }) {
+function SingleKey({ kbdKey }: { kbdKey: KbdKey }) {
   const icon = resolveKeyIcon(kbdKey)
   const text = resolveKeyText(kbdKey)
   return (
-    <kbd className={cn('font-sans', kbdClassName)}>
+    <kbd className="inline-flex items-center justify-center gap-1 rounded-md border bg-muted/60 px-1.5 py-0.5 font-mono text-[0.8em] text-muted-foreground shadow-[0_1px_0_0_var(--color-border)]">
       {icon ? <Icon name={icon} className="size-3" /> : (text ?? kbdKey)}
     </kbd>
   )
@@ -126,10 +126,9 @@ function renderKeys(
   keys: KbdInput,
   separator: ReactNode,
   thenSeparator: ReactNode,
-  kbdClassName?: string,
 ): ReactNode {
   if (typeof keys === 'string') {
-    return <SingleKey kbdKey={keys} kbdClassName={kbdClassName} />
+    return <SingleKey kbdKey={keys} />
   }
 
   if (keys.length === 0) return null
@@ -141,7 +140,7 @@ function renderKeys(
       {keys.map((k, i) => (
         <Fragment key={i}>
           {i > 0 ? sep : null}
-          {renderKeys(k, separator, thenSeparator, kbdClassName)}
+          {renderKeys(k, separator, thenSeparator)}
         </Fragment>
       ))}
     </span>
@@ -151,7 +150,6 @@ function renderKeys(
 export type KbdProps = {
   keys: KbdKey | KbdKey[] | KbdKey[][]
   className?: string
-  kbdClassName?: string
   separator?: ReactNode
   thenSeparator?: ReactNode
 }
@@ -159,7 +157,6 @@ export type KbdProps = {
 export function Kbd({
   keys,
   className,
-  kbdClassName,
   separator = '+',
   thenSeparator = 'then',
 }: KbdProps) {
@@ -174,7 +171,7 @@ export function Kbd({
         className,
       )}
     >
-      {renderKeys(groups, separator, thenSeparator, kbdClassName)}
+      {renderKeys(groups, separator, thenSeparator)}
     </span>
   )
 }
