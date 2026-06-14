@@ -40,6 +40,7 @@ export const Default: StoryObj<typeof Alert> = {
     },
   },
   args: {
+    variant: 'default',
     iconType: 'CircleInfo' as IconType | null,
     title: 'Alert Title',
     description: 'This is the alert description text.',
