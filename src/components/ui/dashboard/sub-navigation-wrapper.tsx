@@ -8,7 +8,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 
 import { Icon, type IconType } from '@/components/icon'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 import {
   Drawer,
   DrawerClose,

@@ -10,7 +10,7 @@ import { useIsClient } from '@/hooks/use-is-client'
 import { Icon } from '@/components/icon/index'
 import { LanguageSwitch } from '@/components/ui/language-switch'
 
-import { Button, type ButtonVariants } from '@/components/internal/button'
+import { Button, type ButtonVariants } from '@/components/ui/button'
 
 export function HeaderActions({
   className,

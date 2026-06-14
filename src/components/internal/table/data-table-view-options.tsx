@@ -6,7 +6,7 @@ import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 
 import { Icon } from '@/components/icon'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,

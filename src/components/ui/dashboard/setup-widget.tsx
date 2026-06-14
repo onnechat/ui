@@ -16,7 +16,7 @@ import { Icon, type IconType } from '@/components/icon'
 import { SocialIcon } from '@/components/icon/social'
 import { Loader } from '@/components/ui/loader'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 
 const useParams = () => ({ slug: '' as string | undefined })
 

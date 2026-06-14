@@ -14,7 +14,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 
 import { Icon } from '@/components/icon'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/internal/input'
 import { Separator } from '@/components/internal/separator'
 import {

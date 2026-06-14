@@ -4,7 +4,7 @@ import { Table } from '@tanstack/react-table'
 
 import { Icon } from '@/components/icon'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 import { DataTableViewOptions } from '@/components/internal/table/data-table-view-options'
 
 interface DataTableToolbarProps<TData> {

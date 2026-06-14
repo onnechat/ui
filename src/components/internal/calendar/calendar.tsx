@@ -8,7 +8,7 @@ import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
 
-import { buttonVariants } from '@/components/internal/button'
+import { buttonVariants } from '@/components/ui/button'
 
 function Calendar({
   className,

@@ -17,7 +17,7 @@ import { useIsClient } from '@/hooks/use-is-client'
 
 import { Icon } from '@/components/icon/index'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 
 const createSchemas = (_t: (key: string) => string) => ({
   REGISTER: z.object({

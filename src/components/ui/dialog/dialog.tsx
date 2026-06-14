@@ -18,7 +18,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 
 import { Icon } from '@/components/icon'
 
-import { Button, type ButtonVariants } from '@/components/internal/button'
+import { Button, type ButtonVariants } from '@/components/ui/button'
 import {
   Dialog as UiDialog,
   DialogContent as UiDialogContent,

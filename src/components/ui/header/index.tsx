@@ -12,7 +12,7 @@ import { Icon } from '@/components/icon'
 import { LanguageSwitch } from '@/components/ui/language-switch'
 import { Logo } from '@/components/ui/logo'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 
 import { HeaderActions } from './actions'
 

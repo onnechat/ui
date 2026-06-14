@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Card, CardContent, CardFooter, CardHeader, CardSlider } from './card';
-import { Button } from '@/components/internal/button';
+import { Button } from '@/components/ui/button';
 
 const meta: Meta<typeof Card> = {
   title: 'UI/Card',

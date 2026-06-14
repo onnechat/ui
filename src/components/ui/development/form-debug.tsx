@@ -9,7 +9,7 @@ import { cn } from '@/lib/cn'
 import { Dialog } from '@/components/ui/dialog'
 import { Icon } from '@/components/icon'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 
 import { EmptyState } from '../empty-state'
 

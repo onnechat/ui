@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn'
 
 import { Icon } from '@/components/icon'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,

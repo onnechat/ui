@@ -9,7 +9,7 @@ import { cn } from '@/lib/cn'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Icon } from '@/components/icon'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 import { Label } from '@/components/internal/label'
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp']

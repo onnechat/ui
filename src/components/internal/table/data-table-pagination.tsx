@@ -3,7 +3,7 @@ import { Table } from '@tanstack/react-table'
 
 import { Icon } from '@/components/icon'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 
 import {
   Select,

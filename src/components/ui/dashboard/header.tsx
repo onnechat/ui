@@ -8,7 +8,7 @@ import { cn } from '@/lib/cn'
 
 import { Logo } from '@/components/ui/logo'
 
-import { Button } from '@/components/internal/button'
+import { Button } from '@/components/ui/button'
 import { SidebarTrigger } from '@/components/internal/sidebar'
 import { Skeleton } from '@/components/internal/skeleton'
 
