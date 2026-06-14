@@ -35,6 +35,7 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   onNavigate?: (direction: 'next' | 'previous') => void
   showPagination?: boolean
   isLoading?: boolean
+  disablePageSize?: boolean
 }
 
 export function DataTable<TData>({
@@ -45,6 +46,7 @@ export function DataTable<TData>({
   onNavigate,
   showPagination = true,
   isLoading,
+  disablePageSize,
   emptyMessage,
   ...props
 }: DataTableProps<TData>) {
@@ -236,6 +238,7 @@ export function DataTable<TData>({
           table={table}
           cursorMeta={cursorMeta}
           onNavigate={onNavigate}
+          disablePageSize={disablePageSize}
         />
       )}
     </div>

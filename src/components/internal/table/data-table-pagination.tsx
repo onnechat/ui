@@ -24,6 +24,7 @@ interface DataTablePaginationProps<TData> {
   pageSizeOptions?: number[]
   cursorMeta?: CursorPaginationMeta
   onNavigate?: (direction: 'next' | 'previous') => void
+  disablePageSize?: boolean
 }
 
 export function DataTablePagination<TData>({
@@ -31,6 +32,7 @@ export function DataTablePagination<TData>({
   pageSizeOptions = [10, 20, 30, 40, 50],
   cursorMeta,
   onNavigate,
+  disablePageSize,
 }: DataTablePaginationProps<TData>) {
 
   const isCursorPagination = !!cursorMeta
@@ -66,11 +68,13 @@ export function DataTablePagination<TData>({
       )}
 
       <div className="flex items-center space-x-2 w-fit">
+
         <p className="hidden sm:block text-sm text-muted-foreground text-nowrap">
           Rows per page
         </p>
 
         <Select
+          disabled={disablePageSize}
           value={`${table.getState().pagination.pageSize}`}
           onValueChange={(value) => table.setPageSize(Number(value))}
         >

@@ -161,6 +161,8 @@ export function DataCustomTable<T>({
   }, [rowSelectionState, onRowSelectionChange, table])
 
 
+  const disablePageSize = !isLoading && data.length <= pageSizeOptions[0]
+
   return (
     <div
       suppressHydrationWarning
@@ -176,6 +178,7 @@ export function DataCustomTable<T>({
         emptyMessage={emptyMessage}
         onNavigate={handleNavigate}
         showPagination={showPagination}
+        disablePageSize={disablePageSize}
         cursorMeta={{
           ...cursorMeta,
           hasNext: hasNextPage,
