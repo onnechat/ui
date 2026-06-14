@@ -13,6 +13,8 @@ FROM nginx:alpine AS runner
 
 COPY --from=builder /app/storybook-static /usr/share/nginx/html
 
-EXPOSE 80
+RUN echo 'server { listen 3000; server_name localhost; root /usr/share/nginx/html; index index.html; location / { try_files $uri $uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 3000
 
 CMD ["nginx", "-g", "daemon off;"]
