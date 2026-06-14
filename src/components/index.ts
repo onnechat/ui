@@ -60,8 +60,6 @@ export * from './internal/scroll-area';
 export * from './internal/select';
 export * from './internal/separator';
 export * from './internal/sheet';
-export * from './internal/skeleton';
-export * from './internal/toast';
 export * from './internal/switch';
 export * from './internal/textarea';
 export * from './internal/input-time';
