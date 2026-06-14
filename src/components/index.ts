@@ -31,6 +31,7 @@ export * from './ui/seo';
 export * from './ui/seo';
 export * from './ui/shimmer-text';
 export * from './ui/skeleton';
+export * from './ui/sidebar';
 export * from './ui/table';
 export * from './ui/tabs';
 export * from './ui/text';

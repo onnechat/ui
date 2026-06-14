@@ -12,7 +12,7 @@ import { cn } from '@/lib/cn'
 import { useIsMobile } from '@/hooks/use-mobile'
 
 
-import { Icon } from '@/components/icon'
+import { Icon, type IconSharedProps } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/internal/input'
@@ -180,7 +180,7 @@ function Sidebar({
   variant?: 'sidebar' | 'floating' | 'inset'
   collapsible?: 'offcanvas' | 'icon' | 'none'
 }) {
-  
+
   const { isMobile, state, openMobile, setOpenMobile, sidebarWidth } =
     useSidebar()
 
@@ -255,8 +255,8 @@ function Sidebar({
         className={cn(
           'fixed z-10 hidden transition-[left,right,width] duration-300 lg:flex',
           side === 'left'
-            ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
-            : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
+            ? 'left-0 group-data-[collapsible=offcanvas]:-left-(--sidebar-width)'
+            : 'right-0 group-data-[collapsible=offcanvas]:-right-(--sidebar-width)',
           variant === 'floating' || variant === 'inset'
             ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
@@ -283,7 +283,7 @@ function Sidebar({
   )
 }
 
-type SidebarTriggerIconProps = Omit<React.ComponentProps<typeof Icon>, 'name'>
+type SidebarTriggerIconProps = IconSharedProps
 
 function SidebarTrigger({
   className,
@@ -304,8 +304,8 @@ function SidebarTrigger({
 
   const IconComponent = (
     <Icon
-      name={state === 'collapsed' ? 'SidebarToggled' : 'SidebarToggle'}
       className="size-5"
+      name={state === 'collapsed' ? 'SidebarToggled' : 'SidebarToggle'}
       {...iconProps}
     />
   )
@@ -614,7 +614,7 @@ function SidebarMenuAction({
         'peer-data-[size=lg]/menu-button:top-2.5',
         'group-data-[collapsible=icon]:hidden',
         showOnHover &&
-          'peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 lg:opacity-0',
+        'peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 lg:opacity-0',
         className,
       )}
       {...props}
