@@ -53,7 +53,7 @@ export * from './internal/calendar';
 export * from './internal/chart';
 export * from './internal/collapsible';
 export * from './internal/command';
-export * from './internal/drawer';
+export * from './ui/drawer';
 export * from './internal/image-upload';
 export * from './internal/label';
 export * from './internal/scroll-area';

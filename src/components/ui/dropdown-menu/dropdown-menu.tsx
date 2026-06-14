@@ -15,7 +15,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 
 import { ANIMATION } from '@/constants/animations'
 
-import { Drawer, DrawerContent } from '@/components/internal/drawer'
+import { Drawer, DrawerContent } from '@/components/ui/drawer'
 
 import { KeyboardShortcut } from './keyboard-shortcut'
 

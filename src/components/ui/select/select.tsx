@@ -11,7 +11,7 @@ import { cn } from '@/lib/cn'
 import { useHaptics } from '@/hooks/use-haptics'
 import { useIsMobile } from '@/hooks/use-mobile'
 
-import { Drawer, DrawerContent } from '@/components/internal/drawer'
+import { Drawer, DrawerContent } from '@/components/ui/drawer'
 
 /** Same option list is rendered twice on mobile (hidden Radix items + drawer). Clone so each tree is independent. */
 function cloneSelectChildren(children: React.ReactNode, keySuffix: string) {
