@@ -26,7 +26,7 @@ const preview: Preview = {
     backgrounds: {
       grid: {
         cellSize: 30,
-        opacity: 0.15,
+        opacity: 0.1,
         cellAmount: 32,
       },
     },
