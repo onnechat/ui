@@ -60,9 +60,8 @@ export const WithInput: StoryObj = {
 export const Required: StoryObj = {
   render: () => (
     <div className="flex w-72 flex-col gap-2">
-      <Label htmlFor="username">
+      <Label htmlFor="username" required>
         Username
-        <span className="text-destructive">*</span>
       </Label>
       <Input id="username" placeholder="Required field" required />
     </div>
