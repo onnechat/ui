@@ -5,6 +5,7 @@ addons.setConfig({
   theme: create({
     base: 'dark',
     colorPrimary: '#d1385c',
+    colorSecondary: '#d1385c',
     appBg: '#000000',
     appContentBg: '#000000',
     appBorderColor: '#1a1a1a',
@@ -12,6 +13,7 @@ addons.setConfig({
     textColor: '#e0e0e0',
     textInverseColor: '#ffffff',
     barTextColor: '#999999',
+    barHoverColor: '#d1385c',
     barSelectedColor: '#d1385c',
     barBg: '#000000',
     inputBg: '#111111',
