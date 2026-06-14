@@ -18,7 +18,7 @@ const Block = ({
   color,
   tooltip,
   disabledTooltip,
-  defaultBackgroundColor = 'bg-secondary',
+  defaultBackgroundColor = 'var(--color-secondary)',
 }: TrackerBlockProps) => {
   return disabledTooltip ? (
     <div className="size-full overflow-hidden px-[0.5px] transition first:rounded-l-sm first:pl-0 last:rounded-r-sm last:pr-0 sm:px-px">
@@ -58,8 +58,8 @@ const Block = ({
 
 interface TrackerProps
   extends
-    React.ComponentProps<'div'>,
-    Pick<TrackerBlockProps, 'disabledTooltip'> {
+  React.ComponentProps<'div'>,
+  Pick<TrackerBlockProps, 'disabledTooltip'> {
   data: TrackerBlockProps[]
   defaultBackgroundColor?: string
 }

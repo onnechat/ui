@@ -32,6 +32,7 @@ export * from './ui/seo';
 export * from './ui/shimmer-text';
 export * from './ui/tabs';
 export * from './ui/text';
+export * from './ui/tracker';
 export * from './ui/video-player';
 
 export * from './internal/avatar';
@@ -66,4 +67,3 @@ export * from './internal/input-time';
 export * from './internal/input-time-picker';
 export * from './internal/input-time-unit';
 export * from './internal/tooltip';
-export * from './internal/tracker';
