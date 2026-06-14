@@ -3,7 +3,7 @@ import { expect, userEvent, within } from 'storybook/test';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/internal/label';
+import { Label } from '@/components/ui/label';
 
 const meta: Meta<typeof Popover> = {
   title: 'UI/Popover',

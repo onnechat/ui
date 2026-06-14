@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent } from 'storybook/test';
 import { RadioGroup, RadioGroupItem } from './radio-group';
-import { Label } from '@/components/internal/label';
+import { Label } from '@/components/ui/label';
 
 const meta: Meta<typeof RadioGroup> = {
   title: 'UI/RadioGroup',

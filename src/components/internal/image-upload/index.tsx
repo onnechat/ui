@@ -10,7 +10,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { Icon } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/internal/label'
+import { Label } from '@/components/ui/label'
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 

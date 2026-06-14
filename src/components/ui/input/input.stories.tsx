@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 import { Input } from './input';
 import { Icon } from '@/components/icon';
-import { Label } from '@/components/internal/label';
+import { Label } from '@/components/ui/label';
 
 const meta: Meta<typeof Input> = {
   title: 'UI/Input',

@@ -15,7 +15,7 @@ import {
   useCollapsibleOpen,
   useOptionalCollapsibleContext,
 } from '@/components/internal/collapsible'
-import { Label } from '@/components/internal/label'
+import { Label } from '@/components/ui/label'
 
 const settingsItemVariants = cva(
   'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 transition-colors',

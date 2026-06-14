@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn, expect, userEvent } from 'storybook/test';
 import { Checkbox } from './checkbox';
-import { Label } from '@/components/internal/label';
+import { Label } from '@/components/ui/label';
 
 const meta: Meta<typeof Checkbox> = {
   title: 'UI/Checkbox',

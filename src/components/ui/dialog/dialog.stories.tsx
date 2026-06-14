@@ -4,7 +4,7 @@ import { fn } from 'storybook/test';
 import { Dialog, DialogStack, useDialogStack } from './dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/internal/label';
+import { Label } from '@/components/ui/label';
 import { CardSlider } from '@/components/ui/card';
 
 function WizardStep({
