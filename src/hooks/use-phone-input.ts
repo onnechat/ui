@@ -1,4 +1,11 @@
-import { getCountries, getCountryCallingCode } from 'libphonenumber-js'
+import { useState } from 'react'
+import {
+  getCountries,
+  getCountryCallingCode,
+  parsePhoneNumberFromString,
+} from 'libphonenumber-js'
+
+import { applyPhoneMask, getDefaultMask, phoneMasks } from '@/components/ui/input-phone/masks'
 
 export interface Country {
   code: string
@@ -46,14 +53,42 @@ const countries: Country[] = getCountries()
     dialCode: `+${getCountryCallingCode(code)}`,
   }))
 
-export const usePhoneInput = (props: Record<string, unknown>) => ({
-  formattedPhoneNumber: (props.value as string) ?? '',
-  selectedCountry:
-    countries.find((c) => c.code === 'BR') ?? countries[0],
-  countries,
-  handleCountryChange: (_code: string) => {},
-  handlePhoneNumberChange: (_e: React.ChangeEvent<HTMLInputElement>) => {},
-  placeholder: '',
-})
+export const usePhoneInput = (props: Record<string, unknown>) => {
+  const initialValue = (props.value as string) ?? ''
+
+  const parsed = parsePhoneNumberFromString(initialValue)
+  const initialCountryCode = parsed?.country ?? 'BR'
+  const initialNationalNumber = parsed?.nationalNumber ?? ''
+
+  const [phone, setPhone] = useState(initialNationalNumber)
+  const [countryCode, setCountryCode] = useState<string>(initialCountryCode)
+
+  const selectedCountry =
+    countries.find((c) => c.code === countryCode) ?? countries[0]
+
+  const maskConfig = phoneMasks[countryCode] ?? getDefaultMask()
+
+  const formattedPhoneNumber = applyPhoneMask(phone, maskConfig.mask)
+
+  const handleCountryChange = (code: string) => {
+    setCountryCode(code)
+    setPhone('')
+  }
+
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, '')
+    const masked = applyPhoneMask(raw, maskConfig.mask)
+    setPhone(raw.slice(0, maskConfig.maxLength))
+  }
+
+  return {
+    formattedPhoneNumber,
+    selectedCountry,
+    countries,
+    handleCountryChange,
+    handlePhoneNumberChange,
+    placeholder: maskConfig.placeholder,
+  }
+}
 
 export { getCountryName }
