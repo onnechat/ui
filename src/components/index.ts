@@ -48,7 +48,7 @@ export * from './ui/toast';
 export * from './ui/tracker';
 export * from './ui/video-player';
 
-export * from './internal/avatar';
+export * from './ui/avatar';
 export * from './internal/calendar';
 export * from './internal/chart';
 export * from './internal/collapsible';
