@@ -8,13 +8,13 @@ import {
 import {
   type AvailableLocales,
   DEFAULT_LOCALE_CONFIG,
-  flagPath,
 } from '@/config/locales'
 
 import { cn } from '@/lib/cn'
 
 import { getCountryName } from '@/hooks/use-phone-input'
 
+import { FlagIcon } from '@/components/icon/flag'
 import { Cell } from '@/components/ui/text/cell'
 
 import { countryDialCodes } from '@/components/internal/phone-input/dial-codes'
@@ -116,7 +116,6 @@ export const Phone = ({ phone, flag = true, className }: PhoneProps) => {
     country: {
       code: countryCode,
       name: getCountryName(countryCode, locale),
-      flag: flagPath(countryCode),
     },
   }
 
@@ -127,16 +126,7 @@ export const Phone = ({ phone, flag = true, className }: PhoneProps) => {
     >
       {safePhone && flag ? (
         <div className="flex items-center gap-1.5 pr-2">
-          <img
-            loading="lazy"
-            width={16}
-            height={16}
-            src={formatted.country.flag}
-            alt={formatted.country.name}
-            title={formatted.country.name}
-            className="size-3.5 rounded-sm object-cover pointer-events-none select-none"
-          />
-
+          <FlagIcon code={countryCode} className="size-3.5 rounded-sm" />
           <span>{formatted.phone}</span>
         </div>
       ) : (
