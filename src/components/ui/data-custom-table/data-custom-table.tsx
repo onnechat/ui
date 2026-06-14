@@ -9,8 +9,8 @@ import { cn } from '@/lib/cn'
 import { useDataTable } from '@/hooks/use-data-table'
 
 import { Checkbox } from '@/components/ui/checkbox'
-import { DataTable } from '@/components/internal/table/data-table'
-import { DataTableToolbar } from '@/components/internal/table/data-table-toolbar'
+import { DataTable } from '@/components/ui/table/data-table'
+import { DataTableToolbar } from '@/components/ui/table/data-table-toolbar'
 
 export const DATA_CUSTOM_TABLE_VARIANTS = ['default', 'inset'] as const
 export const DEFAULT_DATA_CUSTOM_TABLE_VARIANT = 'default'

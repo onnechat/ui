@@ -5,11 +5,15 @@ import { Icon } from "@/components/icon"
 
 import { cn } from '@/lib/cn'
 
+export type CheckboxProps = CheckboxPrimitive.Root.Props & {
+  indeterminate?: boolean
+}
+
 function Checkbox({
   className,
   indeterminate,
   ...props
-}: CheckboxPrimitive.Root.Props) {
+}: CheckboxProps) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"

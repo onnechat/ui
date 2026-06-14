@@ -11,7 +11,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../select'
+} from '@/components/internal/select'
 
 interface CursorPaginationMeta {
   hasNext?: boolean

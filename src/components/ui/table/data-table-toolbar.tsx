@@ -5,7 +5,7 @@ import { Table } from '@tanstack/react-table'
 import { Icon } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
-import { DataTableViewOptions } from '@/components/internal/table/data-table-view-options'
+import { DataTableViewOptions } from './data-table-view-options'
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>

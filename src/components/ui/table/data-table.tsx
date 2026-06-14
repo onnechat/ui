@@ -17,8 +17,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/internal/table'
-import { DataTablePagination } from '@/components/internal/table/data-table-pagination'
+} from './table'
+import { DataTablePagination } from './data-table-pagination'
 import { Skeleton } from '@/components/internal/skeleton'
 
 interface CursorPaginationMeta {
