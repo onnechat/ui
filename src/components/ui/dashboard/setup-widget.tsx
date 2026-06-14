@@ -328,10 +328,7 @@ function SetupStepRow({
           isCompleted && 'text-muted-foreground line-through opacity-75',
         )}
       >
-        {`steps.${step.key}`, {
-          name: 'Onne',
-          channel: 'WhatsApp',
-        }}
+        {step.key}
       </p>
 
       {step.key === 'channels' ? (

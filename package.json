@@ -25,6 +25,9 @@
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,json,css,md}\"",
     "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test-storybook": "vitest --project=storybook",
+    "test:coverage": "vitest --coverage",
     "prepublishOnly": "bun run build",
     "chromatic": "bunx chromatic --project-token=your-project-token"
   },
@@ -51,10 +54,13 @@
     "react-dom": ">=16.8.0"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^5.2.1",
     "@playwright/test": "^1.60.0",
+    "@storybook/addon-a11y": "^10.4.4",
     "@storybook/addon-docs": "^10.4.4",
     "@storybook/addon-links": "^10.4.4",
     "@storybook/addon-themes": "^10.4.4",
+    "@storybook/addon-vitest": "^10.4.4",
     "@storybook/react-vite": "^10.4.4",
     "@storybook/test-runner": "^0.24.4",
     "@storybook/testing-library": "^0.2.2",
@@ -64,6 +70,8 @@
     "@types/react-dom": "^18.2.18",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
     "autoprefixer": "^10.4.21",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
@@ -77,7 +85,8 @@
     "tailwindcss": "^4.1.12",
     "tailwindcss-animate": "^1.0.7",
     "tsup": "^8.0.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.8"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
