@@ -20,8 +20,7 @@ import { Cell } from '@/components/ui/text/cell'
 import { countryDialCodes } from '@/components/ui/input-phone/dial-codes'
 import {
   applyPhoneMask,
-  getDefaultMask,
-  phoneMasks,
+  getDisplayMask,
   removePhoneMask,
 } from '@/components/ui/input-phone/masks'
 
@@ -104,12 +103,15 @@ export interface PhoneProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export const Phone = ({ phone, flag = true, className }: PhoneProps) => {
-  const locale = "pt-BR" as AvailableLocales
-  const safePhone = typeof phone === 'string' ? phone : ''
   const { countryCode, phoneDigits } = resolveCountryAndDigits(phone)
 
-  const maskConfig = phoneMasks[countryCode] || getDefaultMask()
-  const formattedPhone = applyPhoneMask(phoneDigits, maskConfig.mask)
+  const locale = "pt-BR" as AvailableLocales
+  const safePhone = typeof phone === 'string' ? phone : ''
+
+  const formattedPhone = applyPhoneMask(
+    phoneDigits,
+    getDisplayMask(countryCode, phoneDigits.length),
+  )
 
   const formatted = {
     phone: formattedPhone,

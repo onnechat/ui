@@ -1,12 +1,14 @@
 export interface PhoneMask {
-  mask: string
+  mask: string | ((digitCount: number) => string)
   placeholder: string
   maxLength: number
 }
 
 export const phoneMasks: Record<string, PhoneMask> = {
   BR: {
-    mask: '(##) #####-####',
+    mask: (digitCount: number) => {
+      return digitCount <= 10 ? '(##) ####-####' : '(##) #####-####'
+    },
     placeholder: '(11) 98765-4321',
     maxLength: 11,
   },
@@ -86,13 +88,8 @@ export const applyPhoneMask = (value: string, mask: string): string => {
 }
 
 export const getDisplayMask = (countryCode: string, digitCount: number): string => {
-  const mask = phoneMasks[countryCode]
-
-  if (countryCode === 'BR' && digitCount <= 10) {
-    return '(##) ####-####'
-  }
-
-  return mask?.mask ?? getDefaultMask().mask
+  const mask = phoneMasks[countryCode]?.mask ?? getDefaultMask().mask
+  return typeof mask === 'function' ? mask(digitCount) : mask
 }
 
 export const removePhoneMask = (value: string | null | undefined): string => {
