@@ -1,0 +1,241 @@
+:root,
+.light {
+  /* Default */
+  --background: oklch(99% 0 0);
+  --foreground: oklch(20% 0 0);
+
+  /* Dashboard */
+  --dashboard-background: #fcfcfd;
+  --dashboard-foreground: oklch(20% 0 0);
+
+  /* Sidebar */
+  --sidebar: #f3f3f4;
+  --sidebar-foreground: oklch(20% 0 0);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(90% 0 0);
+  --sidebar-accent-foreground: oklch(20% 0 0);
+  --sidebar-border: oklch(86% 0 0);
+  --sidebar-ring: oklch(70% 0 0);
+
+  /* Card */
+  --card: #ededf0;
+  --card-foreground: oklch(20% 0 0);
+
+  /* Popover */
+  --popover: oklch(93% 0 0);
+  --popover-foreground: oklch(20% 0 0);
+
+  /* Primary */
+  --primary: var(--brand-red);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Muted */
+  --muted: oklch(98% 0 0);
+  --muted-foreground: oklch(45% 0 0);
+
+  /* Accent */
+  --accent: oklch(90% 0 0);
+  --accent-foreground: oklch(20% 0 0);
+
+  /* Destructive */
+  --destructive: var(--color-red-500);
+  --destructive-foreground: var(--color-red-50);
+
+  /* Success */
+  --success: var(--color-emerald-600);
+  --success-foreground: var(--color-emerald-50);
+
+  /* Info */
+  --info: var(--color-sky-500);
+  --info-foreground: var(--color-sky-50);
+
+  /* Warning */
+  --warning: var(--color-amber-600);
+  --warning-foreground: var(--color-amber-950);
+
+  /* Soon */
+  --soon: var(--color-amber-500);
+  --soon-foreground: var(--color-amber-950);
+
+  /* Border */
+  --border: oklch(80% 0 0);
+
+  /* Input */
+  --input: var(--card);
+  --input-autofill: var(--input);
+
+  /* Link */
+  --link: oklch(58% 0.24 264.376);
+  --link-foreground: oklch(99% 0 0);
+
+  /* Ring */
+  --ring: oklch(70% 0 0);
+
+  /* Skeleton */
+  --skeleton: color-mix(in srgb, var(--accent) 50%, transparent);
+  --skeleton-foreground: var(--accent-foreground);
+
+  /* Charts */
+  --chart-1: oklch(55% 0.243 264.376);
+  --chart-2: oklch(65% 0.17 162.48);
+  --chart-3: oklch(73% 0.188 70.08);
+  --chart-4: oklch(58% 0.265 303.9);
+  --chart-5: oklch(64.5% 0.246 16.439);
+
+  /* Event Colors */
+  --event-confirmed: oklch(65% 0.25 150);
+  --event-confirmed-foreground: oklch(98% 0 0);
+
+  --event-cancelled: oklch(65% 0.3 25);
+  --event-cancelled-foreground: oklch(98% 0 0);
+
+  --event-completed: oklch(47% 0.16 150);
+  --event-completed-foreground: oklch(98% 0 0);
+
+  --event-in-progress: oklch(62% 0.22 230);
+  --event-in-progress-foreground: oklch(98% 0 0);
+
+  --event-no-show: oklch(68% 0.2 55);
+  --event-no-show-foreground: oklch(15% 0 0);
+
+  --event-rescheduled: oklch(52% 0.24 260);
+  --event-rescheduled-foreground: oklch(98% 0 0);
+
+  --event-pending: oklch(75% 0.26 95);
+  --event-pending-foreground: oklch(15% 0 0);
+
+  --event-blocked: var(--event-cancelled);
+  --event-blocked-foreground: var(--event-cancelled-foreground);
+
+  /* Subscription */
+  --subscription-trialling: var(--color-warning);
+  --subscription-trialling-foreground: var(--color-warning-foreground);
+
+  --subscription-active: var(--color-info);
+  --subscription-active-foreground: var(--color-info-foreground);
+
+  /* Marketing */
+  --discount: var(--color-success);
+  --discount-foreground: var(--color-success-foreground);
+
+  /* Others */
+  --inverted: black;
+}
+
+.dark {
+  /* Default */
+  --background: #070707;
+  --foreground: oklch(98.5% 0 0);
+
+  /* Dashboard */
+  --dashboard-background: oklch(18% 0 0);
+  --dashboard-foreground: oklch(98.5% 0 0);
+
+  /* Sidebar */
+  --sidebar: #090909;
+  --sidebar-foreground: oklch(98.5% 0 0);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-primary-foreground: oklch(98.5% 0 0);
+  --sidebar-accent: oklch(20% 0 0);
+  --sidebar-accent-foreground: oklch(98.5% 0 0);
+  --sidebar-border: oklch(27.4% 0.006 286.033);
+  --sidebar-ring: oklch(40% 0 0);
+
+  /* Card */
+  --card: #181818;
+  --card-foreground: oklch(98.5% 0 0);
+
+  /* Popover */
+  --popover: oklch(16% 0 0);
+  --popover-foreground: oklch(98.5% 0 0);
+
+  /* Primary */
+  --primary: var(--brand-red);
+  --primary-foreground: oklch(98.5% 0 0);
+
+  /* Muted */
+  --muted: oklch(16% 0 0);
+  --muted-foreground: oklch(76% 0 0);
+
+  /* Accent */
+  --accent: oklch(25% 0 0);
+  --accent-foreground: oklch(98.5% 0 0);
+
+  /* Destructive */
+  --destructive: var(--color-red-500);
+  --destructive-foreground: var(--color-red-50);
+
+  /* Success */
+  --success: var(--color-emerald-600);
+  --success-foreground: var(--color-white);
+
+  /* Info */
+  --info: var(--color-sky-500);
+  --info-foreground: var(--color-sky-50);
+
+  /* Warning */
+  --warning: var(--color-amber-600);
+  --warning-foreground: var(--color-white);
+
+  /* Soon */
+  --soon: var(--color-amber-500);
+  --soon-foreground: var(--color-amber-950);
+
+  /* Border */
+  --border: oklch(27.4% 0.006 286.033);
+
+  /* Input */
+  --input: oklch(22% 0 0);
+  --input-autofill: var(--input);
+
+  /* Link */
+  --link: oklch(70% 0.243 264.376);
+  --link-foreground: oklch(0.985 0 0);
+
+  /* Ring */
+  --ring: oklch(40% 0 0);
+
+  /* Skeleton */
+  --skeleton: color-mix(in srgb, var(--accent) 50%, transparent);
+  --skeleton-foreground: var(--accent-foreground);
+
+  /* Charts */
+  --chart-1: oklch(48.8% 0.243 264.376);
+  --chart-2: oklch(69.6% 0.17 162.48);
+  --chart-3: oklch(76.9% 0.188 70.08);
+  --chart-4: oklch(62.7% 0.265 303.9);
+  --chart-5: oklch(64.5% 0.246 16.439);
+
+  /* Event Colors */
+  --event-confirmed: oklch(75% 0.22 150);
+  --event-confirmed-foreground: oklch(15% 0 0);
+
+  --event-cancelled: oklch(70% 0.24 25);
+  --event-cancelled-foreground: oklch(98% 0 0);
+
+  --event-completed: oklch(55% 0.17 150);
+  --event-completed-foreground: oklch(98% 0 0);
+
+  --event-in-progress: oklch(68% 0.18 230);
+  --event-in-progress-foreground: oklch(15% 0 0);
+
+  --event-no-show: oklch(72% 0.16 55);
+  --event-no-show-foreground: oklch(15% 0 0);
+
+  --event-rescheduled: oklch(48% 0.24 260);
+  --event-rescheduled-foreground: oklch(98% 0 0);
+
+  --event-pending: oklch(82% 0.2 95);
+  --event-pending-foreground: oklch(15% 0 0);
+
+  --event-blocked: var(--event-cancelled);
+  --event-blocked-foreground: var(--event-cancelled-foreground);
+
+  /* Marketing */
+  --discount: var(--color-success);
+  --discount-foreground: var(--color-success-foreground);
+
+  /* Others */
+  --inverted: white;
+}
