@@ -27,9 +27,7 @@ export default meta;
 export const Right: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Open Sheet (Right)</Button>
-      </SheetTrigger>
+      <SheetTrigger render={<Button variant="outline">Open Sheet (Right)</Button>} />
       <SheetContent side="right">
         <SheetHeader>
           <SheetTitle>Sheet Title</SheetTitle>
@@ -41,12 +39,8 @@ export const Right: StoryObj<typeof meta> = {
           <p className="text-sm text-muted-foreground">Sheet content goes here.</p>
         </div>
         <SheetFooter>
-          <SheetClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </SheetClose>
-          <SheetClose asChild>
-            <Button variant="primary">Save</Button>
-          </SheetClose>
+          <SheetClose render={<Button variant="outline">Cancel</Button>} />
+          <SheetClose render={<Button variant="primary">Save</Button>} />
         </SheetFooter>
       </SheetContent>
     </Sheet>
@@ -61,18 +55,14 @@ export const Right: StoryObj<typeof meta> = {
 export const Left: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Open Sheet (Left)</Button>
-      </SheetTrigger>
+      <SheetTrigger render={<Button variant="outline">Open Sheet (Left)</Button>} />
       <SheetContent side="left">
         <SheetHeader>
           <SheetTitle>Navigation</SheetTitle>
         </SheetHeader>
         <div className="flex flex-col gap-1 px-4">
           {['Home', 'Products', 'About', 'Contact'].map((label) => (
-            <SheetClose key={label} asChild>
-              <Button variant="ghost" className="justify-start">{label}</Button>
-            </SheetClose>
+            <SheetClose key={label} render={<Button variant="ghost" className="justify-start">{label}</Button>} />
           ))}
         </div>
       </SheetContent>
@@ -88,9 +78,7 @@ export const Left: StoryObj<typeof meta> = {
 export const Top: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Open Sheet (Top)</Button>
-      </SheetTrigger>
+      <SheetTrigger render={<Button variant="outline">Open Sheet (Top)</Button>} />
       <SheetContent side="top">
         <SheetHeader>
           <SheetTitle>Notifications</SheetTitle>
@@ -109,9 +97,7 @@ export const Top: StoryObj<typeof meta> = {
 export const Bottom: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Open Sheet (Bottom)</Button>
-      </SheetTrigger>
+      <SheetTrigger render={<Button variant="outline">Open Sheet (Bottom)</Button>} />
       <SheetContent side="bottom">
         <SheetHeader>
           <SheetTitle>Quick Actions</SheetTitle>
@@ -133,9 +119,7 @@ export const Bottom: StoryObj<typeof meta> = {
 export const WithForm: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </SheetTrigger>
+      <SheetTrigger render={<Button variant="outline">Edit Profile</Button>} />
       <SheetContent side="right">
         <SheetHeader>
           <SheetTitle>Edit Profile</SheetTitle>
@@ -148,9 +132,7 @@ export const WithForm: StoryObj<typeof meta> = {
           <Input placeholder="Email" type="email" />
         </div>
         <SheetFooter>
-          <SheetClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </SheetClose>
+          <SheetClose render={<Button variant="outline">Cancel</Button>} />
           <Button variant="primary">Save</Button>
         </SheetFooter>
       </SheetContent>

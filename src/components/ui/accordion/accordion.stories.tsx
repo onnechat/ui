@@ -30,7 +30,7 @@ export const Default: StoryObj<typeof meta> = {
 export const Multiple: StoryObj<typeof meta> = {
   args: {
     items,
-    type: 'multiple',
+    multiple: true,
     defaultValue: ['item-0'],
     className: 'w-full min-w-(--container-md) max-w-(--container-md)',
   },

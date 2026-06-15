@@ -71,7 +71,7 @@ export function ActionGroup({
 
       <DropdownMenuContent
         align={align}
-        className="min-w-36 w-(--radix-dropdown-menu-trigger-width) bg-sidebar/50 rounded-2xl overflow-hidden"
+        className="min-w-36 w-(--anchor-width) bg-sidebar/50 rounded-2xl overflow-hidden"
       >
         {items.map((group, groupIndex) => {
           const isLastGroup = groupIndex === items.length - 1

@@ -18,9 +18,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: () => (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="outline">Hover me</Button>
-      </TooltipTrigger>
+      <TooltipTrigger render={<Button variant="outline">Hover me</Button>} />
       <TooltipContent>This is a tooltip</TooltipContent>
     </Tooltip>
   ),
@@ -30,27 +28,19 @@ export const Positions: StoryObj = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline" size="sm">Top</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="outline" size="sm">Top</Button>} />
         <TooltipContent side="top">Tooltip on top</TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline" size="sm">Bottom</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="outline" size="sm">Bottom</Button>} />
         <TooltipContent side="bottom">Tooltip on bottom</TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline" size="sm">Left</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="outline" size="sm">Left</Button>} />
         <TooltipContent side="left">Tooltip on left</TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline" size="sm">Right</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="outline" size="sm">Right</Button>} />
         <TooltipContent side="right">Tooltip on right</TooltipContent>
       </Tooltip>
     </div>
@@ -61,25 +51,19 @@ export const Alignments: StoryObj = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline" size="sm">Start</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="outline" size="sm">Start</Button>} />
         <TooltipContent side="bottom" align="start">
           Aligned start
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline" size="sm">Center</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="outline" size="sm">Center</Button>} />
         <TooltipContent side="bottom" align="center">
           Aligned center
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline" size="sm">End</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="outline" size="sm">End</Button>} />
         <TooltipContent side="bottom" align="end">
           Aligned end
         </TooltipContent>
@@ -92,25 +76,19 @@ export const CustomColors: StoryObj = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="destructive" size="sm">Danger</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="destructive" size="sm">Danger</Button>} />
         <TooltipContent className="bg-destructive text-destructive-foreground">
           This action is irreversible
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline" size="sm">Success</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="outline" size="sm">Success</Button>} />
         <TooltipContent className="bg-success text-success-foreground">
           All checks passed
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="secondary" size="sm">Card</Button>
-        </TooltipTrigger>
+        <TooltipTrigger render={<Button variant="secondary" size="sm">Card</Button>} />
         <TooltipContent className="bg-popover text-popover-foreground border border-border shadow-md">
           Card-styled tooltip
         </TooltipContent>
@@ -122,9 +100,7 @@ export const CustomColors: StoryObj = {
 export const LongContent: StoryObj = {
   render: () => (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="outline">Info</Button>
-      </TooltipTrigger>
+      <TooltipTrigger render={<Button variant="outline">Info</Button>} />
       <TooltipContent className="max-w-64">
         This is a longer tooltip that demonstrates how content wraps when it exceeds reasonable width constraints.
       </TooltipContent>
@@ -135,11 +111,9 @@ export const LongContent: StoryObj = {
 export const RichContent: StoryObj = {
   render: () => (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="secondary" size="sm">
+      <TooltipTrigger render={<Button variant="secondary" size="sm">
           ?
-        </Button>
-      </TooltipTrigger>
+        </Button>} />
       <TooltipContent className="flex flex-col gap-1 max-w-48">
         <span className="font-semibold">Keyboard shortcut</span>
         <span className="text-xs opacity-80">Press Cmd+K to open the command palette.</span>
@@ -151,11 +125,9 @@ export const RichContent: StoryObj = {
 export const DisabledTrigger: StoryObj = {
   render: () => (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <span className="inline-block cursor-default" tabIndex={0}>
+      <TooltipTrigger render={<span className="inline-block cursor-default" tabIndex={0}>
           <Button disabled>Disabled button</Button>
-        </span>
-      </TooltipTrigger>
+        </span>} />
       <TooltipContent>Complete the form above to enable</TooltipContent>
     </Tooltip>
   ),

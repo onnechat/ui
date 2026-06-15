@@ -20,12 +20,11 @@ export type AccordionListItem = {
 export type AccordionProps = {
   items: AccordionListItem[];
   className?: string;
-  type: 'single' | 'multiple';
-  collapsible: boolean;
+  multiple?: boolean;
   disabled: boolean;
-  defaultValue?: string | string[];
-  value?: string | string[];
-  onValueChange?: (value: string | string[]) => void;
+  defaultValue?: string[];
+  value?: string[];
+  onValueChange?: (value: string[]) => void;
 };
 
 const cardShell =
@@ -39,8 +38,7 @@ const cardContentShell = cn(
 function Accordion({
   items = [],
   className,
-  type = 'single',
-  collapsible = true,
+  multiple = false,
   disabled = false,
   value,
   defaultValue,
@@ -66,7 +64,7 @@ function Accordion({
       >
         <AccordionTrigger
           className={cn(
-            'min-h-12 rounded-none border-0 bg-card/50 p-4 text-left text-sm md:text-base hover:bg-card/75 transition-none',
+            'min-h-12 rounded-none border-0 bg-card/50 p-4 text-left text-sm md:text-base hover:bg-card/75 transition-[transform,opacity,background-color] duration-200 active:scale-[99.35%]',
             isFirst && 'rounded-t-lg',
             isLast && 'data-[state=closed]:rounded-b-lg',
           )}
@@ -88,30 +86,16 @@ function Accordion({
 
   return (
     <div className={cn(cardShell, className)}>
-      {type === 'multiple' ? (
-        <AccordionRoot
-          type="multiple"
-          value={value as string[] | undefined}
-          defaultValue={defaultValue as string[] | undefined}
-          onValueChange={onValueChange as ((v: string[]) => void) | undefined}
-          disabled={disabled}
-          className={cardContentShell}
-        >
-          {children}
-        </AccordionRoot>
-      ) : (
-        <AccordionRoot
-          type="single"
-          collapsible={collapsible}
-          value={value as string | undefined}
-          defaultValue={defaultValue as string | undefined}
-          onValueChange={onValueChange as ((v: string) => void) | undefined}
-          disabled={disabled}
-          className={cardContentShell}
-        >
-          {children}
-        </AccordionRoot>
-      )}
+      <AccordionRoot
+        multiple={multiple}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={onValueChange as any}
+        disabled={disabled}
+        className={cardContentShell}
+      >
+        {children}
+      </AccordionRoot>
     </div>
   );
 }

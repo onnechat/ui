@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 
 import * as React from 'react'
 
-import { Slot } from '@radix-ui/react-slot'
+import { Slot } from '@/components/ui/slot'
 import { cva, VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/cn'
@@ -580,7 +580,7 @@ function SidebarMenuButton({
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipTrigger render={button} />
       <TooltipContent
         side="right"
         align="center"

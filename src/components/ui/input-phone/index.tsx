@@ -3,7 +3,7 @@
 import * as React from 'react'
 
 
-import * as SelectPrimitive from '@radix-ui/react-select'
+import { Select as SelectPrimitive } from '@base-ui/react/select'
 
 import { cn } from '@/lib/cn'
 
@@ -30,7 +30,7 @@ export interface PhoneInputProps extends Omit<
   onCountryChange?: (country: Country) => void
   disableCountrySelect?: boolean
   locale?: string
-  align?: SelectPrimitive.SelectContentProps['align']
+  align?: 'start' | 'center' | 'end'
 }
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   (props, ref) => {

@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import { RemoveScroll } from 'react-remove-scroll'
 
-import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { Dialog as DialogBase } from '@base-ui/react/dialog'
 
 import { Icon } from '@/components/icon'
 
@@ -14,26 +14,26 @@ import { ANIMATION } from '@/constants/animations'
 
 function Dialog({
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />
+}: React.ComponentProps<typeof DialogBase.Root>) {
+  return <DialogBase.Root data-slot="dialog" {...props} />
 }
 
 function DialogTrigger({
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
+}: React.ComponentProps<typeof DialogBase.Trigger>) {
+  return <DialogBase.Trigger data-slot="dialog-trigger" {...props} />
 }
 
 function DialogPortal({
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
+}: React.ComponentProps<typeof DialogBase.Portal>) {
+  return <DialogBase.Portal data-slot="dialog-portal" {...props} />
 }
 
 function DialogClose({
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
+}: React.ComponentProps<typeof DialogBase.Close>) {
+  return <DialogBase.Close data-slot="dialog-close" {...props} />
 }
 
 /** Backdrop scroll lock without `overflow: hidden` on body (avoids breaking sticky headers). */
@@ -75,7 +75,7 @@ function DialogContent({
   overlay = true,
   scrollableRef,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+}: React.ComponentProps<typeof DialogBase.Popup> & {
   closeButton?: boolean
   closeButtonClassName?: string
   title?: string
@@ -85,25 +85,16 @@ function DialogContent({
   
   const contentRef = React.useRef<HTMLDivElement>(null)
 
-  const onOpenAutoFocus = (event: Event) => {
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur()
-    }
-
-    props.onOpenAutoFocus?.(event)
-  }
-
   return (
     <DialogPortal>
       {overlay && (
         <DialogOverlay contentRef={contentRef} scrollableRef={scrollableRef} />
       )}
 
-      <DialogPrimitive.Content
+      <DialogBase.Popup
         ref={contentRef}
         data-slot="dialog-content"
         aria-describedby={props['aria-describedby'] || ''}
-        onOpenAutoFocus={onOpenAutoFocus}
         className={cn(
           'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-98 data-[state=open]:zoom-in-98 fixed top-1/2 left-1/2 z-50 grid max-sm:h-dvh sm:max-h-[calc(100%-2rem)] w-full sm:max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-hidden sm:rounded-xl border p-6 shadow-lg',
           `duration-${ANIMATION.DURATION}`,
@@ -116,7 +107,7 @@ function DialogContent({
         {children}
 
         {closeButton && (
-          <DialogPrimitive.Close
+          <DialogBase.Close
             className={cn(
               'group focus-visible:border-ring focus-visible:ring-ring/50 absolute top-3 right-3 flex size-7 items-center justify-center rounded transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:pointer-events-none',
               closeButtonClassName,
@@ -128,9 +119,9 @@ function DialogContent({
               className="opacity-60 transition-opacity group-hover:opacity-100"
             />
             <span className="sr-only">{'close'}</span>
-          </DialogPrimitive.Close>
+          </DialogBase.Close>
         )}
-      </DialogPrimitive.Content>
+      </DialogBase.Popup>
     </DialogPortal>
   )
 }
@@ -161,9 +152,9 @@ function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
 function DialogTitle({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) {
+}: React.ComponentProps<typeof DialogBase.Title>) {
   return (
-    <DialogPrimitive.Title
+    <DialogBase.Title
       data-slot="alert-dialog-title"
       className={cn('text-lg sm:text-xl leading-none', className)}
       {...props}
@@ -174,9 +165,9 @@ function DialogTitle({
 function DialogDescription({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+}: React.ComponentProps<typeof DialogBase.Description>) {
   return (
-    <DialogPrimitive.Description
+    <DialogBase.Description
       data-slot="alert-dialog-description"
       className={cn('text-muted-foreground text-sm', className)}
       {...props}

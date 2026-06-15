@@ -1,32 +1,32 @@
 import * as React from 'react'
 
-import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area'
+import { ScrollArea as ScrollAreaBase } from '@base-ui/react/scroll-area'
 
 import { cn } from '@/lib/cn'
 
 const ScrollArea = React.forwardRef<
-  React.ElementRef<typeof ScrollAreaPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
+  React.ElementRef<typeof ScrollAreaBase.Root>,
+  React.ComponentPropsWithoutRef<typeof ScrollAreaBase.Root>
 >(({ className, children, ...props }, ref) => (
-  <ScrollAreaPrimitive.Root
+  <ScrollAreaBase.Root
     ref={ref}
     className={cn('relative overflow-hidden', className)}
     {...props}
   >
-    <ScrollAreaPrimitive.Viewport className="h-full w-full">
+    <ScrollAreaBase.Viewport className="h-full w-full">
       {children}
-    </ScrollAreaPrimitive.Viewport>
+    </ScrollAreaBase.Viewport>
     <ScrollBar />
-    <ScrollAreaPrimitive.Corner />
-  </ScrollAreaPrimitive.Root>
+    <ScrollAreaBase.Corner />
+  </ScrollAreaBase.Root>
 ))
-ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName
+ScrollArea.displayName = ScrollAreaBase.Root.displayName
 
 const ScrollBar = React.forwardRef<
-  React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
-  React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
+  React.ElementRef<typeof ScrollAreaBase.Scrollbar>,
+  React.ComponentPropsWithoutRef<typeof ScrollAreaBase.Scrollbar>
 >(({ className, orientation = 'vertical', ...props }, ref) => (
-  <ScrollAreaPrimitive.ScrollAreaScrollbar
+  <ScrollAreaBase.Scrollbar
     ref={ref}
     orientation={orientation}
     className={cn(
@@ -39,9 +39,9 @@ const ScrollBar = React.forwardRef<
     )}
     {...props}
   >
-    <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-border hover:bg-muted-foreground transition-colors" />
-  </ScrollAreaPrimitive.ScrollAreaScrollbar>
+    <ScrollAreaBase.Thumb className="relative flex-1 rounded-full bg-border hover:bg-muted-foreground transition-colors" />
+  </ScrollAreaBase.Scrollbar>
 ))
-ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName
+ScrollBar.displayName = ScrollAreaBase.Scrollbar.displayName
 
 export { ScrollArea, ScrollBar }

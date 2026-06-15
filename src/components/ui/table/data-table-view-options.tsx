@@ -2,7 +2,7 @@
 
 import { Table } from '@tanstack/react-table'
 
-import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 import { Icon } from '@/components/icon'
 

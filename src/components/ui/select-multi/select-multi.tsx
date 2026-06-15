@@ -281,10 +281,12 @@ function SelectMulti<T extends object>({
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild disabled={disabled}>
-        <button id={id} type="button" className={triggerClassName}>
-          {TriggerBody}
-        </button>
+      <PopoverTrigger
+        id={id}
+        disabled={disabled}
+        className={triggerClassName}
+      >
+        {TriggerBody}
       </PopoverTrigger>
 
       <PopoverContent
@@ -296,7 +298,7 @@ function SelectMulti<T extends object>({
           'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
           'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
         )}
-        style={{ width: 'var(--radix-popover-trigger-width)' }}
+        style={{ width: 'var(--anchor-width)' }}
       >
         {DropdownContent}
       </PopoverContent>

@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { Tooltip } from '@base-ui/react/tooltip'
 
 import { cn } from '@/lib/cn'
 
@@ -25,23 +25,23 @@ function useTooltipContext() {
 }
 
 function TooltipProvider({
-  delayDuration = 400,
-  skipDelayDuration = 300,
+  delay = 400,
+  timeout = 300,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+}: React.ComponentProps<typeof Tooltip.Provider>) {
   return (
-    <TooltipPrimitive.Provider
+    <Tooltip.Provider
       data-slot="tooltip-provider"
-      delayDuration={delayDuration}
-      skipDelayDuration={skipDelayDuration}
+      delay={delay}
+      timeout={timeout}
       {...props}
     />
   )
 }
 
-function Tooltip({
+function TooltipRoot({
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+}: React.ComponentProps<typeof Tooltip.Root>) {
   const isMobile = useIsMobile()
   const [open, setOpen] = React.useState(false)
 
@@ -53,7 +53,7 @@ function Tooltip({
   return (
     <TooltipContext.Provider value={contextValue}>
       <TooltipProvider>
-        <TooltipPrimitive.Root
+        <Tooltip.Root
           data-slot="tooltip"
           open={open}
           onOpenChange={setOpen}
@@ -67,7 +67,7 @@ function Tooltip({
 function TooltipTrigger({
   onClick,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+}: React.ComponentProps<typeof Tooltip.Trigger>) {
   const { open, setOpen, isMobile } = useTooltipContext()
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -76,11 +76,11 @@ function TooltipTrigger({
       setOpen(!open)
     }
 
-    onClick?.(e)
+    onClick?.(e as any)
   }
 
   return (
-    <TooltipPrimitive.Trigger
+    <Tooltip.Trigger
       data-slot="tooltip-trigger"
       onClick={handleClick}
       {...props}
@@ -92,9 +92,15 @@ function TooltipContent({
   className,
   sideOffset = 0,
   children,
+  side,
+  align,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
-  const classes = className?.split(' ') ?? []
+}: React.ComponentProps<typeof Tooltip.Popup> & {
+  sideOffset?: number
+  side?: 'bottom' | 'left' | 'right' | 'top'
+  align?: 'center' | 'end' | 'start'
+}) {
+  const classes = (className as string | undefined)?.split(' ') ?? []
 
   const contentBackground = classes.find((cls) => cls.startsWith('bg-'))?.replace('bg-', '')
   const contentForeground = classes.find((cls) => cls.startsWith('text-'))?.replace('text-', '')
@@ -135,33 +141,34 @@ function TooltipContent({
     .join(' ')
 
   return (
-    <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        data-slot="tooltip-content"
-        sideOffset={sideOffset}
-        style={
-          {
-            '--content-background': contentBackground
-              ? `hsl(var(--${contentBackground}))`
-              : 'hsl(var(--primary))',
-            '--content-foreground': contentForeground
-              ? `hsl(var(--${contentForeground}))`
-              : 'hsl(var(--primary-foreground))',
-            ...(filters.length > 0 && { filter: filters.join(' ') }),
-          } as React.CSSProperties
-        }
-        className={cn(
-          'bg-(--content-background) text-(--content-foreground) animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-lg px-3 py-2 text-sm text-balance',
-          cleanedClassName,
-        )}
-        {...props}
-      >
-        {children}
+    <Tooltip.Portal>
+      <Tooltip.Positioner sideOffset={sideOffset} side={side} align={align}>
+        <Tooltip.Popup
+          data-slot="tooltip-content"
+          style={
+            {
+              '--content-background': contentBackground
+                ? `hsl(var(--${contentBackground}))`
+                : 'hsl(var(--primary))',
+              '--content-foreground': contentForeground
+                ? `hsl(var(--${contentForeground}))`
+                : 'hsl(var(--primary-foreground))',
+              ...(filters.length > 0 && { filter: filters.join(' ') }),
+            } as React.CSSProperties
+          }
+          className={cn(
+            'bg-(--content-background) text-(--content-foreground) animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--transform-origin) rounded-lg px-3 py-2 text-sm text-balance',
+            cleanedClassName,
+          )}
+          {...props}
+        >
+          {children}
 
-        <TooltipPrimitive.Arrow className="fill-(--content-background)" />
-      </TooltipPrimitive.Content>
-    </TooltipPrimitive.Portal>
+          <Tooltip.Arrow className="fill-(--content-background)" />
+        </Tooltip.Popup>
+      </Tooltip.Positioner>
+    </Tooltip.Portal>
   )
 }
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
+export { TooltipRoot as Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }

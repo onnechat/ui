@@ -33,22 +33,24 @@ const Block = ({
     </div>
   ) : (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <div
-          role="button"
-          aria-label={tooltip}
-          className="size-full overflow-hidden px-[0.5px] transition first:rounded-l-sm first:pl-0 last:rounded-r-sm last:pr-0 sm:px-px cursor-pointer"
-        >
+      <TooltipTrigger
+        render={
           <div
-            style={
-              {
-                '--color': color || defaultBackgroundColor,
-              } as React.CSSProperties
-            }
-            className="size-full rounded-[1px] bg-(--color) hover:opacity-80 transition-opacity"
-          />
-        </div>
-      </TooltipTrigger>
+            role="button"
+            aria-label={tooltip}
+            className="size-full overflow-hidden px-[0.5px] transition first:rounded-l-sm first:pl-0 last:rounded-r-sm last:pr-0 sm:px-px cursor-pointer"
+          >
+            <div
+              style={
+                {
+                  '--color': color || defaultBackgroundColor,
+                } as React.CSSProperties
+              }
+              className="size-full rounded-[1px] bg-(--color) hover:opacity-80 transition-opacity"
+            />
+          </div>
+        }
+      />
       <TooltipContent className="bg-popover text-popover-foreground border border-border rounded-md px-3 py-1.5 text-sm shadow-md">
         {tooltip}
       </TooltipContent>

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import * as SelectPrimitive from '@radix-ui/react-select';
+import { Select as SelectPrimitive } from '@base-ui/react/select';
 
 import { cn } from '@/lib/cn';
 
@@ -45,7 +45,7 @@ export interface InputTimeProps
   defaultType?: InputTimeType;
   onTypeChange?: (type: InputTimeType) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  align?: SelectPrimitive.SelectContentProps['align'];
+  align?: 'start' | 'center' | 'end';
 }
 
 function InputTime({

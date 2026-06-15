@@ -19,9 +19,7 @@ export default meta;
 export const Default: StoryObj<typeof meta> = {
   render: () => (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">Open Popover</Button>
-      </PopoverTrigger>
+      <PopoverTrigger render={<Button variant="outline">Open Popover</Button>} />
       <PopoverContent className="w-64">
         <div className="grid gap-2">
           <h4 className="font-medium">Popover Title</h4>
@@ -42,9 +40,7 @@ export const Default: StoryObj<typeof meta> = {
 export const WithForm: StoryObj<typeof meta> = {
   render: () => (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">Edit</Button>
-      </PopoverTrigger>
+      <PopoverTrigger render={<Button variant="outline">Edit</Button>} />
       <PopoverContent className="w-72">
         <div className="grid gap-3">
           <div className="grid gap-1">
@@ -72,9 +68,7 @@ export const WithForm: StoryObj<typeof meta> = {
 export const WithArrow: StoryObj<typeof meta> = {
   render: () => (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="ghost">With Arrow</Button>
-      </PopoverTrigger>
+      <PopoverTrigger render={<Button variant="ghost">With Arrow</Button>} />
       <PopoverContent className="w-48" showArrow>
         <p className="text-sm text-muted-foreground">
           This popover has an arrow pointing to the trigger.

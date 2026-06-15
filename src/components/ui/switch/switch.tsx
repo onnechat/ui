@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import * as SwitchPrimitive from '@radix-ui/react-switch'
+import { Switch as SwitchPrimitive } from '@base-ui/react/switch'
 
 import { cn } from '@/lib/cn'
 
@@ -30,6 +30,6 @@ const Switch = React.forwardRef<
     </SwitchPrimitive.Root>
   )
 })
-Switch.displayName = SwitchPrimitive.Root.displayName
+Switch.displayName = 'Switch'
 
 export { Switch }
