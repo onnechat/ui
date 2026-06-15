@@ -9,8 +9,8 @@ const __dirname = dirname(__filename);
 const config: StorybookConfig = {
   stories: [
     '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '!../src/components/internal/**',
   ],
+  refs: {},
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-docs',

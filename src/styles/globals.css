@@ -195,9 +195,6 @@
     @apply border-primary!;
   }
 }
-
-@import './storybook.css';
-
 /*
   This is a workaround to make the text color transparent in the input
   when the input is focused.
