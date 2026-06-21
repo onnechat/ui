@@ -34,7 +34,6 @@ export const BrandDomainInput = React.forwardRef<
         ref={ref}
         {...props}
         className={cn('rounded-l-none!', props.className)}
-        containerClassName="rounded-l-none!"
       />
     </div>
   )

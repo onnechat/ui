@@ -122,7 +122,6 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           onChange={handlePhoneNumberChange}
           placeholder={placeholder || dynamicPlaceholder}
           className={cn('rounded-l-none focus:z-10', className)}
-          containerClassName="rounded-l-none"
           disabled={disabled}
           {...inputProps}
         />

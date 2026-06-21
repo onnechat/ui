@@ -1,4 +1,4 @@
-# @onne/ui
+# @onnechat/ui
 
 React component library for Onne.
 
@@ -6,12 +6,12 @@ React component library for Onne.
 
 ```bash
 # .npmrc
-@onne:registry=https://npm.pkg.github.com/
+@onnechat:registry=https://npm.pkg.github.com/
 //npm.pkg.github.com/:_authToken=<your-github-token>
 ```
 
 ```bash
-npm install @onne/ui
+npm install @onnechat/ui
 ```
 
 The token needs the `read:packages` scope.

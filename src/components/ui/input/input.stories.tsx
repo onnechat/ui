@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 import { Input } from './input';
+import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupText } from '@/components/ui/input-group';
 import { Icon } from '@/components/icon';
 import { Label } from '@/components/ui/label';
 
@@ -70,15 +71,15 @@ export const File: StoryObj<typeof meta> = {
 };
 
 export const WithPrefix: StoryObj<typeof meta> = {
-  render: (args) => (
+  render: () => (
     <div className="grid gap-1.5 w-64">
       <Label htmlFor="search">Search</Label>
-      <Input
-        id="search"
-        placeholder="Search..."
-        prefix={<Icon name="Search" className="size-4" />}
-        {...args}
-      />
+      <InputGroup>
+        <InputGroupInput id="search" placeholder="Search..." />
+        <InputGroupAddon align="inline-start">
+          <Icon name="Magnifier" className="size-4" />
+        </InputGroupAddon>
+      </InputGroup>
     </div>
   ),
   play: async ({ canvas }) => {
@@ -87,12 +88,13 @@ export const WithPrefix: StoryObj<typeof meta> = {
 };
 
 export const WithSuffix: StoryObj<typeof meta> = {
-  render: (args) => (
-    <Input
-      placeholder="Website"
-      sufix={<span className="text-xs text-muted-foreground">.com</span>}
-      {...args}
-    />
+  render: () => (
+    <InputGroup className="w-64">
+      <InputGroupInput placeholder="Website" />
+      <InputGroupAddon align="inline-end">
+        <InputGroupText>.com</InputGroupText>
+      </InputGroupAddon>
+    </InputGroup>
   ),
 };
 

@@ -19,6 +19,7 @@ export * from './ui/emoji-picker';
 export * from './ui/empty-state';
 export * from './ui/hover-card';
 export * from './ui/input';
+export * from './ui/input-group';
 export * from './ui/input-currency';
 export * from './ui/input-phone';
 export * from './ui/input-time';

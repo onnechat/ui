@@ -93,7 +93,6 @@ function InputTime({
           !hasValue && 'text-sm text-muted-foreground/50',
           className,
         )}
-        containerClassName="rounded-r-none"
         onChange={(e) => {
           setHasValue(e.target.value !== '');
           props.onChange?.(e);

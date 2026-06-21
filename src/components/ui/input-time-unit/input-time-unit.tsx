@@ -275,7 +275,6 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
           placeholder={placeholder}
           onChange={handleInputChange}
           className={cn('rounded-r-none focus:z-10', className)}
-          containerClassName="rounded-r-none"
           {...inputProps}
         />
 
