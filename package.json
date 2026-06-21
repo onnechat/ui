@@ -29,7 +29,8 @@
     "test-storybook": "vitest --project=storybook",
     "test:coverage": "vitest --coverage",
     "prepublishOnly": "bun run build",
-    "chromatic": "bunx chromatic --project-token=your-project-token"
+    "chromatic": "bunx chromatic --project-token=your-project-token",
+    "release": "npm publish"
   },
   "keywords": [
     "react",
@@ -43,12 +44,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shiddo/ui.git"
+    "url": "git+https://github.com/onnechat/ui.git"
   },
   "bugs": {
-    "url": "https://github.com/shiddo/ui/issues"
+    "url": "https://github.com/onnechat/ui/issues"
   },
-  "homepage": "https://github.com/shiddo/ui#readme",
+  "homepage": "https://github.com/onnechat/ui#readme",
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
@@ -141,7 +142,7 @@
     "zustand": "^5.0.12"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com/"
   }
 }

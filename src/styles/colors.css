@@ -1,3 +1,7 @@
+:root {
+  --brand-red: oklch(0.6 0.2 12);
+}
+
 :root,
 .light {
   /* Default */
@@ -29,6 +33,10 @@
   /* Primary */
   --primary: var(--brand-red);
   --primary-foreground: oklch(1 0 0);
+
+  /* Secondary */
+  --secondary: oklch(94% 0 0);
+  --secondary-foreground: oklch(25% 0 0);
 
   /* Muted */
   --muted: oklch(98% 0 0);
@@ -153,6 +161,10 @@
   /* Primary */
   --primary: var(--brand-red);
   --primary-foreground: oklch(98.5% 0 0);
+
+  /* Secondary */
+  --secondary: oklch(22% 0 0);
+  --secondary-foreground: oklch(92% 0 0);
 
   /* Muted */
   --muted: oklch(16% 0 0);

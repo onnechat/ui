@@ -38,8 +38,8 @@ const CHART_DATA = [
 ]
 
 const CHART_CONFIG = {
-  desktop: { label: 'Desktop', color: 'hsl(var(--chart-1))' },
-  mobile: { label: 'Mobile', color: 'hsl(var(--chart-2))' },
+  desktop: { label: 'Desktop', color: 'var--chart-1)' },
+  mobile: { label: 'Mobile', color: 'var--chart-2)' },
 }
 
 export const BarExample: StoryObj = {

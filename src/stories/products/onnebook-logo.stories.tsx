@@ -6,14 +6,14 @@ const Wrapper = ({ children, label }: { children: React.ReactNode; label: string
     style={{
       padding: '24px',
       borderRadius: '12px',
-      background: 'hsl(var(--card))',
-      border: '1px solid hsl(var(--border))',
+      background: 'var--card)',
+      border: '1px solid var--border)',
     }}
   >
     <span
       style={{
         fontSize: '12px',
-        color: 'hsl(var(--muted-foreground))',
+        color: 'var--muted-foreground)',
         display: 'block',
         marginBottom: '16px',
       }}

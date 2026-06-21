@@ -14,7 +14,7 @@
   }
 
   .glass-dashboard-header {
-    background-color: hsl(var(--dashboard-background));
+    background-color: var(--dashboard-background);
   }
 
   @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
@@ -22,7 +22,7 @@
       .glass-dashboard-header {
         background-color: color-mix(
           in oklab,
-          hsl(var(--dashboard-background)) var(--glass-dashboard-background-opacity),
+          var(--dashboard-background) var(--glass-dashboard-background-opacity),
           transparent
         );
         -webkit-backdrop-filter: blur(var(--glass-backdrop-filter-blur));
@@ -32,7 +32,7 @@
   }
 
   .glass-dashboard-chrome {
-    background-color: hsl(var(--dashboard-background));
+    background-color: var(--dashboard-background);
   }
 
   @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
@@ -40,7 +40,7 @@
       .glass-dashboard-chrome {
         background-color: color-mix(
           in oklab,
-          hsl(var(--dashboard-background)) var(--glass-dashboard-background-opacity),
+          var(--dashboard-background) var(--glass-dashboard-background-opacity),
           transparent
         );
         -webkit-backdrop-filter: blur(var(--glass-backdrop-filter-blur));
@@ -50,7 +50,7 @@
   }
 
   .glass-dashboard-chrome-important {
-    background-color: hsl(var(--dashboard-background)) !important;
+    background-color: var(--dashboard-background) !important;
   }
 
   @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
@@ -58,7 +58,7 @@
       .glass-dashboard-chrome-important {
         background-color: color-mix(
           in oklab,
-          hsl(var(--dashboard-background)) var(--glass-dashboard-background-opacity),
+          var(--dashboard-background) var(--glass-dashboard-background-opacity),
           transparent
         ) !important;
         -webkit-backdrop-filter: blur(
@@ -70,7 +70,7 @@
   }
 
   .glass-popover {
-    background-color: hsl(var(--popover));
+    background-color: var(--popover);
   }
 
   @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
@@ -78,7 +78,7 @@
       .glass-popover {
         background-color: color-mix(
           in oklab,
-          hsl(var(--popover)) var(--glass-popover-opacity),
+          var(--popover) var(--glass-popover-opacity),
           transparent
         );
         -webkit-backdrop-filter: blur(var(--glass-backdrop-filter-blur));
@@ -88,7 +88,7 @@
   }
 
   .glass-background-overlay {
-    background-color: hsl(var(--background));
+    background-color: var(--background);
   }
 
   @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
@@ -96,7 +96,7 @@
       .glass-background-overlay {
         background-color: color-mix(
           in oklab,
-          hsl(var(--background)) var(--glass-background-overlay-opacity),
+          var(--background) var(--glass-background-overlay-opacity),
           transparent
         );
         -webkit-backdrop-filter: blur(var(--glass-backdrop-filter-blur));
@@ -106,7 +106,7 @@
   }
 
   .glass-dashboard-scrim {
-    background-color: hsl(var(--dashboard-background));
+    background-color: var(--dashboard-background);
   }
 
   @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
@@ -114,7 +114,7 @@
       .glass-dashboard-scrim {
         background-color: color-mix(
           in oklab,
-          hsl(var(--dashboard-background)) var(--glass-dashboard-scrim-opacity),
+          var(--dashboard-background) var(--glass-dashboard-scrim-opacity),
           transparent
         );
 

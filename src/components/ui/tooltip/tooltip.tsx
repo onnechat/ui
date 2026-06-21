@@ -122,8 +122,8 @@ function TooltipContent({
 
   if (borderClasses.length > 0) {
     const color = borderColor
-      ? `hsl(var(--${borderColor}))`
-      : 'hsl(var(--border))'
+      ? `var(--${borderColor})`
+      : 'var(--border)'
     filters.push(`drop-shadow(0 0 0 1px ${color})`)
   }
 
@@ -142,11 +142,11 @@ function TooltipContent({
         style={
           {
             '--content-background': contentBackground
-              ? `hsl(var(--${contentBackground}))`
-              : 'hsl(var(--primary))',
+              ? `var(--${contentBackground})`
+              : 'var(--primary)',
             '--content-foreground': contentForeground
-              ? `hsl(var(--${contentForeground}))`
-              : 'hsl(var(--primary-foreground))',
+              ? `var(--${contentForeground})`
+              : 'var(--primary-foreground)',
             ...(filters.length > 0 && { filter: filters.join(' ') }),
           } as React.CSSProperties
         }
