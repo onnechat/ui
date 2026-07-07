@@ -2,20 +2,13 @@
 
 import * as React from 'react';
 
-import * as SelectPrimitive from '@radix-ui/react-select';
-
 import { cn } from '@/lib/cn';
 
 import { useElementSize } from '@/hooks/use-element-size';
 
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import * as SelectPrimitive from '@radix-ui/react-select';
+import { Select } from '@/components/ui/select';
 
 export type TimeUnit =
   | 'seconds'
@@ -84,7 +77,7 @@ export interface InputTimeUnitProps
   /** Called whenever the user picks a different unit. */
   onUnitChange?: (unit: TimeUnit) => void;
   /** Alignment of the unit dropdown relative to the trigger. */
-  align?: SelectPrimitive.SelectContentProps['align'];
+  align?: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>['align'];
   /** Extra classes for the outermost wrapper div. */
   containerClassName?: string;
   /**
@@ -283,27 +276,27 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
           onValueChange={handleUnitChange}
           disabled={disabled || disableUnitSelect}
         >
-          <SelectTrigger
+          <Select.Trigger
             ref={triggerRef}
             className={cn(
               'w-fit! rounded-l-none border-l-0 focus:z-10 bg-accent',
               disableUnitSelect && '[&_svg]:hidden',
             )}
           >
-            <SelectValue>
+            <Select.Value>
               <span className="text-sm font-mono">
                 {resolvedLabels[selectedUnitOption.value].short}
               </span>
-            </SelectValue>
-          </SelectTrigger>
+            </Select.Value>
+          </Select.Trigger>
 
-          <SelectContent
+          <Select.Content
             align={align}
             className="min-w-42"
             style={triggerWidth > 0 ? { width: triggerWidth } : {}}
           >
             {availableUnits.map((unit) => (
-              <SelectItem key={unit.value} value={unit.value}>
+              <Select.Item key={unit.value} value={unit.value}>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-mono">
                     {resolvedLabels[unit.value].short}
@@ -312,9 +305,9 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
                     {resolvedLabels[unit.value].label}
                   </span>
                 </div>
-              </SelectItem>
+              </Select.Item>
             ))}
-          </SelectContent>
+          </Select.Content>
         </Select>
       </div>
     );

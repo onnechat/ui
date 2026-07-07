@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { cn } from '@/lib/cn'
 
-const Table = React.forwardRef<
+const TableRoot = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement> & {
     containerClassName?: string
@@ -21,7 +21,7 @@ const Table = React.forwardRef<
     />
   </div>
 ))
-Table.displayName = 'Table'
+TableRoot.displayName = 'Table'
 
 const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
@@ -112,13 +112,6 @@ const TableCaption = React.forwardRef<
 ))
 TableCaption.displayName = 'TableCaption'
 
-export {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-}
+const Table = Object.assign(TableRoot, { Header: TableHeader, Body: TableBody, Footer: TableFooter, Row: TableRow, Head: TableHead, Cell: TableCell, Caption: TableCaption })
+
+export { Table }

@@ -2,23 +2,7 @@ import * as React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icon'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from './dropdown-menu'
+import { DropdownMenu } from './dropdown-menu'
 
 const meta: Meta<typeof DropdownMenu> = {
   title: 'UI/DropdownMenu',
@@ -36,27 +20,27 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenu.Trigger asChild>
         <Button variant="outline">Open Menu</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Account</DropdownMenuLabel>
-          <DropdownMenuItem>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content>
+        <DropdownMenu.Group>
+          <DropdownMenu.Label>Account</DropdownMenu.Label>
+          <DropdownMenu.Item>
             <Icon name="User" className="size-4" />
             Profile
-          </DropdownMenuItem>
-          <DropdownMenuItem>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item>
             <Icon name="Gear" className="size-4" />
             Settings
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+          </DropdownMenu.Item>
+        </DropdownMenu.Group>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>
           <Icon name="CircleLogout" className="size-4" />
           Log out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
     </DropdownMenu>
   ),
 }
@@ -64,37 +48,37 @@ export const Default: Story = {
 export const WithShortcuts: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenu.Trigger asChild>
         <Button variant="outline">Edit</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-48">
-        <DropdownMenuItem>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content className="w-48">
+        <DropdownMenu.Item>
           <Icon name="Undo" className="size-4" />
           Undo
-          <DropdownMenuShortcut>⌘Z</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
+          <DropdownMenu.Shortcut>⌘Z</DropdownMenu.Shortcut>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item>
           <Icon name="Redo" className="size-4" />
           Redo
-          <DropdownMenuShortcut>⌘⇧Z</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+          <DropdownMenu.Shortcut>⌘⇧Z</DropdownMenu.Shortcut>
+        </DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>
           <Icon name="Clipboard" className="size-4" />
           Copy
-          <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
+          <DropdownMenu.Shortcut>⌘C</DropdownMenu.Shortcut>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item>
           <Icon name="Scissors" className="size-4" />
           Cut
-          <DropdownMenuShortcut>⌘X</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
+          <DropdownMenu.Shortcut>⌘X</DropdownMenu.Shortcut>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item>
           <Icon name="ClipboardCheck" className="size-4" />
           Paste
-          <DropdownMenuShortcut>⌘V</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+          <DropdownMenu.Shortcut>⌘V</DropdownMenu.Shortcut>
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
     </DropdownMenu>
   ),
 }
@@ -102,23 +86,23 @@ export const WithShortcuts: Story = {
 export const Destructive: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenu.Trigger asChild>
         <Button variant="outline">Actions</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-48">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Danger Zone</DropdownMenuLabel>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive">
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content className="w-48">
+        <DropdownMenu.Group>
+          <DropdownMenu.Label>Danger Zone</DropdownMenu.Label>
+        </DropdownMenu.Group>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item variant="destructive">
           <Icon name="Trash" className="size-4" />
           Delete
-        </DropdownMenuItem>
-        <DropdownMenuItem variant="destructive">
+        </DropdownMenu.Item>
+        <DropdownMenu.Item variant="destructive">
           <Icon name="Bomb" className="size-4" />
           Destroy
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
     </DropdownMenu>
   ),
 }
@@ -130,30 +114,30 @@ export const Checkboxes: Story = {
 
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenu.Trigger asChild>
           <Button variant="outline">View</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48">
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuCheckboxItem
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content className="w-48">
+          <DropdownMenu.Group>
+            <DropdownMenu.Label>Appearance</DropdownMenu.Label>
+          </DropdownMenu.Group>
+          <DropdownMenu.Separator />
+          <DropdownMenu.CheckboxItem
             checked={showStatus}
             onCheckedChange={setShowStatus}
           >
             Status Bar
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
+          </DropdownMenu.CheckboxItem>
+          <DropdownMenu.CheckboxItem
             checked={showBar}
             onCheckedChange={setShowBar}
           >
             Sidebar
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem checked disabled>
+          </DropdownMenu.CheckboxItem>
+          <DropdownMenu.CheckboxItem checked disabled>
             Activity Bar
-          </DropdownMenuCheckboxItem>
-        </DropdownMenuContent>
+          </DropdownMenu.CheckboxItem>
+        </DropdownMenu.Content>
       </DropdownMenu>
     )
   },
@@ -165,26 +149,26 @@ export const RadioGroup: Story = {
 
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenu.Trigger asChild>
           <Button variant="outline">Position</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-44">
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content className="w-44">
+          <DropdownMenu.Group>
+            <DropdownMenu.Label>Panel Position</DropdownMenu.Label>
+          </DropdownMenu.Group>
+          <DropdownMenu.Separator />
+          <DropdownMenu.RadioGroup
             value={position}
             onValueChange={setPosition}
           >
-            <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="bottom">
+            <DropdownMenu.RadioItem value="top">Top</DropdownMenu.RadioItem>
+            <DropdownMenu.RadioItem value="bottom">
               Bottom
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="left">Left</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="right">Right</DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
+            </DropdownMenu.RadioItem>
+            <DropdownMenu.RadioItem value="left">Left</DropdownMenu.RadioItem>
+            <DropdownMenu.RadioItem value="right">Right</DropdownMenu.RadioItem>
+          </DropdownMenu.RadioGroup>
+        </DropdownMenu.Content>
       </DropdownMenu>
     )
   },
@@ -193,44 +177,44 @@ export const RadioGroup: Story = {
 export const Submenu: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenu.Trigger asChild>
         <Button variant="outline">Share</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-48">
-        <DropdownMenuItem>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content className="w-48">
+        <DropdownMenu.Item>
           <Icon name="Link" className="size-4" />
           Copy link
-        </DropdownMenuItem>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
+        </DropdownMenu.Item>
+        <DropdownMenu.Sub>
+          <DropdownMenu.SubTrigger>
             <Icon name="Nodes" className="size-4" />
             Share via
-          </DropdownMenuSubTrigger>
-          <DropdownMenuPortal>
-            <DropdownMenuSubContent className="w-40">
-              <DropdownMenuItem>
+          </DropdownMenu.SubTrigger>
+          <DropdownMenu.Portal>
+            <DropdownMenu.SubContent className="w-40">
+              <DropdownMenu.Item>
                 <Icon name="Envelope" className="size-4" />
                 Email
-              </DropdownMenuItem>
-              <DropdownMenuItem>
+              </DropdownMenu.Item>
+              <DropdownMenu.Item>
                 <Icon name="Message" className="size-4" />
                 Message
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              </DropdownMenu.Item>
+              <DropdownMenu.Separator />
+              <DropdownMenu.Item>
                 <Icon name="Sitemap" className="size-4" />
                 More...
-              </DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuPortal>
-        </DropdownMenuSub>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+              </DropdownMenu.Item>
+            </DropdownMenu.SubContent>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Sub>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>
           <Icon name="Bookmark" className="size-4" />
           Save
-          <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+          <DropdownMenu.Shortcut>⌘S</DropdownMenu.Shortcut>
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
     </DropdownMenu>
   ),
 }
@@ -238,30 +222,30 @@ export const Submenu: Story = {
 export const Insets: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenu.Trigger asChild>
         <Button variant="outline">Inset</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-48">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel inset>Actions</DropdownMenuLabel>
-          <DropdownMenuItem inset>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content className="w-48">
+        <DropdownMenu.Group>
+          <DropdownMenu.Label inset>Actions</DropdownMenu.Label>
+          <DropdownMenu.Item inset>
             <Icon name="Pencil" className="size-4" />
             Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem inset>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item inset>
             <Icon name="Copy" className="size-4" />
             Duplicate
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuLabel inset>Danger</DropdownMenuLabel>
-          <DropdownMenuItem inset variant="destructive">
+          </DropdownMenu.Item>
+        </DropdownMenu.Group>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Group>
+          <DropdownMenu.Label inset>Danger</DropdownMenu.Label>
+          <DropdownMenu.Item inset variant="destructive">
             <Icon name="Trash" className="size-4" />
             Delete
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
+          </DropdownMenu.Item>
+        </DropdownMenu.Group>
+      </DropdownMenu.Content>
     </DropdownMenu>
   ),
 }
@@ -269,28 +253,28 @@ export const Insets: Story = {
 export const DisabledItems: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenu.Trigger asChild>
         <Button variant="outline">Options</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-44">
-        <DropdownMenuItem>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content className="w-44">
+        <DropdownMenu.Item>
           <Icon name="Eye" className="size-4" />
           View
-        </DropdownMenuItem>
-        <DropdownMenuItem disabled>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item disabled>
           <Icon name="Pencil" className="size-4" />
           Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem disabled>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item disabled>
           <Icon name="Trash" className="size-4" />
           Delete
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        </DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>
           <Icon name="Nodes" className="size-4" />
           Share
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
     </DropdownMenu>
   ),
 }
@@ -298,25 +282,25 @@ export const DisabledItems: Story = {
 export const WithPortal: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenu.Trigger asChild>
         <Button variant="outline">Portal</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuPortal>
-        <DropdownMenuContent className="w-48">
-          <DropdownMenuItem>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content className="w-48">
+          <DropdownMenu.Item>
             <Icon name="User" className="size-4" />
             Profile
-          </DropdownMenuItem>
-          <DropdownMenuItem>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item>
             <Icon name="Gear" className="size-4" />
             Settings
-          </DropdownMenuItem>
-          <DropdownMenuItem>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item>
             <Icon name="CircleLogout" className="size-4" />
             Log out
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenuPortal>
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
     </DropdownMenu>
   ),
 }

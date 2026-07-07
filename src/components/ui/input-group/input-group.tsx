@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn'
 
 type InputGroupProps = React.HTMLAttributes<HTMLDivElement>
 
-function InputGroup({ className, ...props }: InputGroupProps) {
+function InputGroupRoot({ className, ...props }: InputGroupProps) {
   return (
     <div
       data-slot="input-group"
@@ -77,4 +77,5 @@ function InputGroupText({ className, ...props }: InputGroupTextProps) {
 }
 InputGroupText.displayName = 'InputGroupText'
 
-export { InputGroup, InputGroupInput, InputGroupAddon, InputGroupText }
+const InputGroup = Object.assign(InputGroupRoot, { Input: InputGroupInput, Addon: InputGroupAddon, Text: InputGroupText })
+export { InputGroup }

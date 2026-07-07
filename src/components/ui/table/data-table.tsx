@@ -10,14 +10,7 @@ import { cn } from '@/lib/cn'
 
 import { useIsMobile } from '@/hooks/use-mobile'
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from './table'
+import { Table } from './table'
 import { DataTablePagination } from './data-table-pagination'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -85,9 +78,9 @@ export function DataTable<TData>({
 
       <div ref={scrollRef} className="rounded-2xl bg-card overflow-x-auto">
         <Table>
-          <TableHeader>
+          <Table.Header>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow
+              <Table.Row
                 key={headerGroup.id}
                 className="border-border/25 bg-card!"
               >
@@ -96,7 +89,7 @@ export function DataTable<TData>({
                   const shouldSticky = isLast && isMobile && showShadow
 
                   return (
-                    <TableHead
+                    <Table.Head
                       key={header.id}
                       className={cn(
                         'max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis transition-colors',
@@ -110,31 +103,31 @@ export function DataTable<TData>({
                             header.column.columnDef.header,
                             header.getContext(),
                           )}
-                    </TableHead>
+                    </Table.Head>
                   )
                 })}
-              </TableRow>
+              </Table.Row>
             ))}
-          </TableHeader>
+          </Table.Header>
 
-          <TableBody>
+          <Table.Body>
             {isLoading ? (
               Array.from({ length: 10 }).map((_, i) => (
-                <TableRow
+                <Table.Row
                   key={i}
                   className="border-b border-border/50 transition-none odd:bg-accent/15 even:bg-accent/50"
                 >
                   {Array.from({
                     length: table.getAllColumns().length,
                   }).map((_, j) => (
-                    <TableCell
+                    <Table.Cell
                       key={j}
                       className="h-12 max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis"
                     >
                       <Skeleton className="h-4 w-[80%] bg-accent" />
-                    </TableCell>
+                    </Table.Cell>
                   ))}
-                </TableRow>
+                </Table.Row>
               ))
             ) : (
               <AnimatePresence>
@@ -196,7 +189,7 @@ export function DataTable<TData>({
                           const shouldSticky = isLast && isMobile && showShadow
 
                           return (
-                            <TableCell
+                            <Table.Cell
                               key={cell.id}
                               className={cn(
                                 'h-12 max-w-xl text-nowrap whitespace-nowrap overflow-hidden text-ellipsis',
@@ -211,25 +204,25 @@ export function DataTable<TData>({
                                 cell.column.columnDef.cell,
                                 cell.getContext(),
                               )}
-                            </TableCell>
+                            </Table.Cell>
                           )
                         })}
                       </motion.tr>
                     )
                   })
                 ) : (
-                  <TableRow>
-                    <TableCell
+                  <Table.Row>
+                    <Table.Cell
                       colSpan={table.getAllColumns().length}
                       className="h-24 text-center text-card-foreground"
                     >
                       {defaultEmptyMessage}
-                    </TableCell>
-                  </TableRow>
+                    </Table.Cell>
+                  </Table.Row>
                 )}
               </AnimatePresence>
             )}
-          </TableBody>
+          </Table.Body>
         </Table>
       </div>
 

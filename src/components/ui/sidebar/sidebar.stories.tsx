@@ -1,21 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
-import {
-  Sidebar,
-  SidebarProvider,
-  SidebarInset,
-  SidebarHeader,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarTrigger,
-  SidebarSeparator,
-} from './sidebar';
+import { Sidebar } from './sidebar';
 import { FillIconName, Icon } from '@/components/icon';
 
 const meta: Meta<typeof Sidebar> = {
@@ -27,9 +12,9 @@ const meta: Meta<typeof Sidebar> = {
   tags: ['autodocs', 'new'],
   decorators: [
     (Story) => (
-      <SidebarProvider>
+      <Sidebar.Provider>
         <Story />
-      </SidebarProvider>
+      </Sidebar.Provider>
     ),
   ],
 };
@@ -47,48 +32,48 @@ export const Default: StoryObj<typeof meta> = {
   render: () => (
     <div className="flex flex-1 min-h-screen">
       <Sidebar>
-        <SidebarHeader>
+        <Sidebar.Header>
           <div className="flex items-center gap-2 p-2">
             <Icon name="House" className="size-4" />
             <span className="font-semibold">Onne</span>
           </div>
-        </SidebarHeader>
+        </Sidebar.Header>
 
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Menu</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
+        <Sidebar.Content>
+          <Sidebar.Group>
+            <Sidebar.GroupLabel>Menu</Sidebar.GroupLabel>
+            <Sidebar.GroupContent>
+              <Sidebar.Menu>
                 {NAV_ITEMS.map((item) => (
-                  <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton isActive={item.active}>
+                  <Sidebar.MenuItem key={item.label}>
+                    <Sidebar.MenuButton isActive={item.active}>
                       <Icon name={item.icon} className="size-4" />
                       <span>{item.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                    </Sidebar.MenuButton>
+                  </Sidebar.MenuItem>
                 ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
+              </Sidebar.Menu>
+            </Sidebar.GroupContent>
+          </Sidebar.Group>
+        </Sidebar.Content>
 
-        <SidebarFooter>
+        <Sidebar.Footer>
           <div className="flex items-center gap-2 p-2 text-sm text-muted-foreground">
             <Icon name="User" className="size-4" />
             <span>admin@onne.com</span>
           </div>
-        </SidebarFooter>
+        </Sidebar.Footer>
       </Sidebar>
 
-      <SidebarInset className='flex flex-1 w-full'>
+      <Sidebar.Inset className='flex flex-1 w-full'>
         <header className="flex items-center gap-2 border-b p-4">
-          <SidebarTrigger />
+          <Sidebar.Trigger />
           <h1 className="text-lg font-semibold">Dashboard</h1>
         </header>
         <main className="p-6">
           <p className="text-muted-foreground">Page content goes here.</p>
         </main>
-      </SidebarInset>
+      </Sidebar.Inset>
     </div>
   ),
   play: async ({ canvas }) => {

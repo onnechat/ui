@@ -1,1 +1,2 @@
-export * from './chart';
+export { Chart } from './chart'
+export type { ChartConfig } from './chart'

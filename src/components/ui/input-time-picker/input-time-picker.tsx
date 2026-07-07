@@ -4,13 +4,7 @@ import * as React from 'react';
 
 import { cn } from '@/lib/cn';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select } from '@/components/ui/select';
 
 export interface InputTimePickerProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -112,20 +106,20 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
           value={selectedHour}
           disabled={disabled}
         >
-          <SelectTrigger
+          <Select.Trigger
             removeIcon
             aria-label={hourAriaLabel}
             className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
           >
-            <SelectValue placeholder={hourPlaceholder} />
-          </SelectTrigger>
-          <SelectContent>
+            <Select.Value placeholder={hourPlaceholder} />
+          </Select.Trigger>
+          <Select.Content>
             {hours.map((hour) => (
-              <SelectItem key={hour} value={hour}>
+              <Select.Item key={hour} value={hour}>
                 {hour}
-              </SelectItem>
+              </Select.Item>
             ))}
-          </SelectContent>
+          </Select.Content>
         </Select>
 
         <span className="w-full text-center text-muted-foreground">:</span>
@@ -135,20 +129,20 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
           value={selectedMinute}
           disabled={disabled}
         >
-          <SelectTrigger
+          <Select.Trigger
             removeIcon
             className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
             aria-label={minuteAriaLabel}
           >
-            <SelectValue placeholder={minutePlaceholder} />
-          </SelectTrigger>
-          <SelectContent>
+            <Select.Value placeholder={minutePlaceholder} />
+          </Select.Trigger>
+          <Select.Content>
             {minutes.map((minute) => (
-              <SelectItem key={minute} value={minute}>
+              <Select.Item key={minute} value={minute}>
                 {minute}
-              </SelectItem>
+              </Select.Item>
             ))}
-          </SelectContent>
+          </Select.Content>
         </Select>
       </div>
     );

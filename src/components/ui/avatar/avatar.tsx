@@ -28,7 +28,7 @@ const AvatarCtx = React.createContext<AvatarCtx>({
   onStatus: () => {},
 })
 
-function Avatar({ className, ...props }: React.ComponentProps<'span'>) {
+function AvatarRoot({ className, ...props }: React.ComponentProps<'span'>) {
   const [status, onStatus] = React.useState<Status>('loading')
   const ctx = React.useMemo(() => ({ status, onStatus }), [status])
 
@@ -115,4 +115,5 @@ function AvatarFallback({
   )
 }
 
-export { Avatar, AvatarFallback, AvatarImage }
+const Avatar = Object.assign(AvatarRoot, { Image: AvatarImage, Fallback: AvatarFallback })
+export { Avatar }

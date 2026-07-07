@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { cn } from '@/lib/cn'
+import { cn } from '@/lib/cn';
 
 export function Loader({
   text,
@@ -8,41 +8,40 @@ export function Loader({
   className,
   iconClassName,
 }: {
-  text?: string
-  variant?: 'default' | 'screen' | 'center' | 'button' | 'clean'
-  className?: string
-  iconClassName?: string
+  text?: string;
+  variant?: 'default' | 'screen' | 'center' | 'button' | 'clean';
+  className?: string;
+  iconClassName?: string;
 }) {
   const defaultClasses = cn(
     /**
      * Default inline layout: icon and text centered
      * side by side.
      */
-    variant === 'default' &&
-    'flex flex-col justify-center items-center gap-2',
+    variant === 'default' && 'flex flex-col justify-center items-center gap-2',
     /**
      * Center the loader in the center of the screen
      * if the variant is 'center'.
      */
     variant === 'center' &&
-    'flex flex-col flex-1 justify-center items-center gap-4 min-h-dvh',
+      'flex flex-col flex-1 justify-center items-center gap-4 min-h-dvh',
     /**
      * Center the loader in the center of the screen
      * if the variant is 'screen'.
      */
     variant === 'screen' &&
-    'flex flex-col flex-1 justify-center items-center gap-4 min-h-dvh min-w-dvw',
+      'flex flex-col flex-1 justify-center items-center gap-4 min-h-dvh min-w-dvw',
     /**
      * Add padding to the loader if the variant is 'clean'.
      */
     variant === 'clean' &&
-    'flex flex-col flex-1 justify-center items-center gap-4 p-24',
+      'flex flex-col flex-1 justify-center items-center gap-4 p-24',
     /**
      * Add text color to the loader if the variant
      * is not 'button' to make it less visible.
      */
     variant !== 'button' && 'text-muted-foreground',
-  )
+  );
 
   return (
     <div suppressHydrationWarning className={cn(defaultClasses, className)}>
@@ -59,9 +58,7 @@ export function Loader({
         suppressHydrationWarning
         className={cn(
           'animate-spin text-current shrink-0',
-          variant === 'button'
-            ? 'min-w-3 min-h-3 size-3'
-            : 'min-h-5 min-w-5 size-5',
+          variant === 'button' ? 'w-4 h-4' : 'w-5 h-5',
           iconClassName,
         )}
       >
@@ -77,5 +74,5 @@ export function Loader({
 
       {text && <span className="text-current">{text}</span>}
     </div>
-  )
+  );
 }

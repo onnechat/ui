@@ -2,8 +2,8 @@ import * as React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icon'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from './hover-card'
+import { Avatar } from '@/components/ui/avatar'
+import { HoverCard } from './hover-card'
 
 const meta: Meta<typeof HoverCard> = {
   title: 'UI/HoverCard',
@@ -21,10 +21,10 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: () => (
     <HoverCard>
-      <HoverCardTrigger>
+      <HoverCard.Trigger>
         <Button variant="link" asChild={false}>Hover me</Button>
-      </HoverCardTrigger>
-      <HoverCardContent>
+      </HoverCard.Trigger>
+      <HoverCard.Content>
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">About this card</h4>
           <p className="text-sm text-muted-foreground">
@@ -32,7 +32,7 @@ export const Default: Story = {
             trigger element.
           </p>
         </div>
-      </HoverCardContent>
+      </HoverCard.Content>
     </HoverCard>
   ),
 }
@@ -40,14 +40,14 @@ export const Default: Story = {
 export const UserProfile: Story = {
   render: () => (
     <HoverCard>
-      <HoverCardTrigger>
+      <HoverCard.Trigger>
         <Button variant="link" asChild={false}>@john</Button>
-      </HoverCardTrigger>
-      <HoverCardContent className="w-72">
+      </HoverCard.Trigger>
+      <HoverCard.Content className="w-72">
         <div className="flex gap-3">
           <Avatar className="size-10">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback name="John Doe" />
+            <Avatar.Image src="https://github.com/shadcn.png" />
+            <Avatar.Fallback name="John Doe" />
           </Avatar>
           <div className="space-y-1">
             <h4 className="text-sm font-semibold">John Doe</h4>
@@ -63,7 +63,7 @@ export const UserProfile: Story = {
             </div>
           </div>
         </div>
-      </HoverCardContent>
+      </HoverCard.Content>
     </HoverCard>
   ),
 }
@@ -71,12 +71,12 @@ export const UserProfile: Story = {
 export const WithIcon: Story = {
   render: () => (
     <HoverCard>
-      <HoverCardTrigger>
+      <HoverCard.Trigger>
         <Button variant="ghost" size="icon" asChild={false}>
           <Icon name="CircleInfo" className="size-4" />
         </Button>
-      </HoverCardTrigger>
-      <HoverCardContent>
+      </HoverCard.Trigger>
+      <HoverCard.Content>
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Icon name="CircleCheck" className="size-4 text-success" />
@@ -86,7 +86,7 @@ export const WithIcon: Story = {
             No incidents reported. Last checked 2 minutes ago.
           </p>
         </div>
-      </HoverCardContent>
+      </HoverCard.Content>
     </HoverCard>
   ),
 }
@@ -94,17 +94,17 @@ export const WithIcon: Story = {
 export const TopSide: Story = {
   render: () => (
     <HoverCard>
-      <HoverCardTrigger>
+      <HoverCard.Trigger>
         <Button variant="outline" asChild={false}>Top</Button>
-      </HoverCardTrigger>
-      <HoverCardContent side="top">
+      </HoverCard.Trigger>
+      <HoverCard.Content side="top">
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">Appears on top</h4>
           <p className="text-sm text-muted-foreground">
             This card opens above the trigger element.
           </p>
         </div>
-      </HoverCardContent>
+      </HoverCard.Content>
     </HoverCard>
   ),
 }
@@ -112,17 +112,17 @@ export const TopSide: Story = {
 export const StartAlign: Story = {
   render: () => (
     <HoverCard>
-      <HoverCardTrigger>
+      <HoverCard.Trigger>
         <Button variant="outline" asChild={false}>Start</Button>
-      </HoverCardTrigger>
-      <HoverCardContent align="start">
+      </HoverCard.Trigger>
+      <HoverCard.Content align="start">
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">Start aligned</h4>
           <p className="text-sm text-muted-foreground">
             This card is aligned to the start of the trigger.
           </p>
         </div>
-      </HoverCardContent>
+      </HoverCard.Content>
     </HoverCard>
   ),
 }
@@ -130,17 +130,17 @@ export const StartAlign: Story = {
 export const EndAlign: Story = {
   render: () => (
     <HoverCard>
-      <HoverCardTrigger>
+      <HoverCard.Trigger>
         <Button variant="outline" asChild={false}>End</Button>
-      </HoverCardTrigger>
-      <HoverCardContent align="end">
+      </HoverCard.Trigger>
+      <HoverCard.Content align="end">
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">End aligned</h4>
           <p className="text-sm text-muted-foreground">
             This card is aligned to the end of the trigger.
           </p>
         </div>
-      </HoverCardContent>
+      </HoverCard.Content>
     </HoverCard>
   ),
 }
@@ -148,10 +148,10 @@ export const EndAlign: Story = {
 export const RichContent: Story = {
   render: () => (
     <HoverCard>
-      <HoverCardTrigger>
+      <HoverCard.Trigger>
         <Button variant="outline" asChild={false}>Repository</Button>
-      </HoverCardTrigger>
-      <HoverCardContent className="w-80 p-0">
+      </HoverCard.Trigger>
+      <HoverCard.Content className="w-80 p-0">
         <div className="space-y-3 p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
@@ -180,7 +180,7 @@ export const RichContent: Story = {
             </span>
           </div>
         </div>
-      </HoverCardContent>
+      </HoverCard.Content>
     </HoverCard>
   ),
 }

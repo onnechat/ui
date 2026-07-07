@@ -2,8 +2,6 @@
 
 import * as React from 'react'
 
-import * as SelectPrimitive from '@radix-ui/react-select'
-
 import { cn } from '@/lib/cn'
 
 import type { Currency } from '@/hooks/use-currency-input'
@@ -11,13 +9,8 @@ import { useCurrencyInput } from '@/hooks/use-currency-input'
 import { useElementSize } from '@/hooks/use-element-size'
 
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import * as SelectPrimitive from '@radix-ui/react-select'
+import { Select } from '@/components/ui/select'
 
 export interface CurrencyInputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -31,7 +24,7 @@ export interface CurrencyInputProps extends Omit<
   centsMode?: boolean
   onChange?: (value: number) => void
   onCurrencyChange?: (currency: Currency) => void
-  align?: SelectPrimitive.SelectContentProps['align']
+  align?: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>['align']
 }
 
 const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
@@ -82,7 +75,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           onValueChange={handleCurrencyChange}
           disabled={disabled || disableCurrencySelect}
         >
-          <SelectTrigger
+          <Select.Trigger
             ref={triggerRef}
             className={cn(
               'w-fit! rounded-r-none border-r-0 focus:z-10 bg-accent',
@@ -90,26 +83,26 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
               className,
             )}
           >
-            <SelectValue>
+            <Select.Value>
               <span className="text-sm font-mono">
                 {selectedCurrency.symbol}
               </span>
-            </SelectValue>
-          </SelectTrigger>
+            </Select.Value>
+          </Select.Trigger>
 
-          <SelectContent
+          <Select.Content
             align={align}
             className="min-w-32"
             style={triggerWidth > 0 ? { width: triggerWidth } : {}}
           >
             {currencies.map((currency) => (
-              <SelectItem key={currency.code} value={currency.code}>
+              <Select.Item key={currency.code} value={currency.code}>
                 <span className="text-sm font-mono text-muted-foreground">
                   {currency.symbol}
                 </span>
-              </SelectItem>
+              </Select.Item>
             ))}
-          </SelectContent>
+          </Select.Content>
         </Select>
 
         <Input

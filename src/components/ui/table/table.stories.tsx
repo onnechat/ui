@@ -1,14 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from './table';
+import { Table } from './table';
 
 const meta: Meta<typeof Table> = {
   title: 'UI/Table',
@@ -35,27 +27,27 @@ const INVOICES = [
 export const Default: StoryObj<typeof meta> = {
   render: (args) => (
     <Table {...args}>
-      <TableCaption>A list of your recent invoices.</TableCaption>
+      <Table.Caption>A list of your recent invoices.</Table.Caption>
 
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
+      <Table.Header>
+        <Table.Row>
+          <Table.Head className="w-[100px]">Invoice</Table.Head>
+          <Table.Head>Status</Table.Head>
+          <Table.Head>Method</Table.Head>
+          <Table.Head className="text-right">Amount</Table.Head>
+        </Table.Row>
+      </Table.Header>
 
-      <TableBody>
+      <Table.Body>
         {INVOICES.map((invoice) => (
-          <TableRow key={invoice.id}>
-            <TableCell className="font-medium">{invoice.id}</TableCell>
-            <TableCell>{invoice.status}</TableCell>
-            <TableCell>{invoice.method}</TableCell>
-            <TableCell className="text-right">{invoice.amount}</TableCell>
-          </TableRow>
+          <Table.Row key={invoice.id}>
+            <Table.Cell className="font-medium">{invoice.id}</Table.Cell>
+            <Table.Cell>{invoice.status}</Table.Cell>
+            <Table.Cell>{invoice.method}</Table.Cell>
+            <Table.Cell className="text-right">{invoice.amount}</Table.Cell>
+          </Table.Row>
         ))}
-      </TableBody>
+      </Table.Body>
     </Table>
   ),
   play: async ({ canvas }) => {
@@ -66,22 +58,22 @@ export const Default: StoryObj<typeof meta> = {
 export const Empty: StoryObj<typeof meta> = {
   render: (args) => (
     <Table {...args}>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
+      <Table.Header>
+        <Table.Row>
+          <Table.Head>Invoice</Table.Head>
+          <Table.Head>Status</Table.Head>
+          <Table.Head>Method</Table.Head>
+          <Table.Head className="text-right">Amount</Table.Head>
+        </Table.Row>
+      </Table.Header>
 
-      <TableBody>
-        <TableRow>
-          <TableCell colSpan={4} className="h-24 text-center">
+      <Table.Body>
+        <Table.Row>
+          <Table.Cell colSpan={4} className="h-24 text-center">
             No results.
-          </TableCell>
-        </TableRow>
-      </TableBody>
+          </Table.Cell>
+        </Table.Row>
+      </Table.Body>
     </Table>
   ),
 };
@@ -91,33 +83,33 @@ export const WithFooter: StoryObj<typeof meta> = {
     const total = '$1,750.00';
     return (
       <Table {...args}>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+        <Table.Caption>A list of your recent invoices.</Table.Caption>
 
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
-          </TableRow>
-        </TableHeader>
+        <Table.Header>
+          <Table.Row>
+            <Table.Head className="w-[100px]">Invoice</Table.Head>
+            <Table.Head>Status</Table.Head>
+            <Table.Head>Method</Table.Head>
+            <Table.Head className="text-right">Amount</Table.Head>
+          </Table.Row>
+        </Table.Header>
 
-        <TableBody>
+        <Table.Body>
           {INVOICES.map((invoice) => (
-            <TableRow key={invoice.id}>
-              <TableCell className="font-medium">{invoice.id}</TableCell>
-              <TableCell>{invoice.status}</TableCell>
-              <TableCell>{invoice.method}</TableCell>
-              <TableCell className="text-right">{invoice.amount}</TableCell>
-            </TableRow>
+            <Table.Row key={invoice.id}>
+              <Table.Cell className="font-medium">{invoice.id}</Table.Cell>
+              <Table.Cell>{invoice.status}</Table.Cell>
+              <Table.Cell>{invoice.method}</Table.Cell>
+              <Table.Cell className="text-right">{invoice.amount}</Table.Cell>
+            </Table.Row>
           ))}
-        </TableBody>
+        </Table.Body>
 
         <tfoot>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">{total}</TableCell>
-          </TableRow>
+          <Table.Row>
+            <Table.Cell colSpan={3}>Total</Table.Cell>
+            <Table.Cell className="text-right">{total}</Table.Cell>
+          </Table.Row>
         </tfoot>
       </Table>
     );

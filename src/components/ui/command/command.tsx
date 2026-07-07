@@ -14,7 +14,7 @@ import {
   DialogDescription,
 } from '@/components/internal/dialog'
 
-function Command({
+function CommandRoot({
   className,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive>) {
@@ -195,14 +195,15 @@ function CommandShortcut({
   )
 }
 
-export {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-}
+const Command = Object.assign(CommandRoot, {
+  Dialog: CommandDialog,
+  Empty: CommandEmpty,
+  Group: CommandGroup,
+  Input: CommandInput,
+  Item: CommandItem,
+  List: CommandList,
+  Separator: CommandSeparator,
+  Shortcut: CommandShortcut,
+})
+
+export { Command }

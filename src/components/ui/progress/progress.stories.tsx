@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
-import { Progress, ProgressLabel, ProgressValue } from './progress';
+import { Progress } from './progress';
 
 const meta: Meta<typeof Progress> = {
   title: 'UI/Progress',
@@ -31,8 +31,8 @@ export const Default: StoryObj<typeof meta> = {
 export const WithLabel: StoryObj<typeof meta> = {
   render: () => (
     <Progress value={75} className="w-72">
-      <ProgressLabel>Uploading files</ProgressLabel>
-      <ProgressValue />
+      <Progress.Label>Uploading files</Progress.Label>
+      <Progress.Value />
     </Progress>
   ),
   play: async ({ canvas }) => {

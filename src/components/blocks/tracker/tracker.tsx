@@ -1,10 +1,6 @@
 import { twMerge } from 'tailwind-merge'
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip } from '@/components/ui/tooltip'
 
 interface TrackerBlockProps {
   key?: string | number
@@ -33,7 +29,7 @@ const Block = ({
     </div>
   ) : (
     <Tooltip>
-      <TooltipTrigger asChild>
+      <Tooltip.Trigger asChild>
         <div
           role="button"
           aria-label={tooltip}
@@ -48,10 +44,10 @@ const Block = ({
             className="size-full rounded-[1px] bg-(--color) hover:opacity-80 transition-opacity"
           />
         </div>
-      </TooltipTrigger>
-      <TooltipContent className="bg-popover text-popover-foreground border border-border rounded-md px-3 py-1.5 text-sm shadow-md">
+      </Tooltip.Trigger>
+      <Tooltip.Content className="bg-popover text-popover-foreground border border-border rounded-md px-3 py-1.5 text-sm shadow-md">
         {tooltip}
-      </TooltipContent>
+      </Tooltip.Content>
     </Tooltip>
   )
 }

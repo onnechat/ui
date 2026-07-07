@@ -24,7 +24,7 @@ function focusFirstFocusableInDrawer(container: HTMLElement) {
   el?.focus()
 }
 
-function Drawer({
+function DrawerRoot({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
   return <DrawerPrimitive.Root data-slot="drawer" {...props} />
@@ -175,15 +175,15 @@ function DrawerDescription({
   )
 }
 
-export {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerPortal,
-  DrawerTitle,
-  DrawerTrigger,
-}
+const Drawer = Object.assign(DrawerRoot, {
+  Close: DrawerClose,
+  Content: DrawerContent,
+  Description: DrawerDescription,
+  Footer: DrawerFooter,
+  Header: DrawerHeader,
+  Overlay: DrawerOverlay,
+  Portal: DrawerPortal,
+  Title: DrawerTitle,
+  Trigger: DrawerTrigger,
+})
+export { Drawer }

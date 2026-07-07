@@ -5,13 +5,7 @@ import { Icon } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select } from '@/components/ui/select'
 
 interface CursorPaginationMeta {
   hasNext?: boolean
@@ -78,17 +72,17 @@ export function DataTablePagination<TData>({
           value={`${table.getState().pagination.pageSize}`}
           onValueChange={(value) => table.setPageSize(Number(value))}
         >
-          <SelectTrigger className="h-10 min-w-[70px]">
-            <SelectValue placeholder={table.getState().pagination.pageSize} />
-          </SelectTrigger>
+          <Select.Trigger className="h-10 min-w-[70px]">
+            <Select.Value placeholder={table.getState().pagination.pageSize} />
+          </Select.Trigger>
 
-          <SelectContent side="top">
+          <Select.Content side="top">
             {pageSizeOptions.map((pageSize) => (
-              <SelectItem key={pageSize} value={`${pageSize}`}>
+              <Select.Item key={pageSize} value={`${pageSize}`}>
                 {pageSize}
-              </SelectItem>
+              </Select.Item>
             ))}
-          </SelectContent>
+          </Select.Content>
         </Select>
       </div>
 

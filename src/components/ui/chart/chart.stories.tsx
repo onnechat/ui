@@ -9,13 +9,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import {
-  Chart,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-} from './chart'
+import { Chart } from './chart'
 
 const meta: Meta<typeof Chart> = {
   title: 'UI/Chart',
@@ -48,8 +42,8 @@ export const BarExample: StoryObj = {
       <BarChart data={CHART_DATA}>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} />
-        <ChartTooltip content={<ChartTooltipContent />} />
-        <ChartLegend content={<ChartLegendContent />} />
+        <Chart.Tooltip content={<Chart.TooltipContent />} />
+        <Chart.Legend content={<Chart.LegendContent />} />
         <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
         <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
       </BarChart>
@@ -63,8 +57,8 @@ export const LineExample: StoryObj = {
       <LineChart data={CHART_DATA}>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} />
-        <ChartTooltip content={<ChartTooltipContent />} />
-        <ChartLegend content={<ChartLegendContent />} />
+        <Chart.Tooltip content={<Chart.TooltipContent />} />
+        <Chart.Legend content={<Chart.LegendContent />} />
         <Line
           dataKey="desktop"
           stroke="var(--color-desktop)"
@@ -88,7 +82,7 @@ export const WithLabels: StoryObj = {
       <BarChart data={CHART_DATA}>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} />
-        <ChartTooltip content={<ChartTooltipContent />} />
+        <Chart.Tooltip content={<Chart.TooltipContent />} />
         <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4}>
           <LabelList
             dataKey="desktop"

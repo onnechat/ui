@@ -8,6 +8,10 @@ const meta: Meta<typeof Breadcrumb> = {
   parameters: {
     layout: 'centered',
   },
+  argTypes: {
+    hideBackButton: { control: 'boolean' },
+    disableLinks: { control: 'boolean' },
+  },
   tags: ['ai-generated'],
 };
 
@@ -31,6 +35,20 @@ export const Default: Story = {
 export const SingleItem: Story = {
   args: {
     items: [{ label: 'Dashboard' }],
+  },
+};
+
+export const WithoutLinks: Story = {
+  args: {
+    ...Default.args,
+    disableLinks: true,
+  },
+};
+
+export const WithoutBackButton: Story = {
+  args: {
+    ...Default.args,
+    hideBackButton: true,
   },
 };
 

@@ -73,7 +73,7 @@ function useChart() {
   return context
 }
 
-function Chart({
+function ChartRoot({
   id,
   className,
   children,
@@ -412,11 +412,12 @@ function getPayloadConfigFromPayload(
     : config[key as keyof typeof config]
 }
 
-export {
-  Chart,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
-  ChartTooltip,
-  ChartTooltipContent,
-}
+const Chart = Object.assign(ChartRoot, {
+  Legend: ChartLegend,
+  LegendContent: ChartLegendContent,
+  Style: ChartStyle,
+  Tooltip: ChartTooltip,
+  TooltipContent: ChartTooltipContent,
+})
+
+export { Chart }

@@ -84,14 +84,13 @@ function useOptionalCollapsibleContext() {
   return React.useContext(CollapsibleContext)
 }
 
-function Collapsible({
+function CollapsibleRoot({
   className,
   variant = 'card',
   align = 'start',
   open: openProp,
   defaultOpen,
   onOpenChange,
-  /** When set (uncontrolled only), keeps the panel open — e.g. inner switch is on. */
   expandWhen,
   disabled = false,
   children,
@@ -156,7 +155,7 @@ function Collapsible({
   )
 }
 
-function CollapsibleContent({
+export function CollapsibleContent({
   className,
   children,
 }: {
@@ -224,9 +223,10 @@ function CollapsibleContent({
   )
 }
 
+const Collapsible = Object.assign(CollapsibleRoot, { Content: CollapsibleContent })
+
 export {
   Collapsible,
-  CollapsibleContent,
   collapsibleContentVariants,
   collapsibleRootVariants,
   collapsibleTriggerSettingsOverlayVariants,

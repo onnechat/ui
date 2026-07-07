@@ -11,7 +11,7 @@ import { cn } from '@/lib/cn'
 import { useHaptics } from '@/hooks/use-haptics'
 import { useIsMobile } from '@/hooks/use-mobile'
 
-import { Drawer, DrawerContent } from '@/components/ui/drawer'
+import { Drawer } from '@/components/ui/drawer'
 
 /** Same option list is rendered twice on mobile (hidden Radix items + drawer). Clone so each tree is independent. */
 function cloneSelectChildren(children: React.ReactNode, keySuffix: string) {
@@ -51,7 +51,7 @@ type SelectContextValue = {
 
 const SelectContext = React.createContext<SelectContextValue | null>(null)
 
-function Select({
+function SelectRoot({
   value: valueProp,
   defaultValue,
   onValueChange: onValueChangeProp,
@@ -258,13 +258,13 @@ function SelectContent({
           onOpenChange={ctx.onOpenChange}
           direction="bottom"
         >
-          <DrawerContent title="Select" showDivider>
+          <Drawer.Content title="Select" showDivider>
             <SelectItemModeContext.Provider value="interactive">
               <div className="overflow-y-auto p-2 pb-6">
                 {cloneSelectChildren(children, 'drawer')}
               </div>
             </SelectItemModeContext.Provider>
-          </DrawerContent>
+          </Drawer.Content>
         </Drawer>
       </>
     )
@@ -436,15 +436,15 @@ function SelectScrollDownButton({
   )
 }
 
-export {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-}
+const Select = Object.assign(SelectRoot, {
+  Content: SelectContent,
+  Group: SelectGroup,
+  Item: SelectItem,
+  Label: SelectLabel,
+  ScrollDownButton: SelectScrollDownButton,
+  ScrollUpButton: SelectScrollUpButton,
+  Separator: SelectSeparator,
+  Trigger: SelectTrigger,
+  Value: SelectValue,
+})
+export { Select }

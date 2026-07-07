@@ -2,20 +2,13 @@
 
 import * as React from 'react';
 
-import * as SelectPrimitive from '@radix-ui/react-select';
-
 import { cn } from '@/lib/cn';
 
 import { Icon } from '@/components/icon';
 import type { FillIconName, CustomIconName } from '@/components/icon';
 import { useElementSize } from '@/hooks/use-element-size';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import * as SelectPrimitive from '@radix-ui/react-select';
+import { Select } from '@/components/ui/select';
 
 import { Input } from '../input';
 
@@ -45,7 +38,7 @@ export interface InputTimeProps
   defaultType?: InputTimeType;
   onTypeChange?: (type: InputTimeType) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  align?: SelectPrimitive.SelectContentProps['align'];
+  align?: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>['align'];
 }
 
 function InputTime({
@@ -102,32 +95,32 @@ function InputTime({
 
       <div className="relative shrink-0">
         <Select value={type} onValueChange={handleTypeChange} disabled={typeProp !== undefined}>
-          <SelectTrigger
+          <Select.Trigger
             ref={triggerRef}
             className={cn(
               'w-fit! rounded-l-none border-l-0 focus:z-10 bg-accent',
               typeProp !== undefined && '[&>svg]:hidden',
             )}
           >
-            <SelectValue>
+            <Select.Value>
               <Icon variant="fill" name={iconName} className="size-4" />
-            </SelectValue>
-          </SelectTrigger>
+            </Select.Value>
+          </Select.Trigger>
 
-          <SelectContent
+          <Select.Content
             align={align}
             className="min-w-max"
             style={triggerWidth > 0 ? { width: triggerWidth } : {}}
           >
             {(Object.keys(INPUT_TIME_ICONS) as InputTimeType[]).map((t) => (
-              <SelectItem key={t} value={t}>
+              <Select.Item key={t} value={t}>
                 <div className="flex items-center gap-2">
                   <Icon variant="fill" name={INPUT_TIME_ICONS[t]} className="size-4" />
                   <span className="text-sm">{INPUT_TIME_LABELS[t]}</span>
                 </div>
-              </SelectItem>
+              </Select.Item>
             ))}
-          </SelectContent>
+          </Select.Content>
         </Select>
 
         {typeProp !== undefined && (

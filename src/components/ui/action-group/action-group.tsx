@@ -5,14 +5,7 @@ import { cn } from '@/lib/cn'
 import { Icon, type IconType } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu } from '@/components/ui/dropdown-menu'
 import type { ComponentVariant } from '@/types'
 
 type ActionItem = {
@@ -45,7 +38,7 @@ export function ActionGroup({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
+      <DropdownMenu.Trigger
         asChild
         disabled={isDisabled}
         className={className}
@@ -67,9 +60,9 @@ export function ActionGroup({
             )}
           </Button>
         )}
-      </DropdownMenuTrigger>
+      </DropdownMenu.Trigger>
 
-      <DropdownMenuContent
+      <DropdownMenu.Content
         align={align}
         className="min-w-36 w-(--radix-dropdown-menu-trigger-width) bg-sidebar/50 rounded-2xl overflow-hidden"
       >
@@ -78,13 +71,13 @@ export function ActionGroup({
 
           return (
             <React.Fragment key={groupIndex}>
-              <DropdownMenuGroup key={groupIndex} className="flex flex-col">
+              <DropdownMenu.Group key={groupIndex} className="flex flex-col">
                 {group.map((item, itemIndex) => {
                   const isFirst = groupIndex === 0 && itemIndex === 0
                   const isLast = isLastGroup && itemIndex === group.length - 1
 
                   return (
-                    <DropdownMenuItem
+                    <DropdownMenu.Item
                       key={`${item.label}-${itemIndex}`}
                       onClick={(e) => {
                         e.stopPropagation()
@@ -109,18 +102,18 @@ export function ActionGroup({
                       />
 
                       {item.label}
-                    </DropdownMenuItem>
+                    </DropdownMenu.Item>
                   )
                 })}
-              </DropdownMenuGroup>
+              </DropdownMenu.Group>
 
               {!isLastGroup && (
-                <DropdownMenuSeparator className="max-lg:hidden" />
+                <DropdownMenu.Separator className="max-lg:hidden" />
               )}
             </React.Fragment>
           )
         })}
-      </DropdownMenuContent>
+      </DropdownMenu.Content>
     </DropdownMenu>
   )
 }

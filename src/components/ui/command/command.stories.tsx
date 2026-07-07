@@ -1,17 +1,7 @@
 import * as React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Icon } from '@/components/icon'
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from './command'
+import { Command } from './command'
 
 const meta: Meta<typeof Command> = {
   title: 'UI/Command',
@@ -28,35 +18,35 @@ export const Default: StoryObj = {
   render: () => (
     <div className="w-full max-w-md">
       <Command>
-        <CommandInput placeholder="Type a command or search…" />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem onSelect={() => {}}>
+        <Command.Input placeholder="Type a command or search…" />
+        <Command.List>
+          <Command.Empty>No results found.</Command.Empty>
+          <Command.Group heading="Suggestions">
+            <Command.Item onSelect={() => {}}>
               <Icon name="Calendar" className="size-4" />
               Calendar
-            </CommandItem>
-            <CommandItem onSelect={() => {}}>
+            </Command.Item>
+            <Command.Item onSelect={() => {}}>
               <Icon name="Envelope" className="size-4" />
               Mail
-            </CommandItem>
-            <CommandItem onSelect={() => {}}>
+            </Command.Item>
+            <Command.Item onSelect={() => {}}>
               <Icon name="Gear" className="size-4" />
               Settings
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="People">
-            <CommandItem onSelect={() => {}}>
+            </Command.Item>
+          </Command.Group>
+          <Command.Separator />
+          <Command.Group heading="People">
+            <Command.Item onSelect={() => {}}>
               <Icon name="User" className="size-4" />
               John Doe
-            </CommandItem>
-            <CommandItem onSelect={() => {}}>
+            </Command.Item>
+            <Command.Item onSelect={() => {}}>
               <Icon name="User" className="size-4" />
               Jane Smith
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+            </Command.Item>
+          </Command.Group>
+        </Command.List>
       </Command>
     </div>
   ),
@@ -66,37 +56,37 @@ export const WithShortcuts: StoryObj = {
   render: () => (
     <div className="w-full max-w-md">
       <Command>
-        <CommandInput placeholder="Search actions…" />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Actions">
-            <CommandItem onSelect={() => {}}>
+        <Command.Input placeholder="Search actions…" />
+        <Command.List>
+          <Command.Empty>No results found.</Command.Empty>
+          <Command.Group heading="Actions">
+            <Command.Item onSelect={() => {}}>
               <Icon name="Copy" className="size-4" />
               Copy
-              <CommandShortcut>⌘C</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => {}}>
+              <Command.Shortcut>⌘C</Command.Shortcut>
+            </Command.Item>
+            <Command.Item onSelect={() => {}}>
               <Icon name="ClipboardCheck" className="size-4" />
               Paste
-              <CommandShortcut>⌘V</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => {}}>
+              <Command.Shortcut>⌘V</Command.Shortcut>
+            </Command.Item>
+            <Command.Item onSelect={() => {}}>
               <Icon name="Magnifier" className="size-4" />
               Search
-              <CommandShortcut>⌘F</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => {}}>
+              <Command.Shortcut>⌘F</Command.Shortcut>
+            </Command.Item>
+            <Command.Item onSelect={() => {}}>
               <Icon name="Undo" className="size-4" />
               Undo
-              <CommandShortcut>⌘Z</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => {}}>
+              <Command.Shortcut>⌘Z</Command.Shortcut>
+            </Command.Item>
+            <Command.Item onSelect={() => {}}>
               <Icon name="Redo" className="size-4" />
               Redo
-              <CommandShortcut>⌘⇧Z</CommandShortcut>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+              <Command.Shortcut>⌘⇧Z</Command.Shortcut>
+            </Command.Item>
+          </Command.Group>
+        </Command.List>
       </Command>
     </div>
   ),
@@ -106,31 +96,31 @@ export const WithDisabledItems: StoryObj = {
   render: () => (
     <div className="w-full max-w-md">
       <Command>
-        <CommandInput placeholder="Type to filter…" />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Available">
-            <CommandItem onSelect={() => {}}>
+        <Command.Input placeholder="Type to filter…" />
+        <Command.List>
+          <Command.Empty>No results found.</Command.Empty>
+          <Command.Group heading="Available">
+            <Command.Item onSelect={() => {}}>
               <Icon name="Eye" className="size-4" />
               View
-            </CommandItem>
-            <CommandItem onSelect={() => {}}>
+            </Command.Item>
+            <Command.Item onSelect={() => {}}>
               <Icon name="Pencil" className="size-4" />
               Edit
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Unavailable">
-            <CommandItem disabled onSelect={() => {}}>
+            </Command.Item>
+          </Command.Group>
+          <Command.Separator />
+          <Command.Group heading="Unavailable">
+            <Command.Item disabled onSelect={() => {}}>
               <Icon name="Trash" className="size-4" />
               Delete
-            </CommandItem>
-            <CommandItem disabled onSelect={() => {}}>
+            </Command.Item>
+            <Command.Item disabled onSelect={() => {}}>
               <Icon name="Bomb" className="size-4" />
               Destroy
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+            </Command.Item>
+          </Command.Group>
+        </Command.List>
       </Command>
     </div>
   ),
@@ -151,21 +141,21 @@ export const Filtering: StoryObj = {
     return (
       <div className="w-full max-w-md">
         <Command>
-          <CommandInput placeholder="Search items…" />
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Items">
+          <Command.Input placeholder="Search items…" />
+          <Command.List>
+            <Command.Empty>No results found.</Command.Empty>
+            <Command.Group heading="Items">
               {items.map((item) => (
-                <CommandItem key={item.label} value={item.label} onSelect={() => {}}>
+                <Command.Item key={item.label} value={item.label} onSelect={() => {}}>
                   <Icon name="Dots" className="size-4" />
                   {item.label}
                   <span className="ml-auto text-xs text-muted-foreground">
                     {item.category}
                   </span>
-                </CommandItem>
+                </Command.Item>
               ))}
-            </CommandGroup>
-          </CommandList>
+            </Command.Group>
+          </Command.List>
         </Command>
       </div>
     )
@@ -190,67 +180,67 @@ export const DialogMode: StoryObj = {
           </kbd>
         </button>
 
-        <CommandDialog
+        <Command.Dialog
           open={open}
           onOpenChange={setOpen}
           title="Command Palette"
           description="Search for commands…"
         >
-          <CommandInput placeholder="Type a command or search…" />
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Navigation">
-              <CommandItem
+          <Command.Input placeholder="Type a command or search…" />
+          <Command.List>
+            <Command.Empty>No results found.</Command.Empty>
+            <Command.Group heading="Navigation">
+              <Command.Item
                 onSelect={() => {
                   setOpen(false)
                 }}
               >
                 <Icon name="User" className="size-4" />
                 Profile
-                <CommandShortcut>⌘P</CommandShortcut>
-              </CommandItem>
-              <CommandItem
+                <Command.Shortcut>⌘P</Command.Shortcut>
+              </Command.Item>
+              <Command.Item
                 onSelect={() => {
                   setOpen(false)
                 }}
               >
                 <Icon name="Gear" className="size-4" />
                 Settings
-                <CommandShortcut>⌘,</CommandShortcut>
-              </CommandItem>
-              <CommandItem
+                <Command.Shortcut>⌘,</Command.Shortcut>
+              </Command.Item>
+              <Command.Item
                 onSelect={() => {
                   setOpen(false)
                 }}
               >
                 <Icon name="Envelope" className="size-4" />
                 Messages
-                <CommandShortcut>⌘M</CommandShortcut>
-              </CommandItem>
-            </CommandGroup>
-            <CommandSeparator />
-            <CommandGroup heading="Actions">
-              <CommandItem
+                <Command.Shortcut>⌘M</Command.Shortcut>
+              </Command.Item>
+            </Command.Group>
+            <Command.Separator />
+            <Command.Group heading="Actions">
+              <Command.Item
                 onSelect={() => {
                   setOpen(false)
                 }}
               >
                 <Icon name="Plus" className="size-4" />
                 New file
-                <CommandShortcut>⌘N</CommandShortcut>
-              </CommandItem>
-              <CommandItem
+                <Command.Shortcut>⌘N</Command.Shortcut>
+              </Command.Item>
+              <Command.Item
                 onSelect={() => {
                   setOpen(false)
                 }}
               >
                 <Icon name="Magnifier" className="size-4" />
                 Find in files
-                <CommandShortcut>⌘⇧F</CommandShortcut>
-              </CommandItem>
-            </CommandGroup>
-          </CommandList>
-        </CommandDialog>
+                <Command.Shortcut>⌘⇧F</Command.Shortcut>
+              </Command.Item>
+            </Command.Group>
+          </Command.List>
+        </Command.Dialog>
       </>
     )
   },

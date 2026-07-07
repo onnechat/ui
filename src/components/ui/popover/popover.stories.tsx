@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Popover } from './popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,17 +19,17 @@ export default meta;
 export const Default: StoryObj<typeof meta> = {
   render: () => (
     <Popover>
-      <PopoverTrigger asChild>
+      <Popover.Trigger asChild>
         <Button variant="outline">Open Popover</Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-64">
+      </Popover.Trigger>
+      <Popover.Content className="w-64">
         <div className="grid gap-2">
           <h4 className="font-medium">Popover Title</h4>
           <p className="text-sm text-muted-foreground">
             This is a basic popover with some content.
           </p>
         </div>
-      </PopoverContent>
+      </Popover.Content>
     </Popover>
   ),
   play: async ({ canvas, canvasElement }) => {
@@ -42,10 +42,10 @@ export const Default: StoryObj<typeof meta> = {
 export const WithForm: StoryObj<typeof meta> = {
   render: () => (
     <Popover>
-      <PopoverTrigger asChild>
+      <Popover.Trigger asChild>
         <Button variant="outline">Edit</Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-72">
+      </Popover.Trigger>
+      <Popover.Content className="w-72">
         <div className="grid gap-3">
           <div className="grid gap-1">
             <Label htmlFor="width">Width</Label>
@@ -59,7 +59,7 @@ export const WithForm: StoryObj<typeof meta> = {
             Apply
           </Button>
         </div>
-      </PopoverContent>
+      </Popover.Content>
     </Popover>
   ),
   play: async ({ canvas, canvasElement }) => {
@@ -72,14 +72,14 @@ export const WithForm: StoryObj<typeof meta> = {
 export const WithArrow: StoryObj<typeof meta> = {
   render: () => (
     <Popover>
-      <PopoverTrigger asChild>
+      <Popover.Trigger asChild>
         <Button variant="ghost">With Arrow</Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-48" showArrow>
+      </Popover.Trigger>
+      <Popover.Content className="w-48" showArrow>
         <p className="text-sm text-muted-foreground">
           This popover has an arrow pointing to the trigger.
         </p>
-      </PopoverContent>
+      </Popover.Content>
     </Popover>
   ),
   play: async ({ canvas, canvasElement }) => {

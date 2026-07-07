@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
-import { Alert, AlertTitle, AlertDescription } from './alert';
+import { Alert } from './alert';
 import { Icon, type IconType } from '@/components/icon';
 import { fillIcons } from '@/components/icon/variants';
 
@@ -48,8 +48,8 @@ export const Default: StoryObj<typeof Alert> = {
   render: ({ iconType, title, description, ...args }) => (
     <Alert {...args}>
       {iconType && <Icon name={iconType} />}
-      {title && <AlertTitle>{title}</AlertTitle>}
-      {description && <AlertDescription>{description}</AlertDescription>}
+      {title && <Alert.Title>{title}</Alert.Title>}
+      {description && <Alert.Description>{description}</Alert.Description>}
     </Alert>
   ),
   play: async ({ canvas }) => {
@@ -62,11 +62,11 @@ export const Destructive: StoryObj<typeof meta> = {
   render: (args) => (
     <Alert {...args}>
       <Icon name="TriangleWarning" />
-      <AlertTitle>Account suspended</AlertTitle>
-      <AlertDescription>
+      <Alert.Title>Account suspended</Alert.Title>
+      <Alert.Description>
         Your account has been suspended due to a violation of our terms of
         service.
-      </AlertDescription>
+      </Alert.Description>
     </Alert>
   ),
   play: async ({ canvas }) => {
@@ -79,11 +79,11 @@ export const Warning: StoryObj<typeof meta> = {
   render: (args) => (
     <Alert {...args}>
       <Icon name="TriangleWarning" />
-      <AlertTitle>Subscription expiring</AlertTitle>
-      <AlertDescription>
+      <Alert.Title>Subscription expiring</Alert.Title>
+      <Alert.Description>
         Your subscription will expire in 3 days. Update your payment method
         to avoid interruption.
-      </AlertDescription>
+      </Alert.Description>
     </Alert>
   ),
   play: async ({ canvas }) => {
@@ -96,10 +96,10 @@ export const Info: StoryObj<typeof meta> = {
   render: (args) => (
     <Alert {...args}>
       <Icon name="CircleInfo" />
-      <AlertTitle>New feature available</AlertTitle>
-      <AlertDescription>
+      <Alert.Title>New feature available</Alert.Title>
+      <Alert.Description>
         We have released dark mode support. Go to settings to enable it.
-      </AlertDescription>
+      </Alert.Description>
     </Alert>
   ),
   play: async ({ canvas }) => {
@@ -112,10 +112,10 @@ export const Success: StoryObj<typeof meta> = {
   render: (args) => (
     <Alert {...args}>
       <Icon name="CircleCheck" />
-      <AlertTitle>Operation completed</AlertTitle>
-      <AlertDescription>
+      <Alert.Title>Operation completed</Alert.Title>
+      <Alert.Description>
         Your changes have been saved successfully.
-      </AlertDescription>
+      </Alert.Description>
     </Alert>
   ),
   play: async ({ canvas }) => {
@@ -128,7 +128,7 @@ export const TitleOnly: StoryObj<typeof meta> = {
   render: (args) => (
     <Alert {...args}>
       <Icon name="CircleCheck" />
-      <AlertTitle>Update completed successfully.</AlertTitle>
+      <Alert.Title>Update completed successfully.</Alert.Title>
     </Alert>
   ),
   play: async ({ canvas }) => {
@@ -141,9 +141,9 @@ export const DescriptionOnly: StoryObj<typeof meta> = {
   render: (args) => (
     <Alert {...args}>
       <Icon name="TriangleWarning" />
-      <AlertDescription>
+      <Alert.Description>
         Payment failed. Please try again or use a different card.
-      </AlertDescription>
+      </Alert.Description>
     </Alert>
   ),
   play: async ({ canvas }) => {
@@ -154,10 +154,10 @@ export const DescriptionOnly: StoryObj<typeof meta> = {
 export const WithoutIcon: StoryObj<typeof meta> = {
   render: (args) => (
     <Alert {...args}>
-      <AlertTitle>Plain message</AlertTitle>
-      <AlertDescription>
+      <Alert.Title>Plain message</Alert.Title>
+      <Alert.Description>
         This alert has no icon, just a title and description.
-      </AlertDescription>
+      </Alert.Description>
     </Alert>
   ),
   play: async ({ canvas }) => {

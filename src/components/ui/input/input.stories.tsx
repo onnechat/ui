@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 import { Input } from './input';
-import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupText } from '@/components/ui/input-group';
+import { InputGroup } from '@/components/ui/input-group';
 import { Icon } from '@/components/icon';
 import { Label } from '@/components/ui/label';
 
@@ -75,10 +75,10 @@ export const WithPrefix: StoryObj<typeof meta> = {
     <div className="grid gap-1.5 w-64">
       <Label htmlFor="search">Search</Label>
       <InputGroup>
-        <InputGroupInput id="search" placeholder="Search..." />
-        <InputGroupAddon align="inline-start">
+        <InputGroup.Input id="search" placeholder="Search..." />
+        <InputGroup.Addon align="inline-start">
           <Icon name="Magnifier" className="size-4" />
-        </InputGroupAddon>
+        </InputGroup.Addon>
       </InputGroup>
     </div>
   ),
@@ -90,10 +90,10 @@ export const WithPrefix: StoryObj<typeof meta> = {
 export const WithSuffix: StoryObj<typeof meta> = {
   render: () => (
     <InputGroup className="w-64">
-      <InputGroupInput placeholder="Website" />
-      <InputGroupAddon align="inline-end">
-        <InputGroupText>.com</InputGroupText>
-      </InputGroupAddon>
+      <InputGroup.Input placeholder="Website" />
+      <InputGroup.Addon align="inline-end">
+        <InputGroup.Text>.com</InputGroup.Text>
+      </InputGroup.Addon>
     </InputGroup>
   ),
 };

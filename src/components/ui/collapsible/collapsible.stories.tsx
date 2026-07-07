@@ -2,7 +2,7 @@ import * as React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Icon } from '@/components/icon'
 import { Button } from '@/components/ui/button'
-import { Collapsible, CollapsibleContent } from './collapsible'
+import { Collapsible } from './collapsible'
 
 const meta: Meta<typeof Collapsible> = {
   title: 'UI/Collapsible',
@@ -36,7 +36,7 @@ function CollapsibleDemo({ children }: { children: React.ReactNode }) {
           style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
         />
       </button>
-      <CollapsibleContent>{children}</CollapsibleContent>
+      <Collapsible.Content>{children}</Collapsible.Content>
     </Collapsible>
   )
 }
@@ -108,14 +108,14 @@ export const RowVariant: StoryObj = {
             style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         </button>
-        <CollapsibleContent>
+        <Collapsible.Content>
           <div className="px-4 pb-3 pt-1">
             <p className="text-sm text-muted-foreground">
               The row variant has no card background or border — just
               the content padding.
             </p>
           </div>
-        </CollapsibleContent>
+        </Collapsible.Content>
       </Collapsible>
     )
   },

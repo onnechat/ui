@@ -7,11 +7,7 @@ import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { Icon } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu } from '@/components/ui/dropdown-menu'
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>
@@ -28,7 +24,7 @@ export function DataTableViewOptions<TData>({
           View
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
+      <DropdownMenu.Content align="end" className="w-[150px]">
         {table
           .getAllColumns()
           .filter(
@@ -36,16 +32,16 @@ export function DataTableViewOptions<TData>({
               typeof column.accessorFn !== 'undefined' && column.getCanHide(),
           )
           .map((column) => (
-            <DropdownMenuCheckboxItem
+            <DropdownMenu.CheckboxItem
               key={column.id}
               className="capitalize"
               checked={column.getIsVisible()}
               onCheckedChange={(value) => column.toggleVisibility(!!value)}
             >
               {column.id}
-            </DropdownMenuCheckboxItem>
+            </DropdownMenu.CheckboxItem>
           ))}
-      </DropdownMenuContent>
+      </DropdownMenu.Content>
     </DropdownMenu>
   )
 }

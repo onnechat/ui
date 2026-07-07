@@ -2,9 +2,6 @@
 
 import * as React from 'react'
 
-
-import * as SelectPrimitive from '@radix-ui/react-select'
-
 import { cn } from '@/lib/cn'
 
 import { useElementSize } from '@/hooks/use-element-size'
@@ -13,13 +10,8 @@ import { usePhoneInput } from '@/hooks/use-phone-input'
 
 import { Input } from '@/components/ui/input'
 import { FlagIcon } from '@/components/icon/flag'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import * as SelectPrimitive from '@radix-ui/react-select'
+import { Select } from '@/components/ui/select'
 
 export interface PhoneInputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -30,7 +22,7 @@ export interface PhoneInputProps extends Omit<
   onCountryChange?: (country: Country) => void
   disableCountrySelect?: boolean
   locale?: string
-  align?: SelectPrimitive.SelectContentProps['align']
+  align?: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>['align']
 }
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   (props, ref) => {
@@ -71,7 +63,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           onValueChange={handleCountryChange}
           disabled={disabled || disableCountrySelect}
         >
-          <SelectTrigger
+          <Select.Trigger
             ref={triggerRef}
             className={cn(
               'w-fit! rounded-r-none border-r-0 focus:z-10 bg-accent select-none',
@@ -79,7 +71,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
               className,
             )}
           >
-            <SelectValue>
+            <Select.Value>
               <FlagIcon
                 code={selectedCountry.code}
                 className="size-5 rounded-sm mb-0.5 pointer-events-none select-none"
@@ -88,16 +80,16 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
               <span className="text-sm font-mono">
                 {selectedCountry.dialCode}
               </span>
-            </SelectValue>
-          </SelectTrigger>
+            </Select.Value>
+          </Select.Trigger>
 
-          <SelectContent
+          <Select.Content
             align={align}
             className="min-w-max"
             style={triggerWidth > 0 ? { width: triggerWidth } : {}}
           >
             {countries.map((country) => (
-              <SelectItem key={country.code} value={country.code}>
+              <Select.Item key={country.code} value={country.code}>
                 <div className="flex items-center gap-2">
                   <FlagIcon
                     code={country.code}
@@ -110,9 +102,9 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
 
                   <span className="text-sm mb-0.5">{country.name}</span>
                 </div>
-              </SelectItem>
+              </Select.Item>
             ))}
-          </SelectContent>
+          </Select.Content>
         </Select>
 
         <Input

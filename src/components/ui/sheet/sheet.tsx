@@ -8,7 +8,7 @@ import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
 
-function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
+function SheetRoot({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
 
@@ -130,13 +130,13 @@ function SheetDescription({
   )
 }
 
-export {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-}
+const Sheet = Object.assign(SheetRoot, {
+  Close: SheetClose,
+  Content: SheetContent,
+  Description: SheetDescription,
+  Footer: SheetFooter,
+  Header: SheetHeader,
+  Title: SheetTitle,
+  Trigger: SheetTrigger,
+})
+export { Sheet }

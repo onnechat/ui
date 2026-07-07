@@ -13,11 +13,18 @@
 }
 
 .sbdocs.sbdocs-preview [role="toolbar"],
-.sbdocs.sbdocs-preview [role="toolbar"] *,
-.sbdocs.sbdocs-preview .docblock-source {
+.sbdocs.sbdocs-preview [role="toolbar"] * {
   color: var(--foreground) !important;
   background: transparent !important;
   border-color: var(--border) !important;
+}
+
+.sbdocs .docblock-source,
+.sbdocs .sbdocs-pre,
+.sbdocs pre {
+  background: var(--code-background) !important;
+  color: var(--code-foreground) !important;
+  border-color: var(--code-border) !important;
 }
 
 .sbdocs.sbdocs-preview [role="toolbar"] button,
@@ -76,8 +83,153 @@
 .sbdocs pre,
 .sbdocs .sbdocs-code,
 .sbdocs code {
-  background: var(--muted) !important;
-  color: var(--foreground) !important;
+  background: var(--code-background) !important;
+  color: var(--code-foreground) !important;
+}
+
+.sbdocs .sbdocs-code,
+.sbdocs code {
+  border-color: var(--code-border) !important;
+}
+
+:root,
+.light {
+  --code-background: oklch(96% 0 0);
+  --code-foreground: oklch(24% 0 0);
+  --code-border: oklch(86% 0 0);
+  --code-comment: oklch(48% 0 0);
+  --code-punctuation: oklch(42% 0 0);
+  --code-keyword: oklch(43% 0.23 295);
+  --code-string: oklch(40% 0.14 150);
+  --code-function: oklch(45% 0.18 250);
+  --code-number: oklch(43% 0.18 35);
+  --code-property: oklch(42% 0.16 220);
+  --code-operator: oklch(42% 0.12 20);
+  --code-tag: oklch(44% 0.21 15);
+  --code-component: oklch(45% 0.18 250);
+}
+
+.dark {
+  --code-background: oklch(13% 0 0);
+  --code-foreground: oklch(92% 0 0);
+  --code-border: oklch(27.4% 0.006 286.033);
+  --code-comment: oklch(68% 0 0);
+  --code-punctuation: oklch(82% 0 0);
+  --code-keyword: oklch(78% 0.17 300);
+  --code-string: oklch(80% 0.14 150);
+  --code-function: oklch(78% 0.13 245);
+  --code-number: oklch(79% 0.14 55);
+  --code-property: oklch(80% 0.12 220);
+  --code-operator: oklch(76% 0.13 25);
+  --code-tag: oklch(76% 0.16 20);
+  --code-component: oklch(78% 0.13 245);
+}
+
+.sbdocs .token.comment,
+.sbdocs .token.prolog,
+.sbdocs .token.doctype,
+.sbdocs .token.cdata,
+.sbdocs .docblock-source .comment,
+.sbdocs .docblock-source .prolog,
+.sbdocs .docblock-source .doctype,
+.sbdocs .docblock-source .cdata {
+  color: var(--code-comment) !important;
+}
+
+.sbdocs .token.punctuation,
+.sbdocs .docblock-source .punctuation {
+  color: var(--code-punctuation) !important;
+}
+
+.sbdocs .token.keyword,
+.sbdocs .token.atrule,
+.sbdocs .token.selector,
+.sbdocs .docblock-source .keyword,
+.sbdocs .docblock-source .atrule,
+.sbdocs .docblock-source .selector {
+  color: var(--code-keyword) !important;
+}
+
+.sbdocs .token.string,
+.sbdocs .token.char,
+.sbdocs .token.attr-value,
+.sbdocs .token.regex,
+.sbdocs .docblock-source .string,
+.sbdocs .docblock-source .char,
+.sbdocs .docblock-source .attr-value,
+.sbdocs .docblock-source .regex,
+.sbdocs .docblock-source .template-string {
+  color: var(--code-string) !important;
+}
+
+.sbdocs .token.function,
+.sbdocs .token.class-name,
+.sbdocs .docblock-source .function,
+.sbdocs .docblock-source .function-variable,
+.sbdocs .docblock-source .class-name {
+  color: var(--code-function) !important;
+}
+
+.sbdocs .token.number,
+.sbdocs .token.boolean,
+.sbdocs .token.constant,
+.sbdocs .token.symbol,
+.sbdocs .docblock-source .number,
+.sbdocs .docblock-source .boolean,
+.sbdocs .docblock-source .constant,
+.sbdocs .docblock-source .symbol {
+  color: var(--code-number) !important;
+}
+
+.sbdocs .token.property,
+.sbdocs .token.attr-name,
+.sbdocs .token.builtin,
+.sbdocs .token.variable,
+.sbdocs .docblock-source .property,
+.sbdocs .docblock-source .attr-name,
+.sbdocs .docblock-source .builtin,
+.sbdocs .docblock-source .variable,
+.sbdocs .docblock-source .literal-property,
+.sbdocs .docblock-source .string-property {
+  color: var(--code-property) !important;
+}
+
+.sbdocs .token.operator,
+.sbdocs .token.entity,
+.sbdocs .token.url,
+.sbdocs .docblock-source .operator,
+.sbdocs .docblock-source .entity,
+.sbdocs .docblock-source .url {
+  color: var(--code-operator) !important;
+}
+
+.sbdocs .token.tag,
+.sbdocs .token.deleted,
+.sbdocs .docblock-source .tag,
+.sbdocs .docblock-source .deleted {
+  color: var(--code-tag) !important;
+}
+
+.sbdocs .token.tag.class-name,
+.sbdocs .docblock-source .tag.class-name {
+  color: var(--code-component) !important;
+}
+
+.sbdocs .token.tag.attr-name,
+.sbdocs .docblock-source .tag.attr-name {
+  color: var(--code-property) !important;
+}
+
+.sbdocs .token.tag.attr-value,
+.sbdocs .docblock-source .tag.attr-value {
+  color: var(--code-string) !important;
+}
+
+.sbdocs .token.tag.punctuation,
+.sbdocs .token.attr-equals,
+.sbdocs .docblock-source .tag.punctuation,
+.sbdocs .docblock-source .attr-equals {
+  color: var(--code-punctuation) !important;
 }
 
 .docblock-argstable {

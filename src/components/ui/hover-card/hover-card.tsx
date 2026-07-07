@@ -4,7 +4,7 @@ import { PreviewCard as PreviewCardPrimitive } from '@base-ui/react/preview-card
 
 import { cn } from '@/lib/cn'
 
-function HoverCard({ ...props }: PreviewCardPrimitive.Root.Props) {
+function HoverCardRoot({ ...props }: PreviewCardPrimitive.Root.Props) {
   return <PreviewCardPrimitive.Root data-slot="hover-card" {...props} />
 }
 
@@ -50,6 +50,7 @@ function HoverCardContent({
   )
 }
 
-export { HoverCard, HoverCardContent, HoverCardTrigger }
+const HoverCard = Object.assign(HoverCardRoot, { Trigger: HoverCardTrigger, Content: HoverCardContent })
+export { HoverCard }
 
 export type { HoverCardContentProps }

@@ -4,7 +4,7 @@ import { Progress as ProgressPrimitive } from '@base-ui/react/progress'
 
 import { cn } from '@/lib/cn'
 
-function Progress({
+function ProgressRoot({
   className,
   children,
   value,
@@ -80,10 +80,5 @@ function ProgressValue({ className, ...props }: ProgressPrimitive.Value.Props) {
   )
 }
 
-export {
-  Progress,
-  ProgressIndicator,
-  ProgressLabel,
-  ProgressTrack,
-  ProgressValue,
-}
+const Progress = Object.assign(ProgressRoot, { Track: ProgressTrack, Indicator: ProgressIndicator, Label: ProgressLabel, Value: ProgressValue })
+export { Progress }

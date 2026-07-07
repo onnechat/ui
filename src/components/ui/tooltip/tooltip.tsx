@@ -39,7 +39,7 @@ function TooltipProvider({
   )
 }
 
-function Tooltip({
+function TooltipRoot({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   const isMobile = useIsMobile()
@@ -164,4 +164,6 @@ function TooltipContent({
   )
 }
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
+const Tooltip = Object.assign(TooltipRoot, { Provider: TooltipProvider, Content: TooltipContent, Trigger: TooltipTrigger })
+
+export { Tooltip }

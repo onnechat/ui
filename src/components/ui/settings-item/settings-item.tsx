@@ -10,7 +10,6 @@ import { Icon, type IconType } from '@/components/icon'
 
 import {
   Collapsible,
-  CollapsibleContent,
   collapsibleTriggerSettingsOverlayVariants,
   useCollapsibleOpen,
   useOptionalCollapsibleContext,
@@ -303,7 +302,7 @@ const SettingsItemRow = React.forwardRef<
 
 SettingsItemRow.displayName = 'SettingsItemRow'
 
-export const SettingsItem = React.forwardRef<
+const SettingsItem = React.forwardRef<
   HTMLDivElement | HTMLButtonElement,
   SettingsItemProps
 >(function SettingsItem({ collapse, collapsibleTrigger, ...props }, ref) {
@@ -341,13 +340,13 @@ export const SettingsItem = React.forwardRef<
             ))
           }
         />
-        <CollapsibleContent
+        <Collapsible.Content
           className={cn(
             collapse.contentClassName ?? defaultCollapseContentClassName,
           )}
         >
           {collapse.children}
-        </CollapsibleContent>
+        </Collapsible.Content>
       </Collapsible>
     )
   }
@@ -362,3 +361,6 @@ export const SettingsItem = React.forwardRef<
 })
 
 SettingsItem.displayName = 'SettingsItem'
+Object.assign(SettingsItem, { Row: SettingsItemRow })
+
+export { SettingsItem }

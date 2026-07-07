@@ -1,15 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-  SheetClose,
-} from './sheet';
+import { Sheet } from './sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -27,28 +18,28 @@ export default meta;
 export const Right: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
+      <Sheet.Trigger asChild>
         <Button variant="outline">Open Sheet (Right)</Button>
-      </SheetTrigger>
-      <SheetContent side="right">
-        <SheetHeader>
-          <SheetTitle>Sheet Title</SheetTitle>
-          <SheetDescription>
+      </Sheet.Trigger>
+      <Sheet.Content side="right">
+        <Sheet.Header>
+          <Sheet.Title>Sheet Title</Sheet.Title>
+          <Sheet.Description>
             This is a sheet that slides in from the right.
-          </SheetDescription>
-        </SheetHeader>
+          </Sheet.Description>
+        </Sheet.Header>
         <div className="flex-1 px-4">
           <p className="text-sm text-muted-foreground">Sheet content goes here.</p>
         </div>
-        <SheetFooter>
-          <SheetClose asChild>
+        <Sheet.Footer>
+          <Sheet.Close asChild>
             <Button variant="outline">Cancel</Button>
-          </SheetClose>
-          <SheetClose asChild>
+          </Sheet.Close>
+          <Sheet.Close asChild>
             <Button variant="primary">Save</Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
+          </Sheet.Close>
+        </Sheet.Footer>
+      </Sheet.Content>
     </Sheet>
   ),
   play: async ({ canvas, canvasElement, userEvent }) => {
@@ -61,21 +52,21 @@ export const Right: StoryObj<typeof meta> = {
 export const Left: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
+      <Sheet.Trigger asChild>
         <Button variant="outline">Open Sheet (Left)</Button>
-      </SheetTrigger>
-      <SheetContent side="left">
-        <SheetHeader>
-          <SheetTitle>Navigation</SheetTitle>
-        </SheetHeader>
+      </Sheet.Trigger>
+      <Sheet.Content side="left">
+        <Sheet.Header>
+          <Sheet.Title>Navigation</Sheet.Title>
+        </Sheet.Header>
         <div className="flex flex-col gap-1 px-4">
           {['Home', 'Products', 'About', 'Contact'].map((label) => (
-            <SheetClose key={label} asChild>
+            <Sheet.Close key={label} asChild>
               <Button variant="ghost" className="justify-start">{label}</Button>
-            </SheetClose>
+            </Sheet.Close>
           ))}
         </div>
-      </SheetContent>
+      </Sheet.Content>
     </Sheet>
   ),
   play: async ({ canvas, canvasElement, userEvent }) => {
@@ -88,15 +79,15 @@ export const Left: StoryObj<typeof meta> = {
 export const Top: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
+      <Sheet.Trigger asChild>
         <Button variant="outline">Open Sheet (Top)</Button>
-      </SheetTrigger>
-      <SheetContent side="top">
-        <SheetHeader>
-          <SheetTitle>Notifications</SheetTitle>
-          <SheetDescription>You have 3 new notifications.</SheetDescription>
-        </SheetHeader>
-      </SheetContent>
+      </Sheet.Trigger>
+      <Sheet.Content side="top">
+        <Sheet.Header>
+          <Sheet.Title>Notifications</Sheet.Title>
+          <Sheet.Description>You have 3 new notifications.</Sheet.Description>
+        </Sheet.Header>
+      </Sheet.Content>
     </Sheet>
   ),
   play: async ({ canvas, canvasElement, userEvent }) => {
@@ -109,18 +100,18 @@ export const Top: StoryObj<typeof meta> = {
 export const Bottom: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
+      <Sheet.Trigger asChild>
         <Button variant="outline">Open Sheet (Bottom)</Button>
-      </SheetTrigger>
-      <SheetContent side="bottom">
-        <SheetHeader>
-          <SheetTitle>Quick Actions</SheetTitle>
-        </SheetHeader>
+      </Sheet.Trigger>
+      <Sheet.Content side="bottom">
+        <Sheet.Header>
+          <Sheet.Title>Quick Actions</Sheet.Title>
+        </Sheet.Header>
         <div className="flex gap-2 px-4">
           <Button variant="primary" className="flex-1">Share</Button>
           <Button variant="outline" className="flex-1">Download</Button>
         </div>
-      </SheetContent>
+      </Sheet.Content>
     </Sheet>
   ),
   play: async ({ canvas, canvasElement, userEvent }) => {
@@ -133,27 +124,27 @@ export const Bottom: StoryObj<typeof meta> = {
 export const WithForm: StoryObj<typeof meta> = {
   render: () => (
     <Sheet>
-      <SheetTrigger asChild>
+      <Sheet.Trigger asChild>
         <Button variant="outline">Edit Profile</Button>
-      </SheetTrigger>
-      <SheetContent side="right">
-        <SheetHeader>
-          <SheetTitle>Edit Profile</SheetTitle>
-          <SheetDescription>
+      </Sheet.Trigger>
+      <Sheet.Content side="right">
+        <Sheet.Header>
+          <Sheet.Title>Edit Profile</Sheet.Title>
+          <Sheet.Description>
             Make changes to your profile. Click save when done.
-          </SheetDescription>
-        </SheetHeader>
+          </Sheet.Description>
+        </Sheet.Header>
         <div className="flex flex-col gap-4 px-4">
           <Input placeholder="Name" />
           <Input placeholder="Email" type="email" />
         </div>
-        <SheetFooter>
-          <SheetClose asChild>
+        <Sheet.Footer>
+          <Sheet.Close asChild>
             <Button variant="outline">Cancel</Button>
-          </SheetClose>
+          </Sheet.Close>
           <Button variant="primary">Save</Button>
-        </SheetFooter>
-      </SheetContent>
+        </Sheet.Footer>
+      </Sheet.Content>
     </Sheet>
   ),
   play: async ({ canvas, canvasElement, userEvent }) => {

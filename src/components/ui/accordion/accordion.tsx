@@ -1,121 +1,95 @@
-'use client';
+'use client'
 
-import * as React from 'react';
+import * as React from 'react'
 
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/cn'
 
 import {
-  Accordion as AccordionRoot,
+  Accordion as AccordionRootPrimitive,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/internal/accordion';
-
-export type AccordionListItem = {
-  id?: string;
-  trigger: React.ReactNode;
-  children: React.ReactNode;
-};
-
-export type AccordionProps = {
-  items: AccordionListItem[];
-  className?: string;
-  type: 'single' | 'multiple';
-  collapsible: boolean;
-  disabled: boolean;
-  defaultValue?: string | string[];
-  value?: string | string[];
-  onValueChange?: (value: string | string[]) => void;
-};
+} from '@/components/internal/accordion'
 
 const cardShell =
-  'flex h-fit w-full flex-col bg-card [--card-radius:1rem] [--card-padding:0.25rem] p-(--card-padding) rounded-(--card-radius) group';
+  'flex h-fit w-full flex-col bg-card [--card-radius:1rem] [--card-padding:0.25rem] p-(--card-padding) rounded-(--card-radius) group'
 
 const cardContentShell = cn(
   'relative flex flex-1 flex-col gap-0 overflow-hidden',
   'bg-muted [--card-content-radius:calc(var(--card-radius)-var(--card-padding))] [--card-content-padding:1rem] rounded-(--card-content-radius)',
-);
+)
 
-function Accordion({
-  items = [],
+function AccordionRoot({
   className,
-  type = 'single',
-  collapsible = true,
-  disabled = false,
-  value,
-  defaultValue,
-  onValueChange,
-}: AccordionProps) {
-  const count = items?.length || 0;
-
-  const children = items.map((item, index) => {
-    const isFirst = index === 0;
-    const isLast = index === count - 1;
-
-    const itemValue = item.id ?? `item-${index}`;
-
-    return (
-      <AccordionItem
-        key={itemValue}
-        value={itemValue}
-        className={cn(
-          'rounded-none border-t-4 border-card',
-          isFirst && 'rounded-t-lg border-t-0',
-          isLast && 'data-[state=closed]:rounded-b-lg',
-        )}
-      >
-        <AccordionTrigger
-          className={cn(
-            'min-h-12 rounded-none border-0 bg-card/50 p-4 text-left text-sm md:text-base hover:bg-card/75 transition-none',
-            isFirst && 'rounded-t-lg',
-            isLast && 'data-[state=closed]:rounded-b-lg',
-          )}
-        >
-          {item.trigger}
-        </AccordionTrigger>
-
-        <AccordionContent
-          className={cn(
-            'bg-transparent whitespace-pre-line text-sm leading-relaxed text-muted-foreground md:text-base p-4 border-t-4',
-            !isLast ? 'border-card' : 'border-transparent',
-          )}
-        >
-          {item.children}
-        </AccordionContent>
-      </AccordionItem>
-    );
-  });
-
+  ...props
+}: React.ComponentProps<typeof AccordionRootPrimitive>) {
   return (
     <div className={cn(cardShell, className)}>
-      {type === 'multiple' ? (
-        <AccordionRoot
-          type="multiple"
-          value={value as string[] | undefined}
-          defaultValue={defaultValue as string[] | undefined}
-          onValueChange={onValueChange as ((v: string[]) => void) | undefined}
-          disabled={disabled}
-          className={cardContentShell}
-        >
-          {children}
-        </AccordionRoot>
-      ) : (
-        <AccordionRoot
-          type="single"
-          collapsible={collapsible}
-          value={value as string | undefined}
-          defaultValue={defaultValue as string | undefined}
-          onValueChange={onValueChange as ((v: string) => void) | undefined}
-          disabled={disabled}
-          className={cardContentShell}
-        >
-          {children}
-        </AccordionRoot>
-      )}
+      <AccordionRootPrimitive
+        data-slot="accordion"
+        className={cardContentShell}
+        {...props}
+      />
     </div>
-  );
+  )
 }
 
-Accordion.displayName = 'Accordion';
+function AccordionItemExtended({
+  className,
+  ...props
+}: React.ComponentProps<typeof AccordionItem>) {
+  return (
+    <AccordionItem
+      className={cn(
+        'rounded-none border-t-4 border-card first:border-t-0',
+        'data-[state=closed]:last:rounded-b-lg',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
 
-export { Accordion };
+function AccordionTriggerExtended({
+  className,
+  ...props
+}: React.ComponentProps<typeof AccordionTrigger>) {
+  return (
+    <AccordionTrigger
+      className={cn(
+        'min-h-12 rounded-none border-0 bg-card/50 md:text-base hover:bg-card/75',
+        'first:rounded-t-lg last:data-[state=closed]:rounded-b-lg',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
+function AccordionContentExtended({
+  className,
+  ...props
+}: React.ComponentProps<typeof AccordionContent>) {
+  return (
+    <AccordionContent
+      className={cn(
+        'border-t-4 border-card',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
+AccordionRoot.displayName = 'Accordion'
+AccordionItemExtended.displayName = 'Accordion.Item'
+AccordionTriggerExtended.displayName = 'Accordion.Trigger'
+AccordionContentExtended.displayName = 'Accordion.Content'
+
+const Accordion = Object.assign(AccordionRoot, {
+  Item: AccordionItemExtended,
+  Trigger: AccordionTriggerExtended,
+  Content: AccordionContentExtended,
+})
+
+export { Accordion }

@@ -5,13 +5,7 @@ import { cn } from '@/lib/cn'
 import { Icon } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu } from '@/components/ui/dropdown-menu'
 
 interface DataTableColumnHeaderProps<
   TData,
@@ -33,7 +27,7 @@ export function DataTableColumnHeader<TData, TValue>({
   return (
     <div className={cn('flex items-center space-x-2', className)}>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenu.Trigger asChild>
           <Button
             variant="ghost"
             size="sm"
@@ -48,32 +42,32 @@ export function DataTableColumnHeader<TData, TValue>({
               <Icon name="SortArrows" className="ml-2 h-4 w-4" />
             )}
           </Button>
-        </DropdownMenuTrigger>
+        </DropdownMenu.Trigger>
 
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+        <DropdownMenu.Content align="start">
+          <DropdownMenu.Item onClick={() => column.toggleSorting(false)}>
             <Icon
               name="ArrowUp"
               className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
             />
             Asc
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item onClick={() => column.toggleSorting(true)}>
             <Icon
               name="ArrowDown"
               className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
             />
             Desc
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
+          </DropdownMenu.Item>
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item onClick={() => column.toggleVisibility(false)}>
             <Icon
               name="EyeSlash"
               className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
             />
             Hide
-          </DropdownMenuItem>
-        </DropdownMenuContent>
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
       </DropdownMenu>
     </div>
   )

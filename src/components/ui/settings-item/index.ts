@@ -1,1 +1,1 @@
-export * from './settings-item';
+export { SettingsItem } from './settings-item';

@@ -15,7 +15,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 
 import { ANIMATION } from '@/constants/animations'
 
-import { Drawer, DrawerContent } from '@/components/ui/drawer'
+import { Drawer } from '@/components/ui/drawer'
 
 import { KeyboardShortcut } from './keyboard-shortcut'
 
@@ -34,7 +34,7 @@ type DropdownMenuProps = Omit<MenuPrimitive.Root.Props, 'onOpenChange'> & {
   onOpenChange?: (open: boolean) => void
 }
 
-function DropdownMenu({
+function DropdownMenuRoot({
   open,
   onOpenChange,
   defaultOpen,
@@ -154,7 +154,7 @@ function DropdownMenuContent({
         direction="bottom"
         onOpenChange={ctx.onOpenChange}
       >
-        <DrawerContent title={'dropdownMenu.title'} showDivider>
+        <Drawer.Content title={'dropdownMenu.title'} showDivider>
           <div className="overflow-y-auto overflow-x-hidden p-2 pb-6">
             <AnimatePresence mode="wait">
               {ctx.view ? (
@@ -191,7 +191,7 @@ function DropdownMenuContent({
               )}
             </AnimatePresence>
           </div>
-        </DrawerContent>
+        </Drawer.Content>
       </Drawer>
     )
   }
@@ -602,21 +602,22 @@ function DropdownMenuArrow({ className, ...props }: MenuPrimitive.Arrow.Props) {
   )
 }
 
-export {
-  DropdownMenu,
-  DropdownMenuArrow,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-}
+const DropdownMenu = Object.assign(DropdownMenuRoot, {
+  Arrow: DropdownMenuArrow,
+  CheckboxItem: DropdownMenuCheckboxItem,
+  Content: DropdownMenuContent,
+  Group: DropdownMenuGroup,
+  Item: DropdownMenuItem,
+  Label: DropdownMenuLabel,
+  Portal: DropdownMenuPortal,
+  RadioGroup: DropdownMenuRadioGroup,
+  RadioItem: DropdownMenuRadioItem,
+  Separator: DropdownMenuSeparator,
+  Shortcut: DropdownMenuShortcut,
+  Sub: DropdownMenuSub,
+  SubContent: DropdownMenuSubContent,
+  SubTrigger: DropdownMenuSubTrigger,
+  Trigger: DropdownMenuTrigger,
+})
+
+export { DropdownMenu }

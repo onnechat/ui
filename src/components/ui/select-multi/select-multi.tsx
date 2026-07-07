@@ -10,13 +10,9 @@ import { useIsMobile } from '@/hooks/use-mobile'
 
 import { Loader } from '@/components/ui/loader'
 
-import { Drawer, DrawerContent } from '@/components/ui/drawer'
+import { Drawer } from '@/components/ui/drawer'
 import { Input } from '@/components/ui/input'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover } from '@/components/ui/popover'
 
 export interface SelectMultiProps<T extends object> {
   values: string[]
@@ -271,9 +267,9 @@ function SelectMulti<T extends object>({
         </button>
 
         <Drawer open={open} onOpenChange={handleOpenChange} direction="bottom">
-          <DrawerContent title={contentTitle ?? placeholder} showDivider>
+          <Drawer.Content title={contentTitle ?? placeholder} showDivider>
             <div className="pb-6">{DropdownContent}</div>
-          </DrawerContent>
+          </Drawer.Content>
         </Drawer>
       </>
     )
@@ -281,13 +277,13 @@ function SelectMulti<T extends object>({
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild disabled={disabled}>
+      <Popover.Trigger asChild disabled={disabled}>
         <button id={id} type="button" className={triggerClassName}>
           {TriggerBody}
         </button>
-      </PopoverTrigger>
+      </Popover.Trigger>
 
-      <PopoverContent
+      <Popover.Content
         align="start"
         sideOffset={4}
         className={cn(
@@ -299,7 +295,7 @@ function SelectMulti<T extends object>({
         style={{ width: 'var(--radix-popover-trigger-width)' }}
       >
         {DropdownContent}
-      </PopoverContent>
+      </Popover.Content>
     </Popover>
   )
 }
