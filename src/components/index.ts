@@ -1,9 +1,10 @@
 export * from './icon';
 
+export * from './layouts/app-shell';
+
 export * from './ui/accordion';
 export * from './ui/action-group';
 export * from './ui/alert';
-export * from './ui/announcement-banner';
 export * from './ui/badge';
 export * from './ui/brand-domain-input';
 export * from './ui/breadcrumb';
