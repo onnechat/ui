@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 import { Alert } from './alert';
@@ -26,7 +27,13 @@ const meta: Meta<typeof Alert> = {
 
 export default meta;
 
-export const Default: StoryObj<typeof Alert> = {
+type AlertStoryArgs = ComponentProps<typeof Alert> & {
+  iconType?: IconType | null;
+  title?: string;
+  description?: string;
+};
+
+export const Default: StoryObj<AlertStoryArgs> = {
   argTypes: {
     iconType: {
       control: 'select',

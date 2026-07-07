@@ -12,7 +12,6 @@ const meta: Meta<typeof Toaster> = {
   tags: ['autodocs'],
   args: {
     position: 'bottom-center',
-    richColors: true,
   },
 }
 

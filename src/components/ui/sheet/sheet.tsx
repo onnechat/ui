@@ -33,7 +33,11 @@ function SheetTrigger({
   }
 
   return (
-    <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props}>
+    <SheetPrimitive.Trigger
+      data-slot="sheet-trigger"
+      className="cursor-pointer"
+      {...props}
+    >
       {children}
     </SheetPrimitive.Trigger>
   )
@@ -60,7 +64,11 @@ function SheetClose({
   }
 
   return (
-    <SheetPrimitive.Close data-slot="sheet-close" {...props}>
+    <SheetPrimitive.Close
+      data-slot="sheet-close"
+      className="cursor-pointer"
+      {...props}
+    >
       {children}
     </SheetPrimitive.Close>
   )
@@ -115,7 +123,7 @@ function SheetContent({
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="ring-offset-background focus:ring-ring absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
+        <SheetPrimitive.Close className="ring-offset-background focus:ring-ring absolute top-4 right-4 rounded-xs opacity-70 transition-opacity cursor-pointer hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
           <Icon name="Xmark" className="size-4" />
           <span className="sr-only">{'close'}</span>
         </SheetPrimitive.Close>

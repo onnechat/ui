@@ -44,7 +44,11 @@ function PopoverTrigger({
   }
 
   return (
-    <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props}>
+    <PopoverPrimitive.Trigger
+      data-slot="popover-trigger"
+      className="cursor-pointer"
+      {...props}
+    >
       {children}
     </PopoverPrimitive.Trigger>
   )

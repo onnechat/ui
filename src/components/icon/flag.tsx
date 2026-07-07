@@ -1,7 +1,6 @@
 import type { IconProps } from 'nucleo-flags'
 import * as nucleoFlags from 'nucleo-flags'
 
-import type { ComponentType } from 'react'
 
 import { cn } from '@/lib/cn'
 

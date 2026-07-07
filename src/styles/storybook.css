@@ -53,10 +53,11 @@
   color: var(--foreground) !important;
 }
 
+/* Sonner toasts render as <li>; keep docs typography colors away from them. */
 .sbdocs .sbdocs-p,
-.sbdocs p,
+.sbdocs p:not([data-sonner-toast] p),
 .sbdocs .sbdocs-li,
-.sbdocs li,
+.sbdocs li:not([data-sonner-toast]):not([data-sonner-toast] li),
 .sbdocs .sbdocs-description {
   color: var(--foreground) !important;
 }

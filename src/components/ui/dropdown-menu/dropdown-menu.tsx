@@ -121,7 +121,7 @@ function DropdownMenuTrigger({
   return (
     <MenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
-      className={className}
+      className={cn('cursor-pointer', className)}
       {...props}
       onClick={(e) => {
         trigger('click')

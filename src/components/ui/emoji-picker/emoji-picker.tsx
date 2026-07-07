@@ -108,7 +108,7 @@ function EmojiPickerList({
         ),
         Emoji: ({ emoji, ...props }) => (
           <button
-            className="flex size-8 items-center justify-center rounded-md text-lg transition-colors data-active:bg-accent"
+            className="flex size-8 cursor-pointer items-center justify-center rounded-md text-lg transition-colors data-active:bg-accent"
             {...props}
           >
             {emoji.emoji}
@@ -127,7 +127,7 @@ function EmojiPickerSkinToneSelector({
   return (
     <EmojiPickerPrimitive.SkinToneSelector
       className={cn(
-        'flex size-7 items-center justify-center rounded-md text-sm transition-colors hover:bg-accent',
+        'flex size-7 cursor-pointer items-center justify-center rounded-md text-sm transition-colors hover:bg-accent',
         className,
       )}
       {...props}

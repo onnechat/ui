@@ -23,18 +23,20 @@ const toasterCardStyle = {
   '--normal-bg-hover':
     'color-mix(in oklab, var(--card-foreground) 6%, var(--card))',
   '--normal-border-hover': 'var(--border)',
-  '--success-bg': 'color-mix(in oklab, var(--success) 12%, var(--card))',
-  '--success-border': 'color-mix(in oklab, var(--success) 42%, var(--border))',
+  /* Same recipe as the Alert variants: text-{color} on a 5% tint, no border.
+     Alerts use `bg-{color}/5` over the page; toasts float, so the 5% tint is
+     pre-mixed with --background to stay opaque. */
+  '--success-bg': 'color-mix(in oklab, var(--success) 5%, var(--background))',
+  '--success-border': 'transparent',
   '--success-text': 'var(--success)',
-  '--info-bg': 'color-mix(in oklab, var(--info) 12%, var(--card))',
-  '--info-border': 'color-mix(in oklab, var(--info) 42%, var(--border))',
+  '--info-bg': 'color-mix(in oklab, var(--info) 5%, var(--background))',
+  '--info-border': 'transparent',
   '--info-text': 'var(--info)',
-  '--warning-bg': 'color-mix(in oklab, var(--warning) 14%, var(--card))',
-  '--warning-border': 'color-mix(in oklab, var(--warning) 42%, var(--border))',
+  '--warning-bg': 'color-mix(in oklab, var(--warning) 5%, var(--background))',
+  '--warning-border': 'transparent',
   '--warning-text': 'var(--warning)',
-  '--error-bg': 'color-mix(in oklab, var(--destructive) 12%, var(--card))',
-  '--error-border':
-    'color-mix(in oklab, var(--destructive) 45%, var(--border))',
+  '--error-bg': 'color-mix(in oklab, var(--destructive) 5%, var(--background))',
+  '--error-border': 'transparent',
   '--error-text': 'var(--destructive)',
 } as React.CSSProperties
 
@@ -43,6 +45,8 @@ const Toaster = ({
   toastOptions,
   style,
   className,
+  /** Colored like the Alert variants by default; pass `false` for neutral card toasts. */
+  richColors = true,
   ...props
 }: AppToasterProps) => {
   const { theme: themeFromHook } = useTheme()
@@ -51,6 +55,7 @@ const Toaster = ({
   return (
     <Sonner
       theme={toastTheme}
+      richColors={richColors}
       className={cn('toaster group', className)}
       style={{ ...toasterCardStyle, ...style }}
       toastOptions={{

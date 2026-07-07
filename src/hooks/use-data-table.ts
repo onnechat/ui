@@ -44,7 +44,18 @@ export function useDataTable<TData>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: isManual ? undefined : getPaginationRowModel(),
-    onRowSelectionChange: onRowSelectionChange ?? setInnerRowSelection,
+    onRowSelectionChange: (updaterOrValue) => {
+      const next =
+        typeof updaterOrValue === 'function'
+          ? updaterOrValue(selection)
+          : updaterOrValue
+
+      if (onRowSelectionChange) {
+        onRowSelectionChange(next)
+      } else {
+        setInnerRowSelection(next)
+      }
+    },
     state: {
       rowSelection: selection,
     },

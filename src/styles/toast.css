@@ -51,3 +51,24 @@
   [data-description] {
   color: var(--color-muted-foreground);
 }
+
+/* Rich-colored toasts: description at 70% of the semantic color, matching Alert (`text-{color}/70`) */
+[data-sonner-toast][data-styled='true'][data-rich-colors='true'][data-type='success']
+  [data-description] {
+  color: color-mix(in oklab, var(--success) 70%, transparent);
+}
+
+[data-sonner-toast][data-styled='true'][data-rich-colors='true'][data-type='info']
+  [data-description] {
+  color: color-mix(in oklab, var(--info) 70%, transparent);
+}
+
+[data-sonner-toast][data-styled='true'][data-rich-colors='true'][data-type='warning']
+  [data-description] {
+  color: color-mix(in oklab, var(--warning) 70%, transparent);
+}
+
+[data-sonner-toast][data-styled='true'][data-rich-colors='true'][data-type='error']
+  [data-description] {
+  color: color-mix(in oklab, var(--destructive) 70%, transparent);
+}

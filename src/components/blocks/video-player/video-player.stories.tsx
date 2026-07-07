@@ -48,7 +48,7 @@ export const Default: StoryObj<typeof meta> = {
       </VideoPlayerControlBar>
     </VideoPlayer>
   ),
-  play: async ({ canvas }) => {
+  play: async () => {
     const el = document.querySelector('media-controller');
     await expect(el).toBeInTheDocument();
   },
@@ -70,7 +70,7 @@ export const Minimal: StoryObj<typeof meta> = {
       </VideoPlayerControlBar>
     </VideoPlayer>
   ),
-  play: async ({ canvas }) => {
+  play: async () => {
     const el = document.querySelector('media-controller');
     await expect(el).toBeInTheDocument();
   },

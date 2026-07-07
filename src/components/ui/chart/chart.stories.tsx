@@ -7,7 +7,6 @@ import {
   Line,
   LineChart,
   XAxis,
-  YAxis,
 } from 'recharts'
 import { Chart } from './chart'
 
