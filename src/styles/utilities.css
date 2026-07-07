@@ -13,3 +13,77 @@
     z-index: 9999;
   }
 }
+
+/*
+ * scroll-fade-y — fades the top/bottom edges of a vertical scroll container as
+ * you scroll (crisp at rest edges, faded mid-scroll). Scroll-driven, no JS.
+ * Apply on the scroller alongside `overflow-y-auto`. Inspired by shadcn's
+ * scroll-fade util.
+ */
+@property --scroll-fade-t {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --scroll-fade-b {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@keyframes scroll-fade-reveal-top {
+  from {
+    --scroll-fade-t: 0px;
+  }
+  to {
+    --scroll-fade-t: var(--scroll-fade-size);
+  }
+}
+
+@keyframes scroll-fade-reveal-bottom {
+  from {
+    --scroll-fade-b: var(--scroll-fade-size);
+  }
+  to {
+    --scroll-fade-b: 0px;
+  }
+}
+
+@utility scroll-fade-y {
+  --scroll-fade-size: 2rem;
+  --scroll-fade-reveal: 4rem;
+
+  /* The mask fades everything painted in the box, including the native
+   * scrollbar. Hide it so only the content fades — the fade itself is the
+   * "more content" affordance. */
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black var(--scroll-fade-t),
+    black calc(100% - var(--scroll-fade-b)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black var(--scroll-fade-t),
+    black calc(100% - var(--scroll-fade-b)),
+    transparent 100%
+  );
+
+  @supports (animation-timeline: scroll()) {
+    animation-name: scroll-fade-reveal-top, scroll-fade-reveal-bottom;
+    animation-fill-mode: both, both;
+    animation-timing-function: linear, linear;
+    animation-timeline: scroll(self), scroll(self);
+    animation-range:
+      0 var(--scroll-fade-reveal),
+      calc(100% - var(--scroll-fade-reveal)) 100%;
+  }
+}

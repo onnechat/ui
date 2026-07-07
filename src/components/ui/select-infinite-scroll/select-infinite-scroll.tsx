@@ -181,7 +181,7 @@ function SelectInfiniteScroll<T extends object>({
         ref={scrollableRef}
         onScroll={handleScroll}
         onWheel={(e) => e.stopPropagation()}
-        className="overflow-y-auto max-h-64 p-1"
+        className="scroll-fade-y overflow-y-auto max-h-64 p-1"
       >
         {isLoading ? (
           <Loader className="flex items-center justify-center p-2 lg:p-4" />

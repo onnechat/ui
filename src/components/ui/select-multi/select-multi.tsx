@@ -200,7 +200,7 @@ function SelectMulti<T extends object>({
 
       <div
         onWheel={(e) => e.stopPropagation()}
-        className="max-h-64 overflow-y-auto overflow-x-hidden p-1"
+        className="scroll-fade-y max-h-64 overflow-y-auto overflow-x-hidden p-1"
       >
         {isLoading ? (
           <Loader className="flex items-center justify-center p-2 lg:p-4" />

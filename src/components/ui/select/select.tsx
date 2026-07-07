@@ -292,11 +292,12 @@ function SelectContent({
           )}
           {...props}
         >
-          <SelectScrollUpButton />
-
-          <div className="p-1">{children}</div>
-
-          <SelectScrollDownButton />
+          <SelectPrimitive.List
+            data-slot="select-list"
+            className="scroll-fade-y max-h-[min(24rem,var(--available-height))] overflow-x-hidden overflow-y-auto p-1"
+          >
+            {children}
+          </SelectPrimitive.List>
         </SelectPrimitive.Popup>
       </SelectPrimitive.Positioner>
     </SelectPrimitive.Portal>
@@ -311,7 +312,7 @@ function SelectLabel({
     <SelectPrimitive.GroupLabel
       data-slot="select-label"
       className={cn(
-        'text-muted-foreground py-1.5 ps-8 pe-2 text-xs font-medium',
+        'px-2 pt-2 pb-1.5 text-xs font-medium uppercase text-muted-foreground/50 select-none',
         className,
       )}
       {...props}
