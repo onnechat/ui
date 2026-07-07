@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/cn'
 
 const alertVariants = cva(
-  'relative w-fit rounded-2xl px-4 py-3 text-sm grid gap-y-0.5 has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] items-start [&>svg]:size-4 [&>svg]:translate-y-1 [&:has(>[data-slot=alert-title],[data-slot=alert-description])]:has-[>svg]:gap-x-2 [&:has(*[data-slot=alert-description]):not(:has(*[data-slot=alert-title]))]:[&>svg]:translate-y-0.5 [&:not(:has(*[data-slot=alert-title])):not(:has(*[data-slot=alert-description]))]:[&>svg]:translate-y-0 [&>svg]:text-current',
+  'relative w-fit rounded-2xl px-4 py-3 text-sm grid gap-y-0.5 has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] items-start [&>svg]:size-4 [&>svg]:translate-y-1 [&:has(>[data-slot=alert-title],[data-slot=alert-description])]:has-[>svg]:gap-x-2 [&:has(*[data-slot=alert-description]):not(:has(*[data-slot=alert-title]))]:[&>svg]:translate-y-0.5 [&:not(:has(*[data-slot=alert-title])):not(:has(*[data-slot=alert-description]))]:[&>svg]:translate-y-0 [&>svg]:text-current [&:not(:has([data-slot=alert-title]))]:*:data-[slot=alert-description]:text-current',
   {
     variants: {
       variant: {
