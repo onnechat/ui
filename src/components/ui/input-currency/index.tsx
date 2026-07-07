@@ -9,7 +9,6 @@ import { useCurrencyInput } from '@/hooks/use-currency-input'
 import { useElementSize } from '@/hooks/use-element-size'
 
 import { Input } from '@/components/ui/input'
-import * as SelectPrimitive from '@radix-ui/react-select'
 import { Select } from '@/components/ui/select'
 
 export interface CurrencyInputProps extends Omit<
@@ -24,7 +23,7 @@ export interface CurrencyInputProps extends Omit<
   centsMode?: boolean
   onChange?: (value: number) => void
   onCurrencyChange?: (currency: Currency) => void
-  align?: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>['align']
+  align?: 'start' | 'center' | 'end'
 }
 
 const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(

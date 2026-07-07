@@ -9,6 +9,8 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { useHaptics } from '@/hooks/use-haptics';
 
+import { composeRefs } from '@/lib/slot';
+
 import { Loader } from '../loader';
 
 const buttonVariants = cva(
@@ -49,16 +51,22 @@ type InternalVariantProps = VariantProps<typeof buttonVariants> & {
 
 export type ButtonVariants = InternalVariantProps['variant'];
 
-function Button({
-  variant,
-  size = 'default',
-  asChild = false,
-  isLoading = false,
-  disabled,
-  className,
-  children,
-  ...props
-}: React.ComponentProps<'button'> & InternalVariantProps) {
+const Button = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<'button'> & InternalVariantProps
+>(function Button(
+  {
+    variant,
+    size = 'default',
+    asChild = false,
+    isLoading = false,
+    disabled,
+    className,
+    children,
+    ...props
+  },
+  forwardedRef,
+) {
   const { trigger } = useHaptics();
 
   const ref = React.useRef<HTMLElement>(null);
@@ -95,7 +103,7 @@ function Button({
 
   return (
     <ButtonPrimitive
-      ref={ref}
+      ref={composeRefs(ref, forwardedRef)}
       nativeButton={!asChild}
       render={
         asChild && React.isValidElement<Record<string, unknown>>(children)
@@ -130,6 +138,6 @@ function Button({
       {asChild ? null : content}
     </ButtonPrimitive>
   );
-}
+});
 
 export { Button, buttonVariants };

@@ -14,6 +14,8 @@ import {
   DialogDescription,
 } from '@/components/internal/dialog'
 
+import { Kbd } from '@/components/ui/kbd'
+
 function CommandRoot({
   className,
   ...props
@@ -22,7 +24,12 @@ function CommandRoot({
     <CommandPrimitive
       data-slot="command"
       className={cn(
-        'flex h-full w-full flex-col overflow-hidden rounded-md border bg-popover text-popover-foreground',
+        'flex h-full w-full flex-col overflow-hidden rounded-xl bg-muted text-foreground [--card-content-padding:1rem]',
+        '**:data-[slot=command-input-wrapper]:flex **:data-[slot=command-input-wrapper]:min-h-14 **:data-[slot=command-input-wrapper]:items-center',
+        '**:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:text-muted-foreground/50',
+        '**:[[cmdk-group]]:px-(--card-content-padding)! **:[[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0',
+        '**:[[cmdk-input-wrapper]_svg]:h-5 **:[[cmdk-input-wrapper]_svg]:w-5 **:[[cmdk-input]]:h-12',
+        '**:[[cmdk-item]]:gap-3 **:[[cmdk-item]]:px-3 **:[[cmdk-item]]:py-3 **:[[cmdk-item]]:rounded-lg **:[[cmdk-item]_svg]:h-5 **:[[cmdk-item]_svg]:w-5',
         className,
       )}
       {...props}
@@ -38,14 +45,17 @@ function CommandDialog({
   commandClassName,
   closeButtonClassName,
   showCloseButton = true,
+  filter,
   ...props
-}: React.ComponentProps<typeof Dialog> & {
+}: Omit<React.ComponentProps<typeof Dialog>, 'children'> & {
+  children?: React.ReactNode
   title?: string
   description?: string
   className?: string
   commandClassName?: string
   closeButtonClassName?: string
   showCloseButton?: boolean
+  filter?: React.ComponentProps<typeof CommandPrimitive>['filter']
 }) {
   return (
     <Dialog {...props}>
@@ -54,24 +64,22 @@ function CommandDialog({
         closeButton={showCloseButton}
         closeButtonClassName={cn(
           'top-[calc(var(--card-padding)+1.75rem)] right-[calc(var(--card-padding)+0.75rem)] -translate-y-1/2',
+          'size-7 rounded-md p-1 bg-muted/50 hover:bg-muted hover:opacity-100 text-muted-foreground',
           closeButtonClassName,
         )}
         className={cn(
           'overflow-hidden gap-0 border-0 bg-card p-(--card-padding) shadow-none',
           '[--card-radius:1rem] [--card-padding:0.25rem] lg:rounded-(--card-radius) lg:p-(--card-padding)',
+          'max-w-xl! border-none outline-none max-h-dvh max-sm:px-1 shadow-lg sm:rounded-2xl',
           className,
         )}
       >
         <DialogDescription className="sr-only">{description}</DialogDescription>
 
         <Command
+          filter={filter}
           className={cn(
-            'bg-muted text-foreground [--card-content-padding:1rem] [--card-content-radius:calc(var(--card-radius)-var(--card-padding))] lg:rounded-(--card-content-radius)',
-            '**:data-[slot=command-input-wrapper]:flex **:data-[slot=command-input-wrapper]:min-h-14 **:data-[slot=command-input-wrapper]:items-center',
-            '**:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:text-muted-foreground/50',
-            '**:[[cmdk-group]]:px-(--card-content-padding)! **:[[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0',
-            '**:[[cmdk-input-wrapper]_svg]:h-5 **:[[cmdk-input-wrapper]_svg]:w-5 **:[[cmdk-input]]:h-12',
-            '**:[[cmdk-item]]:gap-3 **:[[cmdk-item]]:px-3 **:[[cmdk-item]]:py-3 **:[[cmdk-item]]:rounded-lg **:[[cmdk-item]_svg]:h-5 **:[[cmdk-item]_svg]:w-5',
+            '[--card-content-radius:calc(var(--card-radius)-var(--card-padding))] sm:rounded-xl lg:rounded-(--card-content-radius)',
             commandClassName,
           )}
         >
@@ -89,14 +97,14 @@ function CommandInput({
   return (
     <div
       data-slot="command-input-wrapper"
-      className="flex h-9 min-h-14 items-center gap-4 border-b border-border [--card-content-padding:1rem] px-(--card-content-padding)"
+      className="flex h-9 min-h-14 items-center gap-4 px-(--card-content-padding)"
     >
       <Icon name="Magnifier" className="size-4 shrink-0 opacity-50" />
 
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(
-          'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+          'flex h-10 w-full rounded-md bg-transparent py-3 pr-9 text-sm outline-hidden placeholder:text-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-50',
           '[&_button]:size-8!',
           className,
         )}
@@ -195,9 +203,58 @@ function CommandShortcut({
   )
 }
 
+function CommandFooter({
+  className,
+  navigateLabel = 'navigate',
+  selectLabel = 'select',
+  closeLabel = 'close',
+  children,
+  ...props
+}: React.ComponentProps<'div'> & {
+  navigateLabel?: string
+  selectLabel?: string
+  closeLabel?: string
+}) {
+  return (
+    <div
+      data-slot="command-footer"
+      className={cn(
+        'hidden lg:flex shrink-0 items-center justify-between p-4 text-xs text-muted-foreground',
+        className,
+      )}
+      {...props}
+    >
+      {children ?? (
+        <>
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1.5">
+              <Kbd keys={['ArrowUp', 'ArrowDown']} />
+
+              <span>{navigateLabel}</span>
+            </span>
+
+            <span className="flex items-center gap-1.5">
+              <Kbd keys={['Enter']} />
+
+              <span>{selectLabel}</span>
+            </span>
+          </div>
+
+          <span className="flex items-center gap-1.5">
+            <Kbd keys={['Escape']} />
+
+            <span>{closeLabel}</span>
+          </span>
+        </>
+      )}
+    </div>
+  )
+}
+
 const Command = Object.assign(CommandRoot, {
   Dialog: CommandDialog,
   Empty: CommandEmpty,
+  Footer: CommandFooter,
   Group: CommandGroup,
   Input: CommandInput,
   Item: CommandItem,

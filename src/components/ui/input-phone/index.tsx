@@ -10,7 +10,6 @@ import { usePhoneInput } from '@/hooks/use-phone-input'
 
 import { Input } from '@/components/ui/input'
 import { FlagIcon } from '@/components/icon/flag'
-import * as SelectPrimitive from '@radix-ui/react-select'
 import { Select } from '@/components/ui/select'
 
 export interface PhoneInputProps extends Omit<
@@ -22,7 +21,7 @@ export interface PhoneInputProps extends Omit<
   onCountryChange?: (country: Country) => void
   disableCountrySelect?: boolean
   locale?: string
-  align?: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>['align']
+  align?: 'start' | 'center' | 'end'
 }
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   (props, ref) => {

@@ -1,5 +1,6 @@
 :root {
   --brand-red: oklch(0.6 0.2 12);
+  --radius: 0.5rem;
 }
 
 :root,

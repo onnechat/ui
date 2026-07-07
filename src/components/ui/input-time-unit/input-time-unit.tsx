@@ -7,7 +7,6 @@ import { cn } from '@/lib/cn';
 import { useElementSize } from '@/hooks/use-element-size';
 
 import { Input } from '@/components/ui/input';
-import * as SelectPrimitive from '@radix-ui/react-select';
 import { Select } from '@/components/ui/select';
 
 export type TimeUnit =
@@ -77,7 +76,7 @@ export interface InputTimeUnitProps
   /** Called whenever the user picks a different unit. */
   onUnitChange?: (unit: TimeUnit) => void;
   /** Alignment of the unit dropdown relative to the trigger. */
-  align?: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>['align'];
+  align?: 'start' | 'center' | 'end';
   /** Extra classes for the outermost wrapper div. */
   containerClassName?: string;
   /**
@@ -273,7 +272,7 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
 
         <Select
           value={selectedUnit}
-          onValueChange={handleUnitChange}
+          onValueChange={(value) => handleUnitChange(value as TimeUnit)}
           disabled={disabled || disableUnitSelect}
         >
           <Select.Trigger

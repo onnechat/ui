@@ -2,8 +2,6 @@
 
 import { Table } from '@tanstack/react-table'
 
-import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
-
 import { Icon } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
@@ -18,12 +16,12 @@ export function DataTableViewOptions<TData>({
 }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenu.Trigger asChild>
         <Button variant="outline" className="ml-auto hidden h-8 lg:flex">
           <Icon name="Gear2" className="mr-2 h-4 w-4" />
           View
         </Button>
-      </DropdownMenuTrigger>
+      </DropdownMenu.Trigger>
       <DropdownMenu.Content align="end" className="w-[150px]">
         {table
           .getAllColumns()

@@ -1,17 +1,16 @@
 'use client'
 
-import * as React from 'react'
-
-import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
+import { Radio as RadioPrimitive } from '@base-ui/react/radio'
+import { RadioGroup as RadioGroupPrimitive } from '@base-ui/react/radio-group'
 
 import { cn } from '@/lib/cn'
 
 function RadioGroupRoot({
   className,
   ...props
-}: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
+}: RadioGroupPrimitive.Props) {
   return (
-    <RadioGroupPrimitive.Root
+    <RadioGroupPrimitive
       data-slot="radio-group"
       className={cn('grid gap-3', className)}
       {...props}
@@ -22,17 +21,17 @@ function RadioGroupRoot({
 function RadioGroupItem({
   className,
   ...props
-}: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
+}: RadioPrimitive.Root.Props) {
   return (
-    <RadioGroupPrimitive.Item
+    <RadioPrimitive.Root
       data-slot="radio-group-item"
       className={cn(
-        'border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive aspect-square size-4 shrink-0 rounded-full border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
+        'border-input data-checked:bg-primary data-checked:text-primary-foreground data-checked:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive aspect-square size-4 shrink-0 rounded-full border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}
       {...props}
     >
-      <RadioGroupPrimitive.Indicator className="flex items-center justify-center text-current">
+      <RadioPrimitive.Indicator className="flex items-center justify-center text-current data-unchecked:hidden">
         <svg
           width="6"
           height="6"
@@ -42,8 +41,8 @@ function RadioGroupItem({
         >
           <circle cx="3" cy="3" r="3" />
         </svg>
-      </RadioGroupPrimitive.Indicator>
-    </RadioGroupPrimitive.Item>
+      </RadioPrimitive.Indicator>
+    </RadioPrimitive.Root>
   )
 }
 

@@ -1,6 +1,8 @@
 import * as React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Icon } from '@/components/icon'
+import { Button } from '@/components/ui/button'
+import { Kbd } from '@/components/ui/kbd'
 import { Command } from './command'
 
 const meta: Meta<typeof Command> = {
@@ -35,7 +37,6 @@ export const Default: StoryObj = {
               Settings
             </Command.Item>
           </Command.Group>
-          <Command.Separator />
           <Command.Group heading="People">
             <Command.Item onSelect={() => {}}>
               <Icon name="User" className="size-4" />
@@ -109,7 +110,6 @@ export const WithDisabledItems: StoryObj = {
               Edit
             </Command.Item>
           </Command.Group>
-          <Command.Separator />
           <Command.Group heading="Unavailable">
             <Command.Item disabled onSelect={() => {}}>
               <Icon name="Trash" className="size-4" />
@@ -168,17 +168,11 @@ export const DialogMode: StoryObj = {
 
     return (
       <>
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium shadow-sm hover:bg-accent"
-          onClick={() => setOpen(true)}
-        >
+        <Button variant="outline" onClick={() => setOpen(true)}>
           <Icon name="Magnifier" className="size-4" />
           Open Command Palette
-          <kbd className="ml-4 inline-flex items-center gap-1 rounded border bg-muted px-1.5 py-0.5 font-mono text-[0.7em] text-muted-foreground">
-            ⌘K
-          </kbd>
-        </button>
+          <Kbd keys={['Mod', 'K']} className="ml-2" />
+        </Button>
 
         <Command.Dialog
           open={open}
@@ -189,7 +183,7 @@ export const DialogMode: StoryObj = {
           <Command.Input placeholder="Type a command or search…" />
           <Command.List>
             <Command.Empty>No results found.</Command.Empty>
-            <Command.Group heading="Navigation">
+            <Command.Group heading="Navigation" className="pb-4">
               <Command.Item
                 onSelect={() => {
                   setOpen(false)
@@ -218,8 +212,7 @@ export const DialogMode: StoryObj = {
                 <Command.Shortcut>⌘M</Command.Shortcut>
               </Command.Item>
             </Command.Group>
-            <Command.Separator />
-            <Command.Group heading="Actions">
+            <Command.Group heading="Actions" className="pb-4">
               <Command.Item
                 onSelect={() => {
                   setOpen(false)
@@ -240,6 +233,8 @@ export const DialogMode: StoryObj = {
               </Command.Item>
             </Command.Group>
           </Command.List>
+
+          <Command.Footer />
         </Command.Dialog>
       </>
     )

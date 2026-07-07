@@ -166,7 +166,6 @@ export function CollapsibleContent({
     useCollapsibleContext('CollapsibleContent')
   const contentRef = React.useRef<HTMLDivElement>(null)
   const [measuredHeight, setMeasuredHeight] = React.useState(0)
-  const [animating, setAnimating] = React.useState(false)
 
   React.useEffect(() => {
     const el = contentRef.current
@@ -186,10 +185,6 @@ export function CollapsibleContent({
     return () => ro.disconnect()
   }, [])
 
-  React.useEffect(() => {
-    if (open) setAnimating(true)
-  }, [open])
-
   const height = open ? measuredHeight : 0
 
   const isCard = variant === 'card'
@@ -205,9 +200,6 @@ export function CollapsibleContent({
         opacity: open ? 1 : 0,
         transition: `height ${ANIMATION.DURATION_FLOAT}s ease-in-out, opacity ${ANIMATION.DURATION_FLOAT / 2}s ease`,
         transitionDelay: open ? `0s, ${ANIMATION.DURATION_FLOAT / 2}s` : '0s, 0s',
-      }}
-      onTransitionEnd={() => {
-        if (!open) setAnimating(false)
       }}
       className={cn(className)}
     >

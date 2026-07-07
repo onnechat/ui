@@ -2,8 +2,6 @@
 
 import * as React from 'react'
 
-import * as LabelPrimitive from '@radix-ui/react-label'
-
 import { cn } from '@/lib/cn'
 
 function Label({
@@ -11,11 +9,11 @@ function Label({
   children,
   required,
   ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root> & {
+}: React.ComponentProps<'label'> & {
   required?: boolean
 }) {
   return (
-    <LabelPrimitive.Root
+    <label
       data-slot="label"
       className={cn(
         'flex items-center gap-2 text-sm leading-none select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
@@ -25,7 +23,7 @@ function Label({
     >
       {children}
       {required && <span className="text-destructive">*</span>}
-    </LabelPrimitive.Root>
+    </label>
   )
 }
 

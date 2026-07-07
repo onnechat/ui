@@ -2,22 +2,65 @@
 
 import * as React from 'react'
 
-import * as AccordionPrimitive from '@radix-ui/react-accordion'
+import { Accordion as AccordionPrimitive } from '@base-ui/react/accordion'
 
 import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
 
+type AccordionProps = Omit<
+  AccordionPrimitive.Root.Props,
+  'value' | 'defaultValue' | 'onValueChange' | 'multiple'
+> & {
+  /** Radix-compatible API: 'single' keeps at most one item open. */
+  type?: 'single' | 'multiple'
+  /** Kept for Radix API compatibility; Base UI single accordions are always collapsible. */
+  collapsible?: boolean
+  value?: string | string[]
+  defaultValue?: string | string[]
+  /** Receives a `string` when `type="single"` and a `string[]` when `type="multiple"`. */
+  onValueChange?: (value: string & string[]) => void
+}
+
 function Accordion({
+  type = 'single',
+  collapsible: _collapsible,
+  value,
+  defaultValue,
+  onValueChange,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Root>) {
-  return <AccordionPrimitive.Root data-slot="accordion" {...props} />
+}: AccordionProps) {
+  const toArray = (v: string | string[] | undefined) =>
+    v === undefined ? undefined : Array.isArray(v) ? v : [v]
+
+  const handleValueChange = onValueChange
+    ? (next: unknown[]) => {
+        if (type === 'multiple') {
+          const handle = onValueChange as (value: string[]) => void
+          handle(next as string[])
+        } else {
+          const handle = onValueChange as (value: string) => void
+          handle((next[next.length - 1] as string) ?? '')
+        }
+      }
+    : undefined
+
+  return (
+    <AccordionPrimitive.Root
+      data-slot="accordion"
+      multiple={type === 'multiple'}
+      value={toArray(value)}
+      defaultValue={toArray(defaultValue)}
+      onValueChange={handleValueChange}
+      {...props}
+    />
+  )
 }
 
 function AccordionItem({
   className,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Item>) {
+}: AccordionPrimitive.Item.Props) {
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
@@ -31,13 +74,13 @@ function AccordionTrigger({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+}: AccordionPrimitive.Trigger.Props) {
   return (
     <AccordionPrimitive.Header className="flex">
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          'focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-start gap-4 rounded-md p-4 text-left text-sm font-medium transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none cursor-pointer disabled:opacity-50 [&[data-state=open]>svg]:rotate-0',
+          'focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-start gap-4 rounded-md p-4 text-left text-sm font-medium transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none cursor-pointer disabled:opacity-50 [&[data-panel-open]>svg]:rotate-0',
           className,
         )}
         {...props}
@@ -54,15 +97,15 @@ function AccordionContent({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Content>) {
+}: AccordionPrimitive.Panel.Props) {
   return (
-    <AccordionPrimitive.Content
+    <AccordionPrimitive.Panel
       data-slot="accordion-content"
-      className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm"
+      className="h-(--accordion-panel-height) data-starting-style:h-0 data-ending-style:h-0 transition-[height] duration-200 ease-out overflow-hidden text-sm"
       {...props}
     >
       <div className={cn('p-4', className)}>{children}</div>
-    </AccordionPrimitive.Content>
+    </AccordionPrimitive.Panel>
   )
 }
 

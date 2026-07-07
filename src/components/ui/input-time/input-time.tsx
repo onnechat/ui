@@ -7,7 +7,6 @@ import { cn } from '@/lib/cn';
 import { Icon } from '@/components/icon';
 import type { FillIconName, CustomIconName } from '@/components/icon';
 import { useElementSize } from '@/hooks/use-element-size';
-import * as SelectPrimitive from '@radix-ui/react-select';
 import { Select } from '@/components/ui/select';
 
 import { Input } from '../input';
@@ -38,7 +37,7 @@ export interface InputTimeProps
   defaultType?: InputTimeType;
   onTypeChange?: (type: InputTimeType) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  align?: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>['align'];
+  align?: 'start' | 'center' | 'end';
 }
 
 function InputTime({

@@ -175,7 +175,11 @@ export const AssistantChat = ({
   const [hasInitialized, setHasInitialized] = useState(false);
 
   const [isTyping, setIsTyping] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Animation bookkeeping lives in refs so the playback effect can depend
+  // only on `currentMessages` without re-triggering itself mid-animation.
+  const isAnimatingRef = useRef(false);
+  const displayedCountRef = useRef(0);
 
   const [isAtBottom, setIsAtBottom] = useState(true);
 
@@ -209,7 +213,8 @@ export const AssistantChat = ({
       setDisplayedMessages([]);
       setMessageStates({});
 
-      setIsAnimating(false);
+      displayedCountRef.current = 0;
+      isAnimatingRef.current = false;
       setIsTyping(false);
     }
   }, [messages, messagesKey, hasInitialized]);
@@ -217,16 +222,16 @@ export const AssistantChat = ({
   useEffect(() => {
     if (
       currentMessages.length === 0 ||
-      displayedMessages.length >= currentMessages.length
+      displayedCountRef.current >= currentMessages.length
     ) {
       return;
     }
 
-    if (isAnimating) {
+    if (isAnimatingRef.current) {
       return;
     }
 
-    setIsAnimating(true);
+    isAnimatingRef.current = true;
 
     let isCancelled = false;
     const activeTimers = new Set<number>();
@@ -246,8 +251,9 @@ export const AssistantChat = ({
       const current = currentMessages[index];
 
       if (current.role === 'assistant') {
-        const newIndex = displayedMessages.length;
+        const newIndex = displayedCountRef.current;
 
+        displayedCountRef.current += 1;
         setDisplayedMessages(prev => [...prev, current]);
         setMessageStates(prev => ({ ...prev, [newIndex]: 'typing' }));
 
@@ -270,6 +276,7 @@ export const AssistantChat = ({
 
       if (isCancelled) return;
 
+      displayedCountRef.current += 1;
       setDisplayedMessages(prev => [...prev, current]);
 
       await sleep(current.content.length * 30);
@@ -278,24 +285,24 @@ export const AssistantChat = ({
       return play(index + 1);
     };
 
-    void play(displayedMessages.length).finally(() => {
-      setIsAnimating(false);
+    void play(displayedCountRef.current).finally(() => {
+      isAnimatingRef.current = false;
     });
 
     const safetyTimeout = setTimeout(() => {
-      if (!isCancelled) setIsAnimating(false);
+      if (!isCancelled) {
+        isAnimatingRef.current = false;
+      }
     }, 30000);
 
     return () => {
       isCancelled = true;
-      setIsAnimating(false);
+      isAnimatingRef.current = false;
       clearTimeout(safetyTimeout);
 
       activeTimers.forEach(id => clearTimeout(id));
       activeTimers.clear();
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentMessages]);
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import { RemoveScroll } from 'react-remove-scroll'
 
-import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { Dialog as DialogPrimitive } from '@base-ui/react/dialog'
 
 import { Icon } from '@/components/icon'
 
@@ -12,27 +12,21 @@ import { cn } from '@/lib/cn'
 
 import { ANIMATION } from '@/constants/animations'
 
-function Dialog({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />
+function Dialog({ ...props }: DialogPrimitive.Root.Props) {
+  // 'trap-focus' keeps focus containment without Base UI's body scroll lock —
+  // scroll locking is handled by RemoveScroll in DialogOverlay.
+  return <DialogPrimitive.Root data-slot="dialog" modal="trap-focus" {...props} />
 }
 
-function DialogTrigger({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
+function DialogTrigger({ ...props }: DialogPrimitive.Trigger.Props) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
 
-function DialogPortal({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Portal>) {
+function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
 }
 
-function DialogClose({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Close>) {
+function DialogClose({ ...props }: DialogPrimitive.Close.Props) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
 }
 
@@ -75,23 +69,14 @@ function DialogContent({
   overlay = true,
   scrollableRef,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+}: DialogPrimitive.Popup.Props & {
   closeButton?: boolean
   closeButtonClassName?: string
   title?: string
   overlay?: boolean
   scrollableRef?: React.RefObject<HTMLElement | null>
 }) {
-  
   const contentRef = React.useRef<HTMLDivElement>(null)
-
-  const onOpenAutoFocus = (event: Event) => {
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur()
-    }
-
-    props.onOpenAutoFocus?.(event)
-  }
 
   return (
     <DialogPortal>
@@ -99,13 +84,23 @@ function DialogContent({
         <DialogOverlay contentRef={contentRef} scrollableRef={scrollableRef} />
       )}
 
-      <DialogPrimitive.Content
+      <DialogPrimitive.Popup
         ref={contentRef}
         data-slot="dialog-content"
         aria-describedby={props['aria-describedby'] || ''}
-        onOpenAutoFocus={onOpenAutoFocus}
+        initialFocus={() => {
+          // Don't move focus into the dialog and drop focus from the trigger,
+          // matching the previous blur-on-open behavior.
+          if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur()
+          }
+          return contentRef.current
+        }}
         className={cn(
-          'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-98 data-[state=open]:zoom-in-98 fixed top-1/2 left-1/2 z-50 grid max-sm:h-dvh sm:max-h-[calc(100%-2rem)] w-full sm:max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-hidden sm:rounded-xl border p-6 shadow-lg',
+          'bg-background fixed top-1/2 left-1/2 z-50 grid max-sm:h-dvh sm:max-h-[calc(100%-2rem)] w-full sm:max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-hidden sm:rounded-xl border p-6 shadow-lg',
+          'transition-[transform,scale,opacity] ease-out',
+          'data-starting-style:scale-98 data-starting-style:opacity-0',
+          'data-ending-style:scale-98 data-ending-style:opacity-0',
           `duration-${ANIMATION.DURATION}`,
           className,
         )}
@@ -130,7 +125,7 @@ function DialogContent({
             <span className="sr-only">{'close'}</span>
           </DialogPrimitive.Close>
         )}
-      </DialogPrimitive.Content>
+      </DialogPrimitive.Popup>
     </DialogPortal>
   )
 }
@@ -161,7 +156,7 @@ function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
 function DialogTitle({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) {
+}: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
       data-slot="alert-dialog-title"
@@ -174,7 +169,7 @@ function DialogTitle({
 function DialogDescription({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+}: DialogPrimitive.Description.Props) {
   return (
     <DialogPrimitive.Description
       data-slot="alert-dialog-description"

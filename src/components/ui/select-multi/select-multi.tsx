@@ -286,13 +286,8 @@ function SelectMulti<T extends object>({
       <Popover.Content
         align="start"
         sideOffset={4}
-        className={cn(
-          'min-w-0 overflow-x-hidden p-0 rounded-xl border-transparent glass-popover text-popover-foreground shadow-md',
-          'data-[state=open]:animate-in data-[state=closed]:animate-out',
-          'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-          'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-        )}
-        style={{ width: 'var(--radix-popover-trigger-width)' }}
+        className="min-w-0 overflow-x-hidden p-0 rounded-xl border-transparent glass-popover text-popover-foreground shadow-md"
+        style={{ width: 'var(--anchor-width)' }}
       >
         {DropdownContent}
       </Popover.Content>

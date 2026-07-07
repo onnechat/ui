@@ -42,7 +42,7 @@ function AccordionItemExtended({
     <AccordionItem
       className={cn(
         'rounded-none border-t-4 border-card first:border-t-0',
-        'data-[state=closed]:last:rounded-b-lg',
+        'not-data-open:last:rounded-b-lg',
         className,
       )}
       {...props}
@@ -58,7 +58,7 @@ function AccordionTriggerExtended({
     <AccordionTrigger
       className={cn(
         'min-h-12 rounded-none border-0 bg-card/50 md:text-base hover:bg-card/75',
-        'first:rounded-t-lg last:data-[state=closed]:rounded-b-lg',
+        'first:rounded-t-lg last:not-data-panel-open:rounded-b-lg',
         className,
       )}
       {...props}

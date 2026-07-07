@@ -197,7 +197,6 @@ function Dialog({
   const [stackOrder, setStackOrder] = useState<number | null>(order ?? null)
 
   let isBehind = false
-  let isActive = true
   let dialogOpen = isOpen !== undefined ? isOpen : globalDialog.isOpen
 
   let stackStyle: React.CSSProperties = {}
@@ -286,8 +285,6 @@ function Dialog({
         dialogOpen = false
       }
     }
-
-    isActive = !isBehind && dialogOpen
   }
 
   useEffect(() => {

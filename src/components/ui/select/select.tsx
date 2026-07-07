@@ -2,7 +2,8 @@
 
 import * as React from 'react'
 
-import * as SelectPrimitive from '@radix-ui/react-select'
+import { Select as SelectPrimitive } from '@base-ui/react/select'
+import { Separator as SeparatorPrimitive } from '@base-ui/react/separator'
 
 import { Icon } from '@/components/icon'
 
@@ -13,7 +14,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 
 import { Drawer } from '@/components/ui/drawer'
 
-/** Same option list is rendered twice on mobile (hidden Radix items + drawer). Clone so each tree is independent. */
+/** Same option list is rendered twice on mobile (hidden discovery items + drawer). Clone so each tree is independent. */
 function cloneSelectChildren(children: React.ReactNode, keySuffix: string) {
   return React.Children.map(children, (child, index) => {
     if (!React.isValidElement(child)) return child
@@ -33,7 +34,7 @@ function extractText(node: React.ReactNode): string {
 }
 
 // 'interactive' → visible button inside the mobile Drawer
-// 'desktop'     → Radix SelectPrimitive.Item (default; also used in hidden mobile content so native form options exist)
+// 'desktop'     → Base UI SelectPrimitive.Item (default)
 // 'discovery'   → handles label registration without rendering to DOM
 type SelectItemMode = 'interactive' | 'desktop' | 'discovery'
 
@@ -60,7 +61,14 @@ function SelectRoot({
   defaultOpen,
   children,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Root> & {
+}: Omit<
+  SelectPrimitive.Root.Props<string>,
+  'value' | 'defaultValue' | 'onValueChange' | 'onOpenChange'
+> & {
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+  onOpenChange?: (open: boolean) => void
   children?: React.ReactNode
 }) {
   const isMobile = useIsMobile()
@@ -99,9 +107,9 @@ function SelectRoot({
   )
 
   const handleValueChange = React.useCallback(
-    (val: string) => {
-      setInternalValue(val)
-      onValueChangeProp?.(val)
+    (val: string | null) => {
+      setInternalValue(val ?? '')
+      onValueChangeProp?.(val ?? '')
       if (isMobile) handleOpenChange(false)
     },
     [onValueChangeProp, isMobile, handleOpenChange],
@@ -138,9 +146,7 @@ function SelectRoot({
   )
 }
 
-function SelectGroup({
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Group>) {
+function SelectGroup({ ...props }: SelectPrimitive.Group.Props) {
   return <SelectPrimitive.Group data-slot="select-group" {...props} />
 }
 
@@ -149,7 +155,7 @@ function SelectValue({
   placeholder,
   children,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Value>) {
+}: SelectPrimitive.Value.Props) {
   const ctx = React.useContext(SelectContext)
 
   const label = ctx && ctx.value ? ctx.itemLabels[ctx.value]?.node : undefined
@@ -161,7 +167,7 @@ function SelectValue({
         data-slot="select-value"
         className={cn(!content && 'text-muted-foreground/50', className)}
       >
-        {content}
+        {content as React.ReactNode}
       </span>
     )
   }
@@ -178,14 +184,15 @@ function SelectValue({
   )
 }
 
-function SelectTrigger({
-  className,
-  children,
-  removeIcon = false,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
-  removeIcon?: boolean
-}) {
+const SelectTrigger = React.forwardRef<
+  HTMLButtonElement,
+  SelectPrimitive.Trigger.Props & {
+    removeIcon?: boolean
+  }
+>(function SelectTrigger(
+  { className, children, removeIcon = false, ...props },
+  ref,
+) {
   const mode = React.useContext(SelectItemModeContext)
   const { trigger } = useHaptics()
 
@@ -195,6 +202,7 @@ function SelectTrigger({
 
   return (
     <SelectPrimitive.Trigger
+      ref={ref}
       suppressHydrationWarning
       data-slot="select-trigger"
       className={cn(
@@ -211,24 +219,32 @@ function SelectTrigger({
       {children}
 
       {!removeIcon && (
-        <SelectPrimitive.Icon asChild>
-          <Icon
-            name="ChevronDown"
-            size={16}
-            className="text-muted-foreground/80 in-aria-invalid:text-destructive/80 shrink-0 ml-auto"
-          />
-        </SelectPrimitive.Icon>
+        <SelectPrimitive.Icon
+          render={
+            <Icon
+              name="ChevronDown"
+              size={16}
+              className="text-muted-foreground/80 in-aria-invalid:text-destructive/80 shrink-0 ml-auto"
+            />
+          }
+        />
       )}
     </SelectPrimitive.Trigger>
   )
-}
+})
 
 function SelectContent({
   className,
   children,
   position = 'popper',
+  side,
+  align,
+  sideOffset = 4,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Content>) {
+}: SelectPrimitive.Popup.Props &
+  Pick<SelectPrimitive.Positioner.Props, 'side' | 'align' | 'sideOffset'> & {
+    position?: 'popper' | 'item-aligned'
+  }) {
   const ctx = React.useContext(SelectContext)
   const mode = React.useContext(SelectItemModeContext)
 
@@ -238,64 +254,51 @@ function SelectContent({
 
   if (ctx?.isMobile) {
     return (
-      <>
-        <SelectPrimitive.Portal>
-          <SelectPrimitive.Content
-            position="popper"
-            className="hidden"
-            aria-hidden
-          >
-            <SelectPrimitive.Viewport>
-              <SelectItemModeContext.Provider value="desktop">
-                {cloneSelectChildren(children, 'native')}
-              </SelectItemModeContext.Provider>
-            </SelectPrimitive.Viewport>
-          </SelectPrimitive.Content>
-        </SelectPrimitive.Portal>
-
-        <Drawer
-          open={ctx.open}
-          onOpenChange={ctx.onOpenChange}
-          direction="bottom"
-        >
-          <Drawer.Content title="Select" showDivider>
-            <SelectItemModeContext.Provider value="interactive">
-              <div className="overflow-y-auto p-2 pb-6">
-                {cloneSelectChildren(children, 'drawer')}
-              </div>
-            </SelectItemModeContext.Provider>
-          </Drawer.Content>
-        </Drawer>
-      </>
+      <Drawer
+        open={ctx.open}
+        onOpenChange={ctx.onOpenChange}
+        direction="bottom"
+      >
+        <Drawer.Content title="Select" showDivider>
+          <SelectItemModeContext.Provider value="interactive">
+            <div className="overflow-y-auto p-2 pb-6">
+              {cloneSelectChildren(children, 'drawer')}
+            </div>
+          </SelectItemModeContext.Provider>
+        </Drawer.Content>
+      </Drawer>
     )
   }
 
   return (
     <SelectPrimitive.Portal>
-      <SelectPrimitive.Content
-        data-slot="select-content"
-        className={cn(
-          'border-transparent glass-popover p-1 text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[min(24rem,var(--radix-select-content-available-height))] min-w-32 overflow-hidden rounded-xl **:[[role=group]]:py-1 outline-none',
-          position === 'popper' &&
-            'min-w-(--radix-select-trigger-width) data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
-          className,
-        )}
-        position={position}
-        {...props}
+      <SelectPrimitive.Positioner
+        data-slot="select-positioner"
+        side={side}
+        align={align}
+        sideOffset={sideOffset}
+        alignItemWithTrigger={position === 'item-aligned'}
+        className="z-50"
       >
-        <SelectScrollUpButton />
-
-        <SelectPrimitive.Viewport
+        <SelectPrimitive.Popup
+          data-slot="select-content"
           className={cn(
-            'p-1',
-            position === 'popper' && 'h-(--radix-select-trigger-height)',
+            'border-transparent glass-popover p-1 text-popover-foreground relative z-50 max-h-[min(24rem,var(--available-height))] min-w-32 overflow-hidden rounded-xl **:[[role=group]]:py-1 outline-none origin-(--transform-origin)',
+            'transition-[transform,scale,opacity] duration-150 ease-out',
+            'data-starting-style:scale-95 data-starting-style:opacity-0',
+            'data-ending-style:scale-95 data-ending-style:opacity-0 data-ending-style:duration-100 data-ending-style:ease-in',
+            position === 'popper' && 'min-w-(--anchor-width)',
+            className,
           )}
+          {...props}
         >
-          {children}
-        </SelectPrimitive.Viewport>
+          <SelectScrollUpButton />
 
-        <SelectScrollDownButton />
-      </SelectPrimitive.Content>
+          <div className="p-1">{children}</div>
+
+          <SelectScrollDownButton />
+        </SelectPrimitive.Popup>
+      </SelectPrimitive.Positioner>
     </SelectPrimitive.Portal>
   )
 }
@@ -303,9 +306,9 @@ function SelectContent({
 function SelectLabel({
   className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Label>) {
+}: SelectPrimitive.GroupLabel.Props) {
   return (
-    <SelectPrimitive.Label
+    <SelectPrimitive.GroupLabel
       data-slot="select-label"
       className={cn(
         'text-muted-foreground py-1.5 ps-8 pe-2 text-xs font-medium',
@@ -321,7 +324,7 @@ function SelectItem({
   children,
   value,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Item>) {
+}: SelectPrimitive.Item.Props) {
   const ctx = React.useContext(SelectContext)
   const mode = React.useContext(SelectItemModeContext)
 
@@ -329,7 +332,7 @@ function SelectItem({
 
   React.useEffect(() => {
     if (ctx) {
-      ctx.registerLabel(value, children)
+      ctx.registerLabel(value as string, children)
     }
   }, [ctx, value, children])
 
@@ -351,7 +354,7 @@ function SelectItem({
         )}
         onClick={() => {
           trigger('click')
-          ctx?.onValueChange(value)
+          ctx?.onValueChange(value as string)
         }}
       >
         {isSelected && (
@@ -371,7 +374,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        'focus:bg-muted focus:text-foreground relative flex w-full cursor-pointer items-center p-2.5 pe-8! outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 rounded-lg data-[state=unchecked]:text-muted-foreground data-[state=checked]:text-foreground',
+        'data-highlighted:bg-muted data-highlighted:text-foreground relative flex w-full cursor-pointer items-center p-2.5 pe-8! outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 rounded-lg not-data-selected:text-muted-foreground data-selected:text-foreground',
         className,
       )}
       value={value}
@@ -390,9 +393,9 @@ function SelectItem({
 function SelectSeparator({
   className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Separator>) {
+}: SeparatorPrimitive.Props) {
   return (
-    <SelectPrimitive.Separator
+    <SeparatorPrimitive
       data-slot="select-separator"
       className={cn('bg-border -mx-1 my-1 h-px', className)}
       {...props}
@@ -403,9 +406,9 @@ function SelectSeparator({
 function SelectScrollUpButton({
   className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>) {
+}: SelectPrimitive.ScrollUpArrow.Props) {
   return (
-    <SelectPrimitive.ScrollUpButton
+    <SelectPrimitive.ScrollUpArrow
       data-slot="select-scroll-up-button"
       className={cn(
         'text-muted-foreground/80 flex cursor-default items-center justify-center py-1',
@@ -414,16 +417,16 @@ function SelectScrollUpButton({
       {...props}
     >
       <Icon name="ChevronUp" size={16} />
-    </SelectPrimitive.ScrollUpButton>
+    </SelectPrimitive.ScrollUpArrow>
   )
 }
 
 function SelectScrollDownButton({
   className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>) {
+}: SelectPrimitive.ScrollDownArrow.Props) {
   return (
-    <SelectPrimitive.ScrollDownButton
+    <SelectPrimitive.ScrollDownArrow
       data-slot="select-scroll-down-button"
       className={cn(
         'text-muted-foreground/80 flex cursor-default items-center justify-center py-1',
@@ -432,7 +435,7 @@ function SelectScrollDownButton({
       {...props}
     >
       <Icon name="ChevronDown" size={16} />
-    </SelectPrimitive.ScrollDownButton>
+    </SelectPrimitive.ScrollDownArrow>
   )
 }
 

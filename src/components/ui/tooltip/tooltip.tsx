@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip'
 
 import { cn } from '@/lib/cn'
 
@@ -25,23 +25,21 @@ function useTooltipContext() {
 }
 
 function TooltipProvider({
-  delayDuration = 400,
-  skipDelayDuration = 300,
+  delay = 400,
+  timeout = 300,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+}: TooltipPrimitive.Provider.Props) {
   return (
     <TooltipPrimitive.Provider
       data-slot="tooltip-provider"
-      delayDuration={delayDuration}
-      skipDelayDuration={skipDelayDuration}
+      delay={delay}
+      timeout={timeout}
       {...props}
     />
   )
 }
 
-function TooltipRoot({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+function TooltipRoot({ ...props }: TooltipPrimitive.Root.Props) {
   const isMobile = useIsMobile()
   const [open, setOpen] = React.useState(false)
 
@@ -66,11 +64,15 @@ function TooltipRoot({
 
 function TooltipTrigger({
   onClick,
+  asChild,
+  children,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+}: TooltipPrimitive.Trigger.Props & {
+  asChild?: boolean
+}) {
   const { open, setOpen, isMobile } = useTooltipContext()
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick: TooltipPrimitive.Trigger.Props['onClick'] = (e) => {
     if (isMobile) {
       e.preventDefault()
       setOpen(!open)
@@ -79,21 +81,39 @@ function TooltipTrigger({
     onClick?.(e)
   }
 
+  if (asChild && React.isValidElement(children)) {
+    return (
+      <TooltipPrimitive.Trigger
+        data-slot="tooltip-trigger"
+        onClick={handleClick}
+        render={children as React.ReactElement<Record<string, unknown>>}
+        {...props}
+      />
+    )
+  }
+
   return (
     <TooltipPrimitive.Trigger
       data-slot="tooltip-trigger"
       onClick={handleClick}
       {...props}
-    />
+    >
+      {children}
+    </TooltipPrimitive.Trigger>
   )
 }
 
 function TooltipContent({
   className,
+  side,
+  align,
   sideOffset = 0,
   children,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: Omit<TooltipPrimitive.Popup.Props, 'className'> &
+  Pick<TooltipPrimitive.Positioner.Props, 'side' | 'align' | 'sideOffset'> & {
+    className?: string
+  }) {
   const classes = className?.split(' ') ?? []
 
   const contentBackground = classes.find((cls) => cls.startsWith('bg-'))?.replace('bg-', '')
@@ -136,30 +156,47 @@ function TooltipContent({
 
   return (
     <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        data-slot="tooltip-content"
+      <TooltipPrimitive.Positioner
+        data-slot="tooltip-positioner"
+        side={side}
+        align={align}
         sideOffset={sideOffset}
-        style={
-          {
-            '--content-background': contentBackground
-              ? `var(--${contentBackground})`
-              : 'var(--primary)',
-            '--content-foreground': contentForeground
-              ? `var(--${contentForeground})`
-              : 'var(--primary-foreground)',
-            ...(filters.length > 0 && { filter: filters.join(' ') }),
-          } as React.CSSProperties
-        }
-        className={cn(
-          'bg-(--content-background) text-(--content-foreground) animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-lg px-3 py-2 text-sm text-balance',
-          cleanedClassName,
-        )}
-        {...props}
+        className="z-50"
       >
-        {children}
+        <TooltipPrimitive.Popup
+          data-slot="tooltip-content"
+          style={
+            {
+              '--content-background': contentBackground
+                ? `var(--${contentBackground})`
+                : 'var(--primary)',
+              '--content-foreground': contentForeground
+                ? `var(--${contentForeground})`
+                : 'var(--primary-foreground)',
+              ...(filters.length > 0 && { filter: filters.join(' ') }),
+            } as React.CSSProperties
+          }
+          className={cn(
+            'bg-(--content-background) text-(--content-foreground) z-50 w-fit origin-(--transform-origin) rounded-lg px-3 py-2 text-sm text-balance',
+            'transition-[transform,scale,opacity] duration-150 ease-out',
+            'data-starting-style:scale-95 data-starting-style:opacity-0',
+            'data-ending-style:scale-95 data-ending-style:opacity-0 data-ending-style:duration-100 data-ending-style:ease-in',
+            cleanedClassName,
+          )}
+          {...props}
+        >
+          {children}
 
-        <TooltipPrimitive.Arrow className="fill-(--content-background)" />
-      </TooltipPrimitive.Content>
+          <TooltipPrimitive.Arrow className="flex data-[side=bottom]:top-[-6px] data-[side=top]:bottom-[-6px] data-[side=top]:rotate-180 data-[side=left]:right-[-10px] data-[side=left]:rotate-90 data-[side=right]:left-[-10px] data-[side=right]:-rotate-90">
+            <svg width="14" height="7" viewBox="0 0 14 7" fill="none">
+              <path
+                d="M0 7L6.29289 0.707107C6.68342 0.316583 7.31658 0.316583 7.70711 0.707107L14 7H0Z"
+                className="fill-(--content-background)"
+              />
+            </svg>
+          </TooltipPrimitive.Arrow>
+        </TooltipPrimitive.Popup>
+      </TooltipPrimitive.Positioner>
     </TooltipPrimitive.Portal>
   )
 }
