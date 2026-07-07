@@ -4,23 +4,144 @@ import * as React from 'react'
 
 import { EmojiPicker as EmojiPickerPrimitive } from 'frimousse'
 
-import { Icon } from '@/components/icon'
+import { Icon, type IconType } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
+
+const EmojiPickerContext = React.createContext<{
+  rootRef: React.RefObject<HTMLDivElement | null>
+} | null>(null)
 
 function EmojiPickerRoot({
   className,
   ...props
 }: React.ComponentProps<typeof EmojiPickerPrimitive.Root>) {
+  const rootRef = React.useRef<HTMLDivElement>(null)
+
   return (
-    <EmojiPickerPrimitive.Root
-      data-slot="emoji-picker"
+    <EmojiPickerContext.Provider value={{ rootRef }}>
+      <EmojiPickerPrimitive.Root
+        ref={rootRef}
+        data-slot="emoji-picker"
+        className={cn(
+          'isolate flex h-[368px] w-fit flex-col overflow-hidden rounded-xl bg-muted text-foreground [--card-content-padding:1rem]',
+          className,
+        )}
+        {...props}
+      />
+    </EmojiPickerContext.Provider>
+  )
+}
+
+/**
+ * Emojibase groups in their canonical order — the order in which
+ * `EmojiPicker.List` renders category sections. Used to map each category
+ * button to the matching (index-aligned) section header for scrolling.
+ */
+const EMOJI_CATEGORIES: { label: string; icon: IconType }[] = [
+  { label: 'Smileys & Emotion', icon: 'FaceSmile' },
+  { label: 'People & Body', icon: 'HandWave' },
+  { label: 'Animals & Nature', icon: 'Paw' },
+  { label: 'Food & Drink', icon: 'Coffee' },
+  { label: 'Travel & Places', icon: 'Globe' },
+  { label: 'Activities', icon: 'Trophy' },
+  { label: 'Objects', icon: 'Lightbulb' },
+  { label: 'Symbols', icon: 'Heart' },
+  { label: 'Flags', icon: 'Flag' },
+]
+
+/**
+ * Opt-in category strip. Add it inside `EmojiPicker` (e.g. below `Search`) to
+ * jump between category sections; it also highlights the section in view.
+ */
+function EmojiPickerCategorySelector({
+  className,
+  ...props
+}: React.ComponentProps<'div'>) {
+  const ctx = React.useContext(EmojiPickerContext)
+  const [activeIndex, setActiveIndex] = React.useState(0)
+
+  const getParts = React.useCallback(() => {
+    const root = ctx?.rootRef.current
+    const viewport = root?.querySelector<HTMLElement>('[frimousse-viewport]')
+    if (!viewport) return null
+
+    // Real section wrappers only — the (aria-hidden) sizer nests its header
+    // deeper, so a direct-child match excludes it.
+    const sections = Array.from(
+      viewport.querySelectorAll<HTMLElement>('[frimousse-category]'),
+    ).filter((el) =>
+      el.querySelector(':scope > [data-slot="emoji-picker-category-header"]'),
+    )
+
+    return { viewport, sections }
+  }, [ctx])
+
+  React.useEffect(() => {
+    const parts = getParts()
+    if (!parts) return
+
+    const { viewport } = parts
+
+    const onScroll = () => {
+      const current = getParts()
+      if (!current) return
+
+      const viewportTop = current.viewport.getBoundingClientRect().top
+
+      let next = 0
+      current.sections.forEach((section, index) => {
+        if (section.getBoundingClientRect().top - viewportTop <= 8) next = index
+      })
+
+      setActiveIndex(next)
+    }
+
+    viewport.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+
+    return () => viewport.removeEventListener('scroll', onScroll)
+  }, [getParts])
+
+  const scrollToCategory = (index: number) => {
+    const parts = getParts()
+    const target = parts?.sections[index]
+    if (!parts || !target) return
+
+    const delta =
+      target.getBoundingClientRect().top -
+      parts.viewport.getBoundingClientRect().top
+
+    parts.viewport.scrollTo({
+      top: parts.viewport.scrollTop + delta,
+      behavior: 'smooth',
+    })
+    setActiveIndex(index)
+  }
+
+  return (
+    <div
+      data-slot="emoji-picker-category-selector"
       className={cn(
-        'isolate flex h-[368px] w-fit flex-col overflow-hidden rounded-xl bg-muted text-foreground [--card-content-padding:1rem]',
+        'flex shrink-0 items-center gap-0.5 px-1.5 pt-1.5',
         className,
       )}
       {...props}
-    />
+    >
+      {EMOJI_CATEGORIES.map((category, index) => (
+        <button
+          key={category.label}
+          type="button"
+          aria-label={category.label}
+          title={category.label}
+          data-active={activeIndex === index ? '' : undefined}
+          onClick={() => scrollToCategory(index)}
+          className="flex flex-1 cursor-pointer items-center justify-center rounded-lg p-1.5 text-muted-foreground/50 transition-colors hover:bg-accent hover:text-foreground data-active:bg-accent data-active:text-foreground"
+        >
+          <Icon name={category.icon} className="size-4" />
+        </button>
+      ))}
+    </div>
   )
 }
 
@@ -195,6 +316,7 @@ function EmojiPickerActiveEmoji({
 
 export const EmojiPicker = Object.assign(EmojiPickerRoot, {
   Search: EmojiPickerSearch,
+  CategorySelector: EmojiPickerCategorySelector,
   Viewport: EmojiPickerViewport,
   Loading: EmojiPickerLoading,
   Empty: EmojiPickerEmpty,
