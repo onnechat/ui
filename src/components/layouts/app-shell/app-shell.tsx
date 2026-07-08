@@ -1270,52 +1270,54 @@ function AppShellRightSidebar({
         )}
       />
 
+      {/* Off-canvas collapses by animating the clipped width (never past the
+          viewport edge) instead of a negative `right` offset — an off-screen
+          fixed panel becomes real horizontal overflow whenever an ancestor
+          has a transform (e.g. Storybook zoom). */}
       <div
         data-slot="context-sidebar-container"
         className={cn(
-          'fixed z-10 hidden bg-sidebar transition-[right,width] duration-300 lg:flex',
-          'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--context-sidebar-width)*-1)]',
+          'fixed z-10 hidden overflow-clip bg-sidebar transition-[width] duration-300 lg:flex',
+          'right-0 w-(--context-sidebar-width) group-data-[collapsible=offcanvas]:w-0',
         )}
         style={{
           top: 'var(--announcement-height, 0px)',
-          width: 'var(--context-sidebar-width)',
           height: 'calc(100dvh - var(--announcement-height, 0px))',
         }}
       >
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="relative flex h-full w-full min-w-0 flex-col"
+          className="relative flex h-full w-(--context-sidebar-width) shrink-0 min-w-0 flex-col"
         >
           <Sidebar.Content
             className={cn('flex flex-col overflow-y-auto p-4', className)}
           >
             {children}
           </Sidebar.Content>
-
-          <button
-            type="button"
-            tabIndex={-1}
-            onClick={handleRailClick}
-            onMouseDown={handleResizeMouseDown}
-            onFocus={(e) => e.currentTarget.blur()}
-            data-sidebar="rail"
-            data-slot="context-sidebar-rail"
-            aria-label="Resize sidebar"
-            className={cn(
-              'absolute inset-y-0 z-20 hidden w-4 sm:flex',
-              'cursor-col-resize max-h-32 items-center justify-center top-1/2 -translate-x-1 -translate-y-1/2 px-4 -left-4',
-              'after:absolute after:inset-y-0 after:right-1/2 after:w-1 after:translate-x-1/2 after:rounded-full after:transition-transform',
-              'hover:after:translate-x-0 hover:after:bg-sidebar-border',
-              'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring transition-transform bg-transparent!',
-              '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
-              '[[data-side=right][data-collapsible=offcanvas]_&]:hover:after:-left-1 [[data-side=right][data-collapsible=offcanvas]_&]:hover:after:right-auto',
-              !isSidebarOpen && '-translate-x-1!',
-              isDragging && 'after:translate-x-0 after:bg-sidebar-border',
-            )}
-          />
         </div>
       </div>
+
+      <button
+        type="button"
+        tabIndex={-1}
+        onClick={handleRailClick}
+        onMouseDown={handleResizeMouseDown}
+        onFocus={(e) => e.currentTarget.blur()}
+        data-sidebar="rail"
+        data-slot="context-sidebar-rail"
+        aria-label="Resize sidebar"
+        className={cn(
+          'fixed inset-y-0 z-20 hidden w-4 sm:flex',
+          'right-(--context-sidebar-width) group-data-[collapsible=offcanvas]:right-0',
+          'cursor-col-resize max-h-32 items-center justify-center top-1/2 translate-x-1/2 -translate-y-1/2 px-4',
+          'group-data-[collapsible=offcanvas]:translate-x-0',
+          'after:absolute after:inset-y-0 after:right-1/2 after:w-1 after:translate-x-1/2 after:rounded-full after:transition-transform',
+          'hover:after:translate-x-0 hover:after:bg-sidebar-border',
+          'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring transition-[right,transform] duration-300 bg-transparent!',
+          isDragging && 'after:translate-x-0 after:bg-sidebar-border',
+        )}
+      />
     </aside>
   )
 }
