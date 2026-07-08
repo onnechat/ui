@@ -1,3 +1,5 @@
+import type * as React from 'react'
+
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 
@@ -196,7 +198,22 @@ function DemoContent() {
   )
 }
 
+/**
+ * The announcement banner sets the global `--announcement-height` variable.
+ * Wrapping banner-less stories with a local `0px` override shields them from
+ * the variable leaking across stories on the autodocs page (CSS variables
+ * resolve from the nearest ancestor, so the local value wins).
+ */
+function withoutAnnouncement(Story: React.ComponentType) {
+  return (
+    <div className="contents [--announcement-height:0px]">
+      <Story />
+    </div>
+  )
+}
+
 export const Default: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
   render: () => (
     <AppShell>
       <DemoSidebar />
@@ -215,11 +232,6 @@ export const Default: StoryObj<typeof meta> = {
 }
 
 export const WithAnnouncement: StoryObj<typeof meta> = {
-  parameters: {
-    // The banner sets the global `--announcement-height` variable; render in
-    // an isolated iframe so it does not leak into sibling docs stories.
-    docs: { story: { inline: false, iframeHeight: 600 } },
-  },
   render: () => (
     <>
       <AnnouncementBanner
@@ -242,6 +254,7 @@ export const WithAnnouncement: StoryObj<typeof meta> = {
 }
 
 export const Loading: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
   render: () => (
     <AppShell>
       <DemoSidebar />
@@ -255,6 +268,7 @@ export const Loading: StoryObj<typeof meta> = {
 }
 
 export const WithRightSidebar: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
   render: () => (
     <AppShell.RightSidebarProvider>
       <AppShell>
