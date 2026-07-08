@@ -14,88 +14,364 @@ import { Icon, type IconType } from '@/components/icon'
 
 import { Button } from '@/components/ui/button'
 import { Loader } from '@/components/ui/loader'
-import { Sidebar, SIDEBAR_WIDTH, useSidebar } from '@/components/ui/sidebar'
+import { Sidebar, SIDEBAR_WIDTH } from '@/components/ui/sidebar'
 import { Tooltip } from '@/components/ui/tooltip'
 
 /**
  * Application shell layout, composition-first. Encodes the structure of our
- * dashboards — inset resizable sidebar, glass sticky header, floating mobile
+ * dashboards — inset resizable sidebars, glass sticky header, floating mobile
  * navbar, announcement-aware viewport — while leaving every region up to the
- * consumer:
+ * consumer.
+ *
+ * Both sidebars share the exact same mechanics and API: a panel component, a
+ * trigger and per-side state (cookies + keyboard shortcut) enabled by the
+ * `leftSidebar`/`rightSidebar` props on the root. Each side is independent —
+ * a product can enable only the left one, only the right one, or both:
  *
  * ```tsx
  * <AnnouncementBanner message="…" type="NEW" />
  *
- * <AppShell>
- *   <AppShell.Sidebar>
+ * <AppShell leftSidebar rightSidebar={{ defaultOpen: false }}>
+ *   <AppShell.LeftSidebar>
  *     <AppShell.SidebarHeader>…logo + actions…</AppShell.SidebarHeader>
  *     <AppShell.SidebarSection>…workspace switcher…</AppShell.SidebarSection>
- *     <AppShell.SidebarSection>
- *       <AppShell.CommandButton>Pesquisar…</AppShell.CommandButton>
- *     </AppShell.SidebarSection>
  *     <AppShell.SidebarContent>
  *       <AppShell.SidebarGroup title="Geral">
  *         <AppShell.SidebarItem icon="House6" title="Visão Geral" href="/" active />
  *       </AppShell.SidebarGroup>
  *     </AppShell.SidebarContent>
  *     <AppShell.SidebarFooter>…copyright + user…</AppShell.SidebarFooter>
- *   </AppShell.Sidebar>
+ *   </AppShell.LeftSidebar>
  *
  *   <AppShell.Navbar>…mobile items…</AppShell.Navbar>
  *
  *   <AppShell.Inset>
- *     <AppShell.Header title={…} actions={…} user={…} logo={…} />
+ *     <AppShell.Header title={…} actions={…} />
  *     <MyPage />
  *   </AppShell.Inset>
+ *
+ *   <AppShell.RightSidebar>…</AppShell.RightSidebar>
  * </AppShell>
  * ```
+ *
+ * On mobile the sidebars are hidden entirely — navigation belongs to
+ * `AppShell.Navbar`. `AppShell.Header` automatically renders one toggle per
+ * enabled side (left before the title, right after the actions), so any
+ * sidebar combination — none, left only, right only, both — gets exactly
+ * the toggles that apply. `AppShell.LeftSidebarTrigger` and
+ * `AppShell.RightSidebarTrigger` exist for custom placements (both accept a
+ * custom `icon`), and `useLeftSidebarToggle`/`useRightSidebarToggle` expose
+ * just the toggle function for fully custom elements.
  */
 function AppShellRoot({
+  leftSidebar,
+  rightSidebar,
   className,
   children,
   ...props
-}: React.ComponentProps<typeof Sidebar.Provider>) {
+}: React.ComponentProps<'div'> & {
+  /**
+   * Enables the left sidebar state (`[` shortcut, cookie persistence, header
+   * toggle). Pass `{ defaultOpen: false }` to start collapsed.
+   */
+  leftSidebar?: AppShellSidebarProp
+  /**
+   * Enables the right (context) sidebar state (`]` shortcut, cookie
+   * persistence). Pass `{ defaultOpen: false }` to start collapsed.
+   */
+  rightSidebar?: AppShellSidebarProp
+}) {
   return (
-    <Sidebar.Provider
-      data-slot="app-shell"
-      className={cn(
-        'relative flex-1 min-h-[calc(100svh-var(--announcement-height,0px))] max-lg:bg-dashboard-background!',
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </Sidebar.Provider>
+    <OptionalSidebarProvider side="left" config={leftSidebar}>
+      <OptionalSidebarProvider side="right" config={rightSidebar}>
+        <div
+          data-slot="app-shell"
+          className={cn(
+            'has-data-[variant=inset]:bg-sidebar flex w-full',
+            'relative flex-1 min-h-[calc(100svh-var(--announcement-height,0px))] max-lg:bg-dashboard-background!',
+            className,
+          )}
+          {...props}
+        >
+          {children}
+        </div>
+      </OptionalSidebarProvider>
+    </OptionalSidebarProvider>
   )
 }
 
 /* -------------------------------------------------------------------------
- * Sidebar
+ * Sidebars (left / right)
+ *
+ * A single implementation parameterized by side. Each side has its own
+ * context/provider (open state + width, persisted in cookies, toggled by a
+ * keyboard shortcut), an inset panel with a drag-to-resize rail (click
+ * toggles, double click resets to the default width, dragging resizes
+ * between 16–20rem and collapses past the threshold) and a trigger button.
  * ---------------------------------------------------------------------- */
 
 const MIN_SIDEBAR_WIDTH = 16 * 16 // 16rem
 const MAX_SIDEBAR_WIDTH = 20 * 16 // 20rem
 const COLLAPSE_THRESHOLD = MIN_SIDEBAR_WIDTH / 2 // 8rem — collapse only past half minimum
 
-const SIDEBAR_WIDTH_COOKIE = 'sidebar-width'
-const SIDEBAR_WIDTH_COOKIE_TTL_DAYS = 365
+const SIDEBAR_COOKIE_TTL_DAYS = 365
+
+type AppShellSidebarSide = 'left' | 'right'
+
+// Cookies, CSS vars and data-slots are all prefixed by the side name, and
+// deliberately distinct from ui/sidebar's own `--sidebar-width`/`sidebar-*`
+// cookie names so a standalone `Sidebar` nested anywhere in the shell never
+// collides with the shell state.
+const SIDEBAR_SIDE_CONFIG = {
+  left: {
+    defaultWidth: SIDEBAR_WIDTH,
+    widthVar: '--left-sidebar-width',
+    widthCookie: 'left-sidebar-width',
+    stateCookie: 'left-sidebar-state',
+    wrapperSlot: 'left-sidebar-wrapper',
+    gapSlot: 'left-sidebar-gap',
+    containerSlot: 'left-sidebar-container',
+    keyboardShortcut: '[',
+  },
+  right: {
+    defaultWidth: '20rem',
+    widthVar: '--right-sidebar-width',
+    widthCookie: 'right-sidebar-width',
+    stateCookie: 'right-sidebar-state',
+    wrapperSlot: 'right-sidebar-wrapper',
+    gapSlot: 'right-sidebar-gap',
+    containerSlot: 'right-sidebar-container',
+    keyboardShortcut: ']',
+  },
+} as const
+
+type AppShellSidebarContextValue = {
+  side: AppShellSidebarSide
+  state: 'expanded' | 'collapsed'
+  open: boolean
+  setOpen: (open: boolean) => void
+  toggleSidebar: () => void
+  sidebarWidth: string
+  setSidebarWidth: (width: string) => void
+}
+
+const AppShellLeftSidebarContext =
+  React.createContext<AppShellSidebarContextValue | null>(null)
+
+const AppShellRightSidebarContext =
+  React.createContext<AppShellSidebarContextValue | null>(null)
+
+function useAppShellLeftSidebar() {
+  const context = React.useContext(AppShellLeftSidebarContext)
+
+  if (!context) {
+    throw new Error(
+      'useAppShellLeftSidebar must be used within an AppShell.LeftSidebarProvider.',
+    )
+  }
+
+  return context
+}
+
+function useAppShellRightSidebar() {
+  const context = React.useContext(AppShellRightSidebarContext)
+
+  if (!context) {
+    throw new Error(
+      'useAppShellRightSidebar must be used within an AppShell.RightSidebarProvider.',
+    )
+  }
+
+  return context
+}
+
+function isEditableTarget(target: EventTarget | null) {
+  return (
+    target instanceof HTMLElement &&
+    (target.isContentEditable ||
+      target.closest('input, textarea, select') !== null)
+  )
+}
+
+function SidebarSideProvider({
+  side,
+  defaultOpen = true,
+  children,
+}: {
+  side: AppShellSidebarSide
+  defaultOpen?: boolean
+  children: React.ReactNode
+}) {
+  const config = SIDEBAR_SIDE_CONFIG[side]
+
+  const [open, _setOpen] = React.useState(defaultOpen)
+  const [sidebarWidth, setSidebarWidth] = React.useState<string>(
+    config.defaultWidth,
+  )
+
+  const setOpen = React.useCallback(
+    (value: boolean) => {
+      _setOpen(value)
+      Cookies.set(config.stateCookie, String(value), {
+        expires: SIDEBAR_COOKIE_TTL_DAYS,
+        path: '/',
+      })
+    },
+    [config.stateCookie],
+  )
+
+  const toggleSidebar = React.useCallback(() => {
+    _setOpen((open) => {
+      Cookies.set(config.stateCookie, String(!open), {
+        expires: SIDEBAR_COOKIE_TTL_DAYS,
+        path: '/',
+      })
+      return !open
+    })
+  }, [config.stateCookie])
+
+  React.useLayoutEffect(() => {
+    const savedOpen = Cookies.get(config.stateCookie)
+    if (savedOpen !== undefined) _setOpen(savedOpen === 'true')
+
+    const savedWidth = Cookies.get(config.widthCookie)
+    if (savedWidth) setSidebarWidth(savedWidth)
+  }, [config.stateCookie, config.widthCookie])
+
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== config.keyboardShortcut) return
+      if (isEditableTarget(event.target)) return
+
+      event.preventDefault()
+      toggleSidebar()
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [toggleSidebar, config.keyboardShortcut])
+
+  const state = open ? 'expanded' : 'collapsed'
+
+  const contextValue = React.useMemo<AppShellSidebarContextValue>(
+    () => ({
+      side,
+      state,
+      open,
+      setOpen,
+      toggleSidebar,
+      sidebarWidth,
+      setSidebarWidth,
+    }),
+    [side, state, open, setOpen, toggleSidebar, sidebarWidth],
+  )
+
+  const Context =
+    side === 'left' ? AppShellLeftSidebarContext : AppShellRightSidebarContext
+
+  return (
+    <Context.Provider value={contextValue}>
+      <div
+        data-slot={config.wrapperSlot}
+        style={
+          {
+            [config.widthVar]: sidebarWidth,
+          } as React.CSSProperties
+        }
+        className={cn(
+          'contents',
+          side === 'left'
+            ? 'max-lg:[--left-sidebar-width:0px]'
+            : 'max-lg:[--right-sidebar-width:0px]',
+        )}
+      >
+        {children}
+      </div>
+    </Context.Provider>
+  )
+}
+
+type AppShellSidebarProp = boolean | { defaultOpen?: boolean }
 
 /**
- * Inset sidebar with a drag-to-resize rail: click toggles, double click
- * resets to the default width, dragging resizes between 16–20rem and
- * collapses past the threshold. Width persists in the `sidebar-width` cookie
- * (read back by `Sidebar.Provider`).
+ * Mounts a side's state when the matching root prop enables it. Skips when an
+ * ancestor already provides the side (the deprecated standalone providers),
+ * so the two mechanisms never stack conflicting state.
  */
-function AppShellSidebar({
+function OptionalSidebarProvider({
+  side,
+  config,
+  children,
+}: {
+  side: AppShellSidebarSide
+  config: AppShellSidebarProp | undefined
+  children: React.ReactNode
+}) {
+  const existing = React.useContext(
+    side === 'left' ? AppShellLeftSidebarContext : AppShellRightSidebarContext,
+  )
+
+  if (!config || existing) return <>{children}</>
+
+  return (
+    <SidebarSideProvider
+      side={side}
+      defaultOpen={typeof config === 'object' ? config.defaultOpen : undefined}
+    >
+      {children}
+    </SidebarSideProvider>
+  )
+}
+
+/** @deprecated Enable the sidebar with the `leftSidebar` prop on `AppShell` instead. */
+function AppShellLeftSidebarProvider(props: {
+  children: React.ReactNode
+  defaultOpen?: boolean
+}) {
+  return <SidebarSideProvider side="left" {...props} />
+}
+
+/** @deprecated Enable the sidebar with the `rightSidebar` prop on `AppShell` instead. */
+function AppShellRightSidebarProvider(props: {
+  children: React.ReactNode
+  defaultOpen?: boolean
+}) {
+  return <SidebarSideProvider side="right" {...props} />
+}
+
+function SidebarSidePanel({
+  side,
+  className,
   children,
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: React.ComponentProps<'aside'> & {
+  side: AppShellSidebarSide
+}) {
+  const config = SIDEBAR_SIDE_CONFIG[side]
+
+  const leftContext = React.useContext(AppShellLeftSidebarContext)
+  const rightContext = React.useContext(AppShellRightSidebarContext)
+
+  const context = side === 'left' ? leftContext : rightContext
+
+  if (!context) {
+    throw new Error(
+      side === 'left'
+        ? 'AppShell.LeftSidebar requires the `leftSidebar` prop on AppShell.'
+        : 'AppShell.RightSidebar requires the `rightSidebar` prop on AppShell.',
+    )
+  }
+
   const {
-    toggleSidebar,
-    setSidebarWidth,
-    setOpen,
+    state,
     open: isSidebarOpen,
-  } = useSidebar()
+    toggleSidebar,
+    setOpen,
+    setSidebarWidth,
+  } = context
+
+  // Dragging toward the shell center collapses; away from it expands.
+  const directionSign = side === 'left' ? 1 : -1
 
   const [isDragging, setIsDragging] = React.useState(false)
   const railClickTimer = React.useRef<ReturnType<typeof setTimeout> | null>(
@@ -104,20 +380,19 @@ function AppShellSidebar({
 
   const persistWidth = React.useCallback(
     (width: string) => {
-      Cookies.set(SIDEBAR_WIDTH_COOKIE, width, {
-        expires: SIDEBAR_WIDTH_COOKIE_TTL_DAYS,
+      Cookies.set(config.widthCookie, width, {
+        expires: SIDEBAR_COOKIE_TTL_DAYS,
         path: '/',
       })
-
       setSidebarWidth(width)
     },
-    [setSidebarWidth],
+    [config.widthCookie, setSidebarWidth],
   )
 
   const handleRailClick = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       const wrapper = (e.currentTarget as HTMLElement).closest<HTMLElement>(
-        '[data-slot="sidebar-wrapper"]',
+        `[data-slot="${config.wrapperSlot}"]`,
       )
 
       if (railClickTimer.current) {
@@ -126,8 +401,8 @@ function AppShellSidebar({
 
         if (!wrapper) return
 
-        wrapper.style.setProperty('--sidebar-width', SIDEBAR_WIDTH)
-        persistWidth(SIDEBAR_WIDTH)
+        wrapper.style.setProperty(config.widthVar, config.defaultWidth)
+        persistWidth(config.defaultWidth)
 
         return
       }
@@ -137,13 +412,13 @@ function AppShellSidebar({
         toggleSidebar()
       }, 150)
     },
-    [toggleSidebar, persistWidth],
+    [config, toggleSidebar, persistWidth],
   )
 
   const handleResizeMouseDown = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       const wrapper = (e.currentTarget as HTMLElement).closest<HTMLElement>(
-        '[data-slot="sidebar-wrapper"]',
+        `[data-slot="${config.wrapperSlot}"]`,
       )
 
       if (!wrapper) return
@@ -154,11 +429,11 @@ function AppShellSidebar({
       document.body.style.userSelect = 'none'
 
       const container = wrapper.querySelector<HTMLElement>(
-        '[data-slot="sidebar-container"]',
+        `[data-slot="${config.containerSlot}"]`,
       )
 
       const gap = wrapper.querySelector<HTMLElement>(
-        '[data-slot="sidebar-gap"]',
+        `[data-slot="${config.gapSlot}"]`,
       )
 
       const disableTransitions = () => {
@@ -175,7 +450,7 @@ function AppShellSidebar({
         let dragStarted = false
 
         const handleMouseMove = (moveEvent: MouseEvent) => {
-          const delta = moveEvent.clientX - startX
+          const delta = (moveEvent.clientX - startX) * directionSign
 
           if (!dragStarted) {
             if (Math.abs(delta) < 4) return
@@ -184,7 +459,7 @@ function AppShellSidebar({
             setIsDragging(true)
 
             wrapper.style.setProperty(
-              '--sidebar-width',
+              config.widthVar,
               `${MIN_SIDEBAR_WIDTH}px`,
             )
             setOpen(true)
@@ -195,7 +470,7 @@ function AppShellSidebar({
             Math.min(MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH + delta),
           )
 
-          wrapper.style.setProperty('--sidebar-width', `${newWidth}px`)
+          wrapper.style.setProperty(config.widthVar, `${newWidth}px`)
         }
 
         const handleMouseUp = (upEvent: MouseEvent) => {
@@ -209,16 +484,16 @@ function AppShellSidebar({
 
           setIsDragging(false)
 
-          if (upEvent.clientX - startX < -10) {
+          if ((upEvent.clientX - startX) * directionSign < -10) {
             wrapper.style.setProperty(
-              '--sidebar-width',
+              config.widthVar,
               `${MIN_SIDEBAR_WIDTH}px`,
             )
 
             setOpen(false)
           } else {
             const newWidth = wrapper.style
-              .getPropertyValue('--sidebar-width')
+              .getPropertyValue(config.widthVar)
               .trim()
 
             persistWidth(newWidth)
@@ -234,7 +509,7 @@ function AppShellSidebar({
       setIsDragging(true)
       disableTransitions()
 
-      const rawWidth = wrapper.style.getPropertyValue('--sidebar-width')
+      const rawWidth = wrapper.style.getPropertyValue(config.widthVar)
       const startWidth = rawWidth
         ? rawWidth.endsWith('rem')
           ? parseFloat(rawWidth) * 16
@@ -244,7 +519,7 @@ function AppShellSidebar({
       let pastCollapseThreshold = false
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
-        const delta = moveEvent.clientX - startX
+        const delta = (moveEvent.clientX - startX) * directionSign
         const rawWidth = startWidth + delta
 
         pastCollapseThreshold = rawWidth < COLLAPSE_THRESHOLD
@@ -253,7 +528,7 @@ function AppShellSidebar({
           MIN_SIDEBAR_WIDTH,
           Math.min(MAX_SIDEBAR_WIDTH, rawWidth),
         )
-        wrapper.style.setProperty('--sidebar-width', `${newWidth}px`)
+        wrapper.style.setProperty(config.widthVar, `${newWidth}px`)
       }
 
       const handleMouseUp = () => {
@@ -271,9 +546,7 @@ function AppShellSidebar({
           return
         }
 
-        const newWidth = wrapper.style
-          .getPropertyValue('--sidebar-width')
-          .trim()
+        const newWidth = wrapper.style.getPropertyValue(config.widthVar).trim()
 
         persistWidth(newWidth)
       }
@@ -281,7 +554,7 @@ function AppShellSidebar({
       window.addEventListener('mousemove', handleMouseMove)
       window.addEventListener('mouseup', handleMouseUp)
     },
-    [toggleSidebar, persistWidth, isSidebarOpen, setOpen],
+    [config, directionSign, toggleSidebar, persistWidth, isSidebarOpen, setOpen],
   )
 
   React.useEffect(() => {
@@ -293,22 +566,246 @@ function AppShellSidebar({
   }, [])
 
   return (
-    <Sidebar variant="inset" {...props}>
-      {children}
+    <aside
+      data-side={side}
+      data-slot="sidebar"
+      data-variant="inset"
+      data-state={state}
+      data-collapsible={state === 'collapsed' ? 'offcanvas' : ''}
+      className="group peer hidden text-sidebar-foreground lg:block"
+      {...props}
+    >
+      <div
+        aria-hidden
+        data-slot={config.gapSlot}
+        className={cn(
+          'relative shrink-0 bg-transparent transition-[width] duration-300',
+          state === 'expanded'
+            ? side === 'left'
+              ? 'w-(--left-sidebar-width)'
+              : 'w-(--right-sidebar-width)'
+            : 'w-0',
+        )}
+      />
 
-      <Sidebar.Rail
+      {/* Off-canvas collapses by animating the clipped width (never past the
+          viewport edge) instead of a negative offset — an off-screen fixed
+          panel becomes real horizontal overflow whenever an ancestor has a
+          transform (e.g. Storybook zoom). The inner panel is anchored to the
+          shell-center edge so it slides out instead of being cropped. */}
+      <div
+        data-slot={config.containerSlot}
+        className={cn(
+          'fixed z-10 hidden overflow-clip bg-sidebar transition-[width] duration-300 lg:flex',
+          side === 'left'
+            ? 'left-0 w-(--left-sidebar-width) group-data-[collapsible=offcanvas]:w-0 justify-end'
+            : 'right-0 w-(--right-sidebar-width) group-data-[collapsible=offcanvas]:w-0',
+        )}
+        style={{
+          top: 'var(--announcement-height, 0px)',
+          height: 'calc(100dvh - var(--announcement-height, 0px))',
+        }}
+      >
+        <div
+          data-sidebar="sidebar"
+          data-slot="sidebar-inner"
+          className={cn(
+            'relative flex h-full shrink-0 min-w-0 flex-col',
+            side === 'left'
+              ? 'w-(--left-sidebar-width)'
+              : 'w-(--right-sidebar-width)',
+            className,
+          )}
+        >
+          {children}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        tabIndex={-1}
         onClick={handleRailClick}
         onMouseDown={handleResizeMouseDown}
         onFocus={(e) => e.currentTarget.blur()}
+        data-sidebar="rail"
+        data-slot={side === 'left' ? 'left-sidebar-rail' : 'right-sidebar-rail'}
+        aria-label="Resize sidebar"
         className={cn(
-          'cursor-col-resize max-h-32 flex items-center justify-center top-1/2 translate-x-1 -translate-y-1/2 px-4 -right-full after:rounded-full after:w-1 after:-translate-x-1/2 after:transition-transform hover:after:translate-x-0 hover:after:bg-sidebar-border outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring transition-transform bg-transparent!',
-          !isSidebarOpen && 'translate-x-1!',
-          isDragging && 'after:translate-x-0 after:bg-accent',
+          'fixed inset-y-0 z-20 hidden w-4 sm:flex',
+          'cursor-col-resize max-h-32 items-center justify-center top-1/2 -translate-y-1/2 px-4',
+          'group-data-[collapsible=offcanvas]:translate-x-0',
+          'after:absolute after:inset-y-0 after:w-1 after:rounded-full after:transition-transform',
+          'hover:after:translate-x-0 hover:after:bg-sidebar-border',
+          'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring bg-transparent!',
+          side === 'left'
+            ? 'left-(--left-sidebar-width) group-data-[collapsible=offcanvas]:left-0 -translate-x-1/2 after:left-1/2 after:-translate-x-1/2 transition-[left,transform] duration-300'
+            : 'right-(--right-sidebar-width) group-data-[collapsible=offcanvas]:right-0 translate-x-1/2 after:right-1/2 after:translate-x-1/2 transition-[right,transform] duration-300',
+          isDragging && 'after:translate-x-0 after:bg-sidebar-border',
         )}
       />
-    </Sidebar>
+    </aside>
   )
 }
+
+/**
+ * Fixed left (primary) panel with a drag-to-resize rail. Hidden on mobile —
+ * navigation belongs to `AppShell.Navbar`. Requires the `leftSidebar` prop
+ * on `AppShell`.
+ */
+function AppShellLeftSidebar(props: React.ComponentProps<'aside'>) {
+  return <SidebarSidePanel side="left" {...props} />
+}
+
+/**
+ * Fixed right (context) panel with a drag-to-resize rail. Hidden on mobile.
+ * Requires the `rightSidebar` prop on `AppShell`.
+ */
+function AppShellRightSidebar(props: React.ComponentProps<'aside'>) {
+  return <SidebarSidePanel side="right" {...props} />
+}
+
+type SidebarTriggerIcon =
+  | IconType
+  | React.ReactNode
+  | ((state: 'expanded' | 'collapsed') => React.ReactNode)
+
+function SidebarSideTrigger({
+  side,
+  label,
+  icon,
+  className,
+  ...props
+}: React.ComponentProps<typeof Button> & {
+  side: AppShellSidebarSide
+  label: string
+  icon?: SidebarTriggerIcon
+}) {
+  const leftContext = React.useContext(AppShellLeftSidebarContext)
+  const rightContext = React.useContext(AppShellRightSidebarContext)
+
+  const context = side === 'left' ? leftContext : rightContext
+
+  if (!context) {
+    throw new Error(
+      side === 'left'
+        ? 'AppShell.LeftSidebarTrigger requires the `leftSidebar` prop on AppShell.'
+        : 'AppShell.RightSidebarTrigger requires the `rightSidebar` prop on AppShell.',
+    )
+  }
+
+  const { toggleSidebar, state } = context
+
+  const resolvedIcon = typeof icon === 'function' ? icon(state) : icon
+
+  return (
+    <Tooltip>
+      <Tooltip.Trigger asChild>
+        <Button
+          size="icon"
+          variant="ghost"
+          type="button"
+          data-slot={
+            side === 'left' ? 'left-sidebar-trigger' : 'right-sidebar-trigger'
+          }
+          className={cn('max-lg:hidden shrink-0', className)}
+          onClick={toggleSidebar}
+          {...props}
+        >
+          {resolvedIcon === undefined ? (
+            <Icon
+              name={state === 'collapsed' ? 'SidebarToggled' : 'SidebarToggle'}
+              className={cn(
+                '!size-4 text-foreground',
+                side === 'right' && 'scale-x-[-1]',
+              )}
+            />
+          ) : typeof resolvedIcon === 'string' ? (
+            <Icon
+              name={resolvedIcon as IconType}
+              className="!size-4 text-foreground"
+            />
+          ) : (
+            resolvedIcon
+          )}
+
+          <span className="sr-only">{label}</span>
+        </Button>
+      </Tooltip.Trigger>
+
+      <Tooltip.Content side="bottom">{label}</Tooltip.Content>
+    </Tooltip>
+  )
+}
+
+/**
+ * Toggle button of the left sidebar, for custom placements (the Header
+ * already renders one automatically). Requires the `leftSidebar` prop on
+ * `AppShell`. Pass `icon` to replace the default state-aware icon — an icon
+ * name, any node, or a function of the sidebar state
+ * (`(state) => ReactNode`).
+ */
+function AppShellLeftSidebarTrigger({
+  label = 'Toggle left sidebar',
+  ...props
+}: React.ComponentProps<typeof Button> & {
+  label?: string
+  icon?: SidebarTriggerIcon
+}) {
+  return <SidebarSideTrigger side="left" label={label} {...props} />
+}
+
+/**
+ * Toggle button of the right sidebar, for custom placements (the Header
+ * already renders one automatically). Requires the `rightSidebar` prop on
+ * `AppShell`. Pass `icon` to replace the default state-aware icon — an icon
+ * name, any node, or a function of the sidebar state
+ * (`(state) => ReactNode`).
+ */
+function AppShellRightSidebarTrigger({
+  label = 'Toggle right sidebar',
+  ...props
+}: React.ComponentProps<typeof Button> & {
+  label?: string
+  icon?: SidebarTriggerIcon
+}) {
+  return <SidebarSideTrigger side="right" label={label} {...props} />
+}
+
+/**
+ * Returns the toggle function of the left sidebar, to wire any custom
+ * element to it. Requires the `leftSidebar` prop on `AppShell`.
+ */
+function useLeftSidebarToggle() {
+  const context = React.useContext(AppShellLeftSidebarContext)
+
+  if (!context) {
+    throw new Error(
+      'useLeftSidebarToggle requires the `leftSidebar` prop on AppShell.',
+    )
+  }
+
+  return context.toggleSidebar
+}
+
+/**
+ * Returns the toggle function of the right sidebar, to wire any custom
+ * element to it. Requires the `rightSidebar` prop on `AppShell`.
+ */
+function useRightSidebarToggle() {
+  const context = React.useContext(AppShellRightSidebarContext)
+
+  if (!context) {
+    throw new Error(
+      'useRightSidebarToggle requires the `rightSidebar` prop on AppShell.',
+    )
+  }
+
+  return context.toggleSidebar
+}
+
+/* -------------------------------------------------------------------------
+ * Sidebar building blocks (work inside either side)
+ * ---------------------------------------------------------------------- */
 
 function AppShellSidebarHeader({
   className,
@@ -455,8 +952,6 @@ function AppShellSidebarItem({
   level = 0,
   ...item
 }: AppShellSidebarItemProps) {
-  const { isMobile, toggleSidebar } = useSidebar()
-
   const [open, setOpen] = React.useState(false)
 
   const hasItems = !!item.items && item.items.length > 0
@@ -491,10 +986,7 @@ function AppShellSidebarItem({
   const handleNavigateClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (isDisabled) {
       event.preventDefault()
-      return
     }
-
-    if (isMobile) toggleSidebar()
   }
 
   const handleToggleItems = () => {
@@ -506,7 +998,6 @@ function AppShellSidebarItem({
   const handleClick = () => {
     if (item.onClick) {
       item.onClick()
-      if (isMobile) toggleSidebar()
     } else if (!isDisabled && hasItems) {
       handleToggleItems()
     }
@@ -765,7 +1256,8 @@ function AppShellHeader({
   title,
   actions,
   user,
-  sidebarToggleLabel = 'Toggle sidebar',
+  leftSidebarToggleLabel = 'Toggle left sidebar',
+  rightSidebarToggleLabel = 'Toggle right sidebar',
   mobileActionsClassName,
   ...props
 }: Omit<React.ComponentProps<'div'>, 'title'> & {
@@ -777,9 +1269,18 @@ function AppShellHeader({
   actions?: React.ReactNode
   /** Mobile-only user slot (top-right, e.g. avatar). */
   user?: React.ReactNode
-  sidebarToggleLabel?: string
+  /** Tooltip label of the auto-rendered left sidebar toggle. */
+  leftSidebarToggleLabel?: string
+  /** Tooltip label of the auto-rendered right sidebar toggle. */
+  rightSidebarToggleLabel?: string
   mobileActionsClassName?: string
 }) {
+  // One toggle per enabled side — the `leftSidebar`/`rightSidebar` props on
+  // AppShell are the signal, so any sidebar combination (none, left, right,
+  // both) gets exactly the toggles that apply.
+  const leftSidebar = React.useContext(AppShellLeftSidebarContext)
+  const rightSidebar = React.useContext(AppShellRightSidebarContext)
+
   return (
     <div data-slot="app-shell-header" className={cn('contents', className)} {...props}>
       <div className="lg:hidden flex items-center justify-between gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 glass-dashboard-header max-lg:sticky top-(--announcement-height,0px) z-50 transition-all max-lg:border-b max-lg:border-border/70">
@@ -799,18 +1300,9 @@ function AppShellHeader({
       </div>
 
       <div className="max-lg:hidden sticky top-(--announcement-height,0px) z-50 w-full flex min-w-0 items-center gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 border-b glass-dashboard-header border-border/70 transition-colors lg:rounded-t-2xl">
-        <Tooltip>
-          <Tooltip.Trigger asChild>
-            <Sidebar.Trigger
-              size="icon"
-              variant="ghost"
-              className="max-lg:hidden shrink-0"
-              iconProps={{ className: '!size-4 text-foreground' }}
-            />
-          </Tooltip.Trigger>
-
-          <Tooltip.Content side="bottom">{sidebarToggleLabel}</Tooltip.Content>
-        </Tooltip>
+        {leftSidebar && (
+          <AppShellLeftSidebarTrigger label={leftSidebarToggleLabel} />
+        )}
 
         <div className="flex min-h-7 min-w-0 flex-1 items-center overflow-hidden">
           <div className="flex min-w-0 flex-1 items-center">{title}</div>
@@ -821,6 +1313,10 @@ function AppShellHeader({
             {actions}
           </div>
         </div>
+
+        {rightSidebar && (
+          <AppShellRightSidebarTrigger label={rightSidebarToggleLabel} />
+        )}
       </div>
     </div>
   )
@@ -909,420 +1405,6 @@ function AppShellNavbarItem({
 }
 
 /* -------------------------------------------------------------------------
- * Right (context) sidebar
- * ---------------------------------------------------------------------- */
-
-const RIGHT_SIDEBAR_WIDTH = '20rem'
-const RIGHT_SIDEBAR_KEYBOARD_SHORTCUT = ']'
-
-const RIGHT_SIDEBAR_WIDTH_COOKIE = 'context-sidebar-width'
-const RIGHT_SIDEBAR_STATE_COOKIE = 'context-sidebar-state'
-
-const MIN_RIGHT_SIDEBAR_WIDTH = 16 * 16 // 16rem
-const MAX_RIGHT_SIDEBAR_WIDTH = 20 * 16 // 20rem
-const RIGHT_SIDEBAR_COLLAPSE_THRESHOLD = MIN_RIGHT_SIDEBAR_WIDTH / 2
-
-type AppShellRightSidebarContextValue = {
-  state: 'expanded' | 'collapsed'
-  open: boolean
-  setOpen: (open: boolean) => void
-  toggleSidebar: () => void
-  sidebarWidth: string
-  setSidebarWidth: (width: string) => void
-}
-
-const AppShellRightSidebarContext =
-  React.createContext<AppShellRightSidebarContextValue | null>(null)
-
-function useAppShellRightSidebar() {
-  const context = React.useContext(AppShellRightSidebarContext)
-
-  if (!context) {
-    throw new Error(
-      'useAppShellRightSidebar must be used within an AppShell.RightSidebarProvider.',
-    )
-  }
-
-  return context
-}
-
-/**
- * State container for the right context sidebar. Wrap the `AppShell` with it
- * whenever a page renders `AppShell.RightSidebar`; open state and width
- * persist in cookies and `]` toggles it.
- */
-function AppShellRightSidebarProvider({
-  children,
-  defaultOpen = true,
-}: {
-  children: React.ReactNode
-  defaultOpen?: boolean
-}) {
-  const [open, _setOpen] = React.useState(defaultOpen)
-  const [sidebarWidth, setSidebarWidth] = React.useState(RIGHT_SIDEBAR_WIDTH)
-
-  const setOpen = React.useCallback((value: boolean) => {
-    _setOpen(value)
-    Cookies.set(RIGHT_SIDEBAR_STATE_COOKIE, String(value), { path: '/' })
-  }, [])
-
-  const toggleSidebar = React.useCallback(() => {
-    _setOpen((open) => {
-      Cookies.set(RIGHT_SIDEBAR_STATE_COOKIE, String(!open), { path: '/' })
-      return !open
-    })
-  }, [])
-
-  React.useLayoutEffect(() => {
-    const savedOpen = Cookies.get(RIGHT_SIDEBAR_STATE_COOKIE)
-    if (savedOpen !== undefined) _setOpen(savedOpen === 'true')
-
-    const savedWidth = Cookies.get(RIGHT_SIDEBAR_WIDTH_COOKIE)
-    if (savedWidth) setSidebarWidth(savedWidth)
-  }, [])
-
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === RIGHT_SIDEBAR_KEYBOARD_SHORTCUT) {
-        event.preventDefault()
-        toggleSidebar()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [toggleSidebar])
-
-  const state = open ? 'expanded' : 'collapsed'
-
-  const contextValue = React.useMemo<AppShellRightSidebarContextValue>(
-    () => ({
-      state,
-      open,
-      setOpen,
-      toggleSidebar,
-      sidebarWidth,
-      setSidebarWidth,
-    }),
-    [state, open, setOpen, toggleSidebar, sidebarWidth],
-  )
-
-  return (
-    <AppShellRightSidebarContext.Provider value={contextValue}>
-      <div
-        data-slot="context-sidebar-wrapper"
-        style={
-          {
-            '--context-sidebar-width': sidebarWidth,
-          } as React.CSSProperties
-        }
-        className="contents max-lg:[--context-sidebar-width:0px]"
-      >
-        {children}
-      </div>
-    </AppShellRightSidebarContext.Provider>
-  )
-}
-
-function AppShellRightSidebarTrigger({
-  className,
-  label = 'Toggle context sidebar',
-  ...props
-}: React.ComponentProps<typeof Button> & {
-  label?: string
-}) {
-  const { toggleSidebar, state } = useAppShellRightSidebar()
-
-  return (
-    <Tooltip>
-      <Tooltip.Trigger asChild>
-        <Button
-          size="icon"
-          variant="ghost"
-          type="button"
-          data-slot="context-sidebar-trigger"
-          className={cn('max-lg:hidden shrink-0', className)}
-          onClick={toggleSidebar}
-          {...props}
-        >
-          <Icon
-            name={state === 'collapsed' ? 'SidebarToggled' : 'SidebarToggle'}
-            className="!size-4 text-foreground scale-x-[-1]"
-          />
-
-          <span className="sr-only">{label}</span>
-        </Button>
-      </Tooltip.Trigger>
-
-      <Tooltip.Content side="bottom">{label}</Tooltip.Content>
-    </Tooltip>
-  )
-}
-
-/**
- * Fixed right context panel with drag-to-resize on its left edge, matching
- * the left sidebar behavior (click toggles, double click resets, drag past
- * the threshold collapses). Requires `AppShell.RightSidebarProvider`.
- */
-function AppShellRightSidebar({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<'aside'>) {
-  const {
-    state,
-    open: isSidebarOpen,
-    toggleSidebar,
-    setOpen,
-    setSidebarWidth,
-  } = useAppShellRightSidebar()
-
-  const [isDragging, setIsDragging] = React.useState(false)
-  const railClickTimer = React.useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  )
-
-  const persistWidth = React.useCallback(
-    (width: string) => {
-      Cookies.set(RIGHT_SIDEBAR_WIDTH_COOKIE, width, { path: '/' })
-      setSidebarWidth(width)
-    },
-    [setSidebarWidth],
-  )
-
-  const handleRailClick = React.useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      const wrapper = (e.currentTarget as HTMLElement).closest<HTMLElement>(
-        '[data-slot="context-sidebar-wrapper"]',
-      )
-
-      if (railClickTimer.current) {
-        clearTimeout(railClickTimer.current)
-        railClickTimer.current = null
-
-        if (!wrapper) return
-
-        wrapper.style.setProperty(
-          '--context-sidebar-width',
-          RIGHT_SIDEBAR_WIDTH,
-        )
-        persistWidth(RIGHT_SIDEBAR_WIDTH)
-
-        return
-      }
-
-      railClickTimer.current = setTimeout(() => {
-        railClickTimer.current = null
-        toggleSidebar()
-      }, 150)
-    },
-    [toggleSidebar, persistWidth],
-  )
-
-  const handleResizeMouseDown = React.useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      const wrapper = (e.currentTarget as HTMLElement).closest<HTMLElement>(
-        '[data-slot="context-sidebar-wrapper"]',
-      )
-
-      if (!wrapper) return
-
-      const startX = e.clientX
-
-      document.body.style.cursor = 'col-resize'
-      document.body.style.userSelect = 'none'
-
-      if (!isSidebarOpen) {
-        let dragStarted = false
-
-        const handleMouseMove = (moveEvent: MouseEvent) => {
-          const delta = startX - moveEvent.clientX
-
-          if (!dragStarted) {
-            if (Math.abs(delta) < 4) return
-
-            dragStarted = true
-            setIsDragging(true)
-
-            wrapper.style.setProperty(
-              '--context-sidebar-width',
-              `${MIN_RIGHT_SIDEBAR_WIDTH}px`,
-            )
-            setOpen(true)
-          }
-
-          const newWidth = Math.max(
-            MIN_RIGHT_SIDEBAR_WIDTH,
-            Math.min(MAX_RIGHT_SIDEBAR_WIDTH, MIN_RIGHT_SIDEBAR_WIDTH + delta),
-          )
-
-          wrapper.style.setProperty('--context-sidebar-width', `${newWidth}px`)
-        }
-
-        const handleMouseUp = (upEvent: MouseEvent) => {
-          document.body.style.cursor = ''
-          document.body.style.userSelect = ''
-
-          window.removeEventListener('mousemove', handleMouseMove)
-          window.removeEventListener('mouseup', handleMouseUp)
-
-          if (!dragStarted) return
-
-          setIsDragging(false)
-
-          if (startX - upEvent.clientX < -10) {
-            wrapper.style.setProperty(
-              '--context-sidebar-width',
-              `${MIN_RIGHT_SIDEBAR_WIDTH}px`,
-            )
-
-            setOpen(false)
-          } else {
-            const newWidth = wrapper.style
-              .getPropertyValue('--context-sidebar-width')
-              .trim()
-
-            persistWidth(newWidth)
-          }
-        }
-
-        window.addEventListener('mousemove', handleMouseMove)
-        window.addEventListener('mouseup', handleMouseUp)
-
-        return
-      }
-
-      setIsDragging(true)
-
-      const rawWidth = wrapper.style.getPropertyValue('--context-sidebar-width')
-      const startWidth = rawWidth
-        ? rawWidth.endsWith('rem')
-          ? parseFloat(rawWidth) * 16
-          : parseFloat(rawWidth)
-        : MIN_RIGHT_SIDEBAR_WIDTH
-
-      let pastCollapseThreshold = false
-
-      const handleMouseMove = (moveEvent: MouseEvent) => {
-        const delta = startX - moveEvent.clientX
-        const rawWidth = startWidth + delta
-
-        pastCollapseThreshold = rawWidth < RIGHT_SIDEBAR_COLLAPSE_THRESHOLD
-
-        const newWidth = Math.max(
-          MIN_RIGHT_SIDEBAR_WIDTH,
-          Math.min(MAX_RIGHT_SIDEBAR_WIDTH, rawWidth),
-        )
-        wrapper.style.setProperty('--context-sidebar-width', `${newWidth}px`)
-      }
-
-      const handleMouseUp = () => {
-        document.body.style.cursor = ''
-        document.body.style.userSelect = ''
-
-        setIsDragging(false)
-
-        window.removeEventListener('mousemove', handleMouseMove)
-        window.removeEventListener('mouseup', handleMouseUp)
-
-        if (pastCollapseThreshold) {
-          toggleSidebar()
-          return
-        }
-
-        const newWidth = wrapper.style
-          .getPropertyValue('--context-sidebar-width')
-          .trim()
-
-        persistWidth(newWidth)
-      }
-
-      window.addEventListener('mousemove', handleMouseMove)
-      window.addEventListener('mouseup', handleMouseUp)
-    },
-    [toggleSidebar, persistWidth, isSidebarOpen, setOpen],
-  )
-
-  React.useEffect(() => {
-    return () => {
-      if (railClickTimer.current) {
-        clearTimeout(railClickTimer.current)
-      }
-    }
-  }, [])
-
-  return (
-    <aside
-      data-side="right"
-      data-slot="sidebar"
-      data-variant="inset"
-      data-state={state}
-      data-collapsible={state === 'collapsed' ? 'offcanvas' : ''}
-      className="group peer hidden text-sidebar-foreground lg:block"
-      {...props}
-    >
-      <div
-        aria-hidden
-        data-slot="context-sidebar-gap"
-        className={cn(
-          'relative shrink-0 bg-transparent transition-[width] duration-300',
-          state === 'expanded' ? 'w-(--context-sidebar-width)' : 'w-0',
-        )}
-      />
-
-      {/* Off-canvas collapses by animating the clipped width (never past the
-          viewport edge) instead of a negative `right` offset — an off-screen
-          fixed panel becomes real horizontal overflow whenever an ancestor
-          has a transform (e.g. Storybook zoom). */}
-      <div
-        data-slot="context-sidebar-container"
-        className={cn(
-          'fixed z-10 hidden overflow-clip bg-sidebar transition-[width] duration-300 lg:flex',
-          'right-0 w-(--context-sidebar-width) group-data-[collapsible=offcanvas]:w-0',
-        )}
-        style={{
-          top: 'var(--announcement-height, 0px)',
-          height: 'calc(100dvh - var(--announcement-height, 0px))',
-        }}
-      >
-        <div
-          data-sidebar="sidebar"
-          data-slot="sidebar-inner"
-          className="relative flex h-full w-(--context-sidebar-width) shrink-0 min-w-0 flex-col"
-        >
-          <Sidebar.Content
-            className={cn('flex flex-col overflow-y-auto p-4', className)}
-          >
-            {children}
-          </Sidebar.Content>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        tabIndex={-1}
-        onClick={handleRailClick}
-        onMouseDown={handleResizeMouseDown}
-        onFocus={(e) => e.currentTarget.blur()}
-        data-sidebar="rail"
-        data-slot="context-sidebar-rail"
-        aria-label="Resize sidebar"
-        className={cn(
-          'fixed inset-y-0 z-20 hidden w-4 sm:flex',
-          'right-(--context-sidebar-width) group-data-[collapsible=offcanvas]:right-0',
-          'cursor-col-resize max-h-32 items-center justify-center top-1/2 translate-x-1/2 -translate-y-1/2 px-4',
-          'group-data-[collapsible=offcanvas]:translate-x-0',
-          'after:absolute after:inset-y-0 after:right-1/2 after:w-1 after:translate-x-1/2 after:rounded-full after:transition-transform',
-          'hover:after:translate-x-0 hover:after:bg-sidebar-border',
-          'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring transition-[right,transform] duration-300 bg-transparent!',
-          isDragging && 'after:translate-x-0 after:bg-sidebar-border',
-        )}
-      />
-    </aside>
-  )
-}
-
-/* -------------------------------------------------------------------------
  * Inset / loading
  * ---------------------------------------------------------------------- */
 
@@ -1342,10 +1424,13 @@ function AppShellInset({
   /** Spacing scale unit for `--calculated-spacing` (bottom paddings, widget offsets). */
   spacing?: number
 }) {
+  const leftSidebar = React.useContext(AppShellLeftSidebarContext)
   const rightSidebar = React.useContext(AppShellRightSidebarContext)
 
+  const hasSidebar = Boolean(leftSidebar || rightSidebar)
+
   return (
-    <Sidebar.Inset
+    <div
       data-slot="app-shell-inset"
       style={
         {
@@ -1354,15 +1439,20 @@ function AppShellInset({
         } as React.CSSProperties
       }
       className={cn(
-        loading && 'relative min-h-0 overflow-hidden',
+        'relative flex w-full min-h-full flex-1 flex-col transition-[margin] duration-300',
+        // The inset chrome (margins + rounding) only exists when at least one
+        // sidebar provider frames the page; each margin collapses against the
+        // side whose sidebar is expanded.
+        hasSidebar && 'lg:m-2 lg:rounded-2xl',
+        leftSidebar?.state === 'expanded' && 'lg:ml-0',
+        rightSidebar?.state === 'expanded' && 'lg:mr-0',
+        loading && 'min-h-0 overflow-hidden',
         'max-lg:bg-dashboard-background! bg-dashboard-background',
         '[--calculated-spacing:--spacing(var(--sidebar-spacing))]',
         // `isolate` keeps composited children (e.g. the glass header's
         // backdrop-filter) inside the rounded overflow clip on all engines.
         'w-full min-w-0 lg:overflow-clip isolate',
         'max-lg:pb-(--calculated-spacing)',
-        rightSidebar?.state === 'expanded' &&
-          'lg:peer-data-[variant=inset]:mr-0',
         className,
       )}
       {...props}
@@ -1375,7 +1465,7 @@ function AppShellInset({
       >
         {children}
       </div>
-    </Sidebar.Inset>
+    </div>
   )
 }
 
@@ -1397,7 +1487,12 @@ function AppShellLoading({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 const AppShell = Object.assign(AppShellRoot, {
-  Sidebar: AppShellSidebar,
+  LeftSidebar: AppShellLeftSidebar,
+  LeftSidebarProvider: AppShellLeftSidebarProvider,
+  LeftSidebarTrigger: AppShellLeftSidebarTrigger,
+  RightSidebar: AppShellRightSidebar,
+  RightSidebarProvider: AppShellRightSidebarProvider,
+  RightSidebarTrigger: AppShellRightSidebarTrigger,
   SidebarHeader: AppShellSidebarHeader,
   SidebarSection: AppShellSidebarSection,
   SidebarContent: AppShellSidebarContent,
@@ -1411,9 +1506,12 @@ const AppShell = Object.assign(AppShellRoot, {
   NavbarItem: AppShellNavbarItem,
   Inset: AppShellInset,
   Loading: AppShellLoading,
-  RightSidebar: AppShellRightSidebar,
-  RightSidebarProvider: AppShellRightSidebarProvider,
-  RightSidebarTrigger: AppShellRightSidebarTrigger,
 })
 
-export { AppShell, useAppShellRightSidebar }
+export {
+  AppShell,
+  useAppShellLeftSidebar,
+  useAppShellRightSidebar,
+  useLeftSidebarToggle,
+  useRightSidebarToggle,
+}

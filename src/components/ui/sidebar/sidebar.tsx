@@ -545,7 +545,10 @@ function SidebarMenuButton({
   tooltip?: string | React.ComponentProps<typeof Tooltip.Content>
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const Comp = asChild ? Slot : 'button'
-  const { isMobile, state } = useSidebar()
+  // Optional so menu buttons also work outside a SidebarProvider (e.g. inside
+  // AppShell sidebars, which manage their own state). The tooltip only shows
+  // in the provider-driven icon-collapsed mode, so no context means hidden.
+  const context = React.useContext(SidebarContext)
 
   const button = (
     <Comp
@@ -574,7 +577,7 @@ function SidebarMenuButton({
       <Tooltip.Content
         side="right"
         align="center"
-        hidden={state !== 'collapsed' || isMobile}
+        hidden={!context || context.state !== 'collapsed' || context.isMobile}
         {...tooltip}
       />
     </Tooltip>
