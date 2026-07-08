@@ -219,37 +219,6 @@ export const Submenu: Story = {
   ),
 }
 
-export const Insets: Story = {
-  render: () => (
-    <DropdownMenu>
-      <DropdownMenu.Trigger asChild>
-        <Button variant="outline">Inset</Button>
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Content className="w-48">
-        <DropdownMenu.Group>
-          <DropdownMenu.Label inset>Actions</DropdownMenu.Label>
-          <DropdownMenu.Item inset>
-            <Icon name="Pencil" className="size-4" />
-            Edit
-          </DropdownMenu.Item>
-          <DropdownMenu.Item inset>
-            <Icon name="Copy" className="size-4" />
-            Duplicate
-          </DropdownMenu.Item>
-        </DropdownMenu.Group>
-        <DropdownMenu.Separator />
-        <DropdownMenu.Group>
-          <DropdownMenu.Label inset>Danger</DropdownMenu.Label>
-          <DropdownMenu.Item inset variant="destructive">
-            <Icon name="Trash" className="size-4" />
-            Delete
-          </DropdownMenu.Item>
-        </DropdownMenu.Group>
-      </DropdownMenu.Content>
-    </DropdownMenu>
-  ),
-}
-
 export const DisabledItems: Story = {
   render: () => (
     <DropdownMenu>

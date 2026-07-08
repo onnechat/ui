@@ -37,83 +37,90 @@ export function ActionGroup({
   const isDisabled = !!disabled || itemsLength === 0
 
   return (
-    <DropdownMenu>
-      <DropdownMenu.Trigger
-        asChild
-        disabled={isDisabled}
-        className={className}
-        data-action-group-trigger
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children ?? (
-          <Button
-            variant="secondary"
-            disabled={isDisabled}
-            className="relative min-h-8 min-w-8 max-h-8 max-w-8 p-0 shrink-0 disabled:opacity-50"
-          >
-            <Icon className="h-4 w-4" name="Dots" />
+    // `display: contents`: keeps Base UI's Menu internals (focus-guard/aria-owns
+    // sentinels, mounted and unmounted as the menu opens and closes) from ever landing
+    // as direct siblings of the trigger in whatever the caller renders ActionGroup into
+    // (e.g. ButtonGroup), which would otherwise break `:first-child`/`:last-child`-based
+    // styling there. The dropdown content itself is unaffected since it's portaled away.
+    <div data-slot="action-group" className="contents">
+      <DropdownMenu>
+        <DropdownMenu.Trigger
+          asChild
+          disabled={isDisabled}
+          className={className}
+          data-action-group-trigger
+          onClick={(e) => e.stopPropagation()}
+        >
+          {children ?? (
+            <Button
+              variant="secondary"
+              disabled={isDisabled}
+              className="relative min-h-8 min-w-8 max-h-8 max-w-8 p-0 shrink-0 disabled:opacity-50"
+            >
+              <Icon className="h-4 w-4" name="Dots" />
 
-            {isDisabled && (
-              <div className="absolute top-0 right-0 bg-card rounded-full p-1">
-                <Icon className="size-2 shrink-0" name="Lock" />
-              </div>
-            )}
-          </Button>
-        )}
-      </DropdownMenu.Trigger>
-
-      <DropdownMenu.Content
-        align={align}
-        className="min-w-36 w-(--anchor-width) bg-sidebar/50 rounded-2xl overflow-hidden"
-      >
-        {items.map((group, groupIndex) => {
-          const isLastGroup = groupIndex === items.length - 1
-
-          return (
-            <React.Fragment key={groupIndex}>
-              <DropdownMenu.Group key={groupIndex} className="flex flex-col">
-                {group.map((item, itemIndex) => {
-                  const isFirst = groupIndex === 0 && itemIndex === 0
-                  const isLast = isLastGroup && itemIndex === group.length - 1
-
-                  return (
-                    <DropdownMenu.Item
-                      key={`${item.label}-${itemIndex}`}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        item.onClick?.(
-                          e as unknown as React.MouseEvent<HTMLButtonElement>,
-                        )
-                      }}
-                      data-variant={item.variant ?? 'default'}
-                      className={cn(
-                        'text-muted-foreground',
-                        isFirst && 'rounded-t-xl',
-                        isLast && 'rounded-b-xl',
-                        item.disabled && 'opacity-50 cursor-not-allowed',
-                        'flex items-center gap-2 w-full relative z-10 group/menu-button hover:bg-muted! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] outline-none cursor-pointer ring-0!',
-                        'data-[variant=destructive]:text-destructive data-[variant=destructive]:hover:text-destructive/80 data-[variant=destructive]:hover:bg-destructive/10! data-[variant=destructive]:hover:border-destructive/20',
-                        item.className,
-                      )}
-                    >
-                      <Icon
-                        name={item.icon ?? 'Dots'}
-                        className="size-4 text-current"
-                      />
-
-                      {item.label}
-                    </DropdownMenu.Item>
-                  )
-                })}
-              </DropdownMenu.Group>
-
-              {!isLastGroup && (
-                <DropdownMenu.Separator className="max-lg:hidden" />
+              {isDisabled && (
+                <div className="absolute top-0 right-0 bg-card rounded-full p-1">
+                  <Icon className="size-2 shrink-0" name="Lock" />
+                </div>
               )}
-            </React.Fragment>
-          )
-        })}
-      </DropdownMenu.Content>
-    </DropdownMenu>
+            </Button>
+          )}
+        </DropdownMenu.Trigger>
+
+        <DropdownMenu.Content
+          align={align}
+          className="min-w-36 w-(--anchor-width) bg-sidebar/50 rounded-2xl overflow-hidden"
+        >
+          {items.map((group, groupIndex) => {
+            const isLastGroup = groupIndex === items.length - 1
+
+            return (
+              <React.Fragment key={groupIndex}>
+                <DropdownMenu.Group key={groupIndex} className="flex flex-col">
+                  {group.map((item, itemIndex) => {
+                    const isFirst = groupIndex === 0 && itemIndex === 0
+                    const isLast = isLastGroup && itemIndex === group.length - 1
+
+                    return (
+                      <DropdownMenu.Item
+                        key={`${item.label}-${itemIndex}`}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          item.onClick?.(
+                            e as unknown as React.MouseEvent<HTMLButtonElement>,
+                          )
+                        }}
+                        data-variant={item.variant ?? 'default'}
+                        className={cn(
+                          'text-muted-foreground',
+                          isFirst && 'rounded-t-xl',
+                          isLast && 'rounded-b-xl',
+                          item.disabled && 'opacity-50 cursor-not-allowed',
+                          'flex items-center gap-2 w-full relative z-10 group/menu-button hover:bg-muted! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] outline-none cursor-pointer ring-0!',
+                          'data-[variant=destructive]:text-destructive data-[variant=destructive]:hover:text-destructive/80 data-[variant=destructive]:hover:bg-destructive/10! data-[variant=destructive]:hover:border-destructive/20',
+                          item.className,
+                        )}
+                      >
+                        <Icon
+                          name={item.icon ?? 'Dots'}
+                          className="size-4 text-current"
+                        />
+
+                        {item.label}
+                      </DropdownMenu.Item>
+                    )
+                  })}
+                </DropdownMenu.Group>
+
+                {!isLastGroup && (
+                  <DropdownMenu.Separator className="max-lg:hidden" />
+                )}
+              </React.Fragment>
+            )
+          })}
+        </DropdownMenu.Content>
+      </DropdownMenu>
+    </div>
   )
 }

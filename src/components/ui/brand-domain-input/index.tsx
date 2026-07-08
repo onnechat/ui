@@ -22,8 +22,8 @@ export const BrandDomainInput = React.forwardRef<
       <div
         className={cn(
           'flex items-center justify-center px-3 py-2 text-muted-foreground text-sm whitespace-nowrap select-none',
-          'bg-accent h-12 w-fit rounded-xl rounded-r-none',
-          isMobile && 'aspect-square size-12',
+          'bg-accent h-10 w-fit rounded-xl rounded-r-none',
+          isMobile && 'aspect-square size-10',
         )}
       >
         {prefix}

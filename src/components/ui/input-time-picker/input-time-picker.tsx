@@ -95,7 +95,7 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
       <div
         ref={ref}
         className={cn(
-          'flex h-12 w-full items-center justify-between rounded-lg bg-input text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 md:text-sm min-w-24',
+          'flex h-10 w-full items-center justify-between rounded-lg bg-input text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 min-w-24',
           'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
           className,
         )}

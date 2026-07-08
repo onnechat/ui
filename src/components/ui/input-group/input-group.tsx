@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/cn'
 
@@ -12,6 +13,8 @@ function InputGroupRoot({ className, ...props }: InputGroupProps) {
         'relative',
         '[&:has([data-align="inline-start"])_[data-slot="input-group-control"]]:pl-10',
         '[&:has([data-align="inline-end"])_[data-slot="input-group-control"]]:pr-10',
+        '[&:has([data-align="inline-start"][data-variant="filled"])_[data-slot="input-group-control"]]:pl-12',
+        '[&:has([data-align="inline-end"][data-variant="filled"])_[data-slot="input-group-control"]]:pr-12',
         className,
       )}
       {...props}
@@ -26,7 +29,7 @@ function InputGroupInput({ className, ...props }: InputGroupInputProps) {
     <input
       data-slot="input-group-control"
       className={cn(
-        'file:text-foreground placeholder:text-muted-foreground/50 placeholder:pointer-events-none placeholder:select-none bg-input flex h-12 w-full min-w-0 rounded-xl border border-transparent px-3 py-2 transition-all outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium text-foreground',
+        'file:text-foreground placeholder:text-muted-foreground/50 placeholder:pointer-events-none placeholder:select-none bg-input flex h-10 w-full min-w-0 rounded-xl border border-transparent px-3 py-2 text-sm transition-all outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium text-foreground',
         'focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px]',
         'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
         'disabled:pointer-events-none disabled:cursor-not-allowed disabled:brightness-75',
@@ -39,12 +42,36 @@ function InputGroupInput({ className, ...props }: InputGroupInputProps) {
 }
 InputGroupInput.displayName = 'InputGroupInput'
 
-type InputGroupAddonProps = React.HTMLAttributes<HTMLDivElement> & {
-  align?: 'inline-start' | 'inline-end'
-}
+const inputGroupAddonVariants = cva(
+  'absolute inset-y-0 flex items-center justify-center pointer-events-none',
+  {
+    variants: {
+      align: {
+        'inline-start': 'left-0 w-10',
+        'inline-end': 'right-0 w-10',
+      },
+      variant: {
+        default: '',
+        filled: 'bg-accent',
+      },
+    },
+    compoundVariants: [
+      { align: 'inline-start', variant: 'filled', className: 'rounded-l-xl' },
+      { align: 'inline-end', variant: 'filled', className: 'rounded-r-xl' },
+    ],
+    defaultVariants: {
+      align: 'inline-start',
+      variant: 'default',
+    },
+  },
+)
+
+type InputGroupAddonProps = React.HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof inputGroupAddonVariants>
 
 function InputGroupAddon({
   align = 'inline-start',
+  variant = 'default',
   className,
   ...props
 }: InputGroupAddonProps) {
@@ -52,12 +79,8 @@ function InputGroupAddon({
     <div
       data-slot="input-group-addon"
       data-align={align}
-      className={cn(
-        'absolute inset-y-0 flex items-center justify-center pointer-events-none',
-        align === 'inline-start' && 'left-0 w-10',
-        align === 'inline-end' && 'right-0 w-10',
-        className,
-      )}
+      data-variant={variant}
+      className={cn(inputGroupAddonVariants({ align, variant }), className)}
       {...props}
     />
   )

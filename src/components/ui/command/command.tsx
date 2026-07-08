@@ -28,7 +28,7 @@ function CommandRoot({
         '**:data-[slot=command-input-wrapper]:flex **:data-[slot=command-input-wrapper]:min-h-14 **:data-[slot=command-input-wrapper]:items-center',
         '**:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:text-muted-foreground/50',
         '**:[[cmdk-group]]:px-(--card-content-padding)! **:[[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0',
-        '**:[[cmdk-input-wrapper]_svg]:h-5 **:[[cmdk-input-wrapper]_svg]:w-5 **:[[cmdk-input]]:h-12',
+        '**:[[cmdk-input-wrapper]_svg]:h-5 **:[[cmdk-input-wrapper]_svg]:w-5 **:[[cmdk-input]]:h-10',
         '**:[[cmdk-item]]:gap-3 **:[[cmdk-item]]:px-3 **:[[cmdk-item]]:py-3 **:[[cmdk-item]]:rounded-lg **:[[cmdk-item]_svg]:h-5 **:[[cmdk-item]_svg]:w-5',
         className,
       )}

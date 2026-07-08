@@ -97,7 +97,7 @@ function SelectMulti<T extends object>({
   const hasValues = values.length > 0
 
   const triggerClassName = cn(
-    'border-transparent text-foreground flex min-h-12 w-full min-w-0 items-center justify-between gap-2 rounded-xl bg-input px-4 py-2',
+    'border-transparent text-foreground flex min-h-10 w-full min-w-0 items-center justify-between gap-2 rounded-xl bg-input px-4 py-2 text-sm',
     'transition-[color] disabled:cursor-not-allowed disabled:opacity-75',
     'focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer outline-none',
     !hasValues ? 'text-muted-foreground/50' : 'pl-2 pr-4',

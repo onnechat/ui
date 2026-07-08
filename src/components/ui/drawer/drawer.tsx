@@ -81,11 +81,13 @@ function DrawerContent({
   children,
   title = 'Title',
   showDivider = false,
+  rounded = true,
   onOpenAutoFocus,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Content> & {
   title?: string
   showDivider?: boolean
+  rounded?: boolean
 }) {
   const handleOpenAutoFocus = React.useCallback(
     (event: Event) => {
@@ -118,21 +120,40 @@ function DrawerContent({
         aria-describedby={undefined}
         onOpenAutoFocus={handleOpenAutoFocus}
         className={cn(
-          'group/drawer-content bg-background fixed z-50 flex h-auto flex-col ring-0 focus:ring-0',
-          'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b',
-          'data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t',
-          'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-sm',
-          'data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:sm:max-w-sm',
-          className,
+          // vaul applies its drag/open transform directly to this element — it must
+          // stay free of `overflow`/`border-radius` itself. Chromium can fail to
+          // clip a rounded, overflow-hidden box to its curve while that same box is
+          // being actively transformed (the exact bug that made the desktop
+          // DropdownMenu popup flash square-cornered while animating with `filter`).
+          // The visual rounding/clipping lives on the inner wrapper below instead,
+          // which never carries a transform of its own.
+          'group/drawer-content fixed z-50 flex h-auto flex-col ring-0 focus:ring-0',
+          'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh]',
+          'data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh]',
+          'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:sm:max-w-sm',
+          'data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:sm:max-w-sm',
         )}
         {...props}
       >
-        <DrawerTitle className="sr-only">{title}</DrawerTitle>
+        <div
+          className={cn(
+            'bg-background flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden',
+            rounded &&
+              'group-data-[vaul-drawer-direction=top]/drawer-content:rounded-b-lg group-data-[vaul-drawer-direction=bottom]/drawer-content:rounded-t-lg',
+            'group-data-[vaul-drawer-direction=top]/drawer-content:border-b',
+            'group-data-[vaul-drawer-direction=bottom]/drawer-content:border-t',
+            'group-data-[vaul-drawer-direction=right]/drawer-content:border-l',
+            'group-data-[vaul-drawer-direction=left]/drawer-content:border-r',
+            className,
+          )}
+        >
+          <DrawerTitle className="sr-only">{title}</DrawerTitle>
 
-        {showDivider && (
-          <div className="bg-ring/25 mx-auto mt-4 hidden h-2 w-1/5 shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
-        )}
-        {children}
+          {showDivider && (
+            <div className="bg-ring/25 mx-auto mt-4 hidden h-2 w-1/5 shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
+          )}
+          {children}
+        </div>
       </DrawerPrimitive.Content>
     </DrawerPortal>
   )
