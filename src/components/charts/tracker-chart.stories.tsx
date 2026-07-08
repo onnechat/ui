@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
-import { Tracker } from './tracker';
+import { TrackerChart } from './tracker-chart';
 
 const COLORS = [
   'var(--color-emerald-600)',
@@ -9,9 +9,9 @@ const COLORS = [
   'var(--color-emerald-300)',
 ];
 
-const meta: Meta<typeof Tracker> = {
-  title: 'Blocks/Tracker',
-  component: Tracker,
+const meta: Meta<typeof TrackerChart> = {
+  title: 'Charts/TrackerChart',
+  component: TrackerChart,
   parameters: {
     layout: 'centered',
   },
@@ -77,5 +77,12 @@ export const Long: StoryObj<typeof meta> = {
   args: {
     data: generateData(120),
     className: 'w-[800px]',
+  },
+};
+
+export const Loading: StoryObj<typeof meta> = {
+  args: {
+    data: [],
+    isLoading: true,
   },
 };
