@@ -15,18 +15,12 @@ const meta: Meta<typeof Accordion> = {
 export default meta;
 
 const defaultCode = `<Accordion type="single" collapsible className="w-full min-w-(--container-md) max-w-(--container-md)">
-  <Accordion.Item value="item-0">
-    <Accordion.Trigger>Item 1</Accordion.Trigger>
-    <Accordion.Content>Content for item 1.</Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value="item-1">
-    <Accordion.Trigger>Item 2</Accordion.Trigger>
-    <Accordion.Content>Content for item 2.</Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value="item-2">
-    <Accordion.Trigger>Item 3</Accordion.Trigger>
-    <Accordion.Content>Content for item 3.</Accordion.Content>
-  </Accordion.Item>
+  {Array.from({ length: 5 }, (_, i) => (
+    <Accordion.Item key={i} value={\`item-\${i}\`}>
+      <Accordion.Trigger>Item {i + 1}</Accordion.Trigger>
+      <Accordion.Content>Content for item {i + 1}.</Accordion.Content>
+    </Accordion.Item>
+  ))}
 </Accordion>`;
 
 const multipleCode = `<Accordion
@@ -34,18 +28,12 @@ const multipleCode = `<Accordion
   defaultValue={['item-0']}
   className="w-full min-w-(--container-md) max-w-(--container-md)"
 >
-  <Accordion.Item value="item-0">
-    <Accordion.Trigger>Item 1</Accordion.Trigger>
-    <Accordion.Content>Content for item 1.</Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value="item-1">
-    <Accordion.Trigger>Item 2</Accordion.Trigger>
-    <Accordion.Content>Content for item 2.</Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value="item-2">
-    <Accordion.Trigger>Item 3</Accordion.Trigger>
-    <Accordion.Content>Content for item 3.</Accordion.Content>
-  </Accordion.Item>
+  {Array.from({ length: 5 }, (_, i) => (
+    <Accordion.Item key={i} value={\`item-\${i}\`}>
+      <Accordion.Trigger>Item {i + 1}</Accordion.Trigger>
+      <Accordion.Content>Content for item {i + 1}.</Accordion.Content>
+    </Accordion.Item>
+  ))}
 </Accordion>`;
 
 const customTriggersCode = `<Accordion type="single" collapsible className="w-full min-w-(--container-md) max-w-(--container-md)">
@@ -133,18 +121,12 @@ export const Default: StoryObj<typeof meta> = {
       collapsible
       className="w-full min-w-(--container-md) max-w-(--container-md)"
     >
-      <Accordion.Item value="item-0">
-        <Accordion.Trigger>Item 1</Accordion.Trigger>
-        <Accordion.Content>Content for item 1.</Accordion.Content>
-      </Accordion.Item>
-      <Accordion.Item value="item-1">
-        <Accordion.Trigger>Item 2</Accordion.Trigger>
-        <Accordion.Content>Content for item 2.</Accordion.Content>
-      </Accordion.Item>
-      <Accordion.Item value="item-2">
-        <Accordion.Trigger>Item 3</Accordion.Trigger>
-        <Accordion.Content>Content for item 3.</Accordion.Content>
-      </Accordion.Item>
+      {Array.from({ length: 5 }, (_, i) => (
+        <Accordion.Item key={i} value={`item-${i}`}>
+          <Accordion.Trigger>Item {i + 1}</Accordion.Trigger>
+          <Accordion.Content>Content for item {i + 1}.</Accordion.Content>
+        </Accordion.Item>
+      ))}
     </Accordion>
   ),
 };
@@ -163,18 +145,12 @@ export const Multiple: StoryObj<typeof meta> = {
       defaultValue={['item-0']}
       className="w-full min-w-(--container-md) max-w-(--container-md)"
     >
-      <Accordion.Item value="item-0">
-        <Accordion.Trigger>Item 1</Accordion.Trigger>
-        <Accordion.Content>Content for item 1.</Accordion.Content>
-      </Accordion.Item>
-      <Accordion.Item value="item-1">
-        <Accordion.Trigger>Item 2</Accordion.Trigger>
-        <Accordion.Content>Content for item 2.</Accordion.Content>
-      </Accordion.Item>
-      <Accordion.Item value="item-2">
-        <Accordion.Trigger>Item 3</Accordion.Trigger>
-        <Accordion.Content>Content for item 3.</Accordion.Content>
-      </Accordion.Item>
+      {Array.from({ length: 5 }, (_, i) => (
+        <Accordion.Item key={i} value={`item-${i}`}>
+          <Accordion.Trigger>Item {i + 1}</Accordion.Trigger>
+          <Accordion.Content>Content for item {i + 1}.</Accordion.Content>
+        </Accordion.Item>
+      ))}
     </Accordion>
   ),
 };

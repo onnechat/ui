@@ -11,26 +11,19 @@ import {
   AccordionTrigger,
 } from '@/components/internal/accordion'
 
-const cardShell =
-  'flex h-fit w-full flex-col bg-card [--card-radius:1rem] [--card-padding:0.25rem] p-(--card-padding) rounded-(--card-radius) group'
-
-const cardContentShell = cn(
-  'relative flex flex-1 flex-col gap-0 overflow-hidden',
-  'bg-muted [--card-content-radius:calc(var(--card-radius)-var(--card-padding))] [--card-content-padding:1rem] rounded-(--card-content-radius)',
-)
-
 function AccordionRoot({
   className,
   ...props
 }: React.ComponentProps<typeof AccordionRootPrimitive>) {
   return (
-    <div className={cn(cardShell, className)}>
-      <AccordionRootPrimitive
-        data-slot="accordion"
-        className={cardContentShell}
-        {...props}
-      />
-    </div>
+    <AccordionRootPrimitive
+      data-slot="accordion"
+      className={cn(
+        'flex h-fit w-full flex-col [--accordion-radius:1rem]',
+        className,
+      )}
+      {...props}
+    />
   )
 }
 
@@ -41,8 +34,18 @@ function AccordionItemExtended({
   return (
     <AccordionItem
       className={cn(
-        'rounded-none border-t-4 border-card first:border-t-0',
-        'not-data-open:last:rounded-b-lg',
+        'overflow-hidden rounded-none border-0 bg-muted',
+        // Itens fechados adjacentes se fundem num grupo contínuo: só as
+        // bordas do grupo (extremos ou vizinhas de um item aberto) arredondam.
+        'first:rounded-t-(--accordion-radius) last:rounded-b-(--accordion-radius)',
+        '[[data-open]+&]:rounded-t-(--accordion-radius)',
+        '[&:has(+[data-open])]:rounded-b-(--accordion-radius)',
+        // Item aberto destaca do grupo como um card próprio.
+        'data-open:rounded-(--accordion-radius)',
+        'data-open:not-first:mt-4 data-open:not-last:mb-4',
+        'transition-[margin,border-radius] duration-[350ms] ease-out-soft',
+        'data-open:duration-[550ms] data-open:ease-spring',
+        'motion-reduce:transition-none',
         className,
       )}
       {...props}
@@ -57,8 +60,7 @@ function AccordionTriggerExtended({
   return (
     <AccordionTrigger
       className={cn(
-        'min-h-12 rounded-none border-0 bg-card/50 md:text-base hover:bg-card/75',
-        'first:rounded-t-lg last:not-data-panel-open:rounded-b-lg',
+        'min-h-12 rounded-none border-0 md:text-base hover:bg-card/50',
         className,
       )}
       {...props}
@@ -72,10 +74,7 @@ function AccordionContentExtended({
 }: React.ComponentProps<typeof AccordionContent>) {
   return (
     <AccordionContent
-      className={cn(
-        'border-t-4 border-card',
-        className,
-      )}
+      className={cn('text-muted-foreground md:text-base', className)}
       {...props}
     />
   )
