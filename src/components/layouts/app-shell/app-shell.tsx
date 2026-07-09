@@ -1243,7 +1243,7 @@ function AppShellSidebarFooter({
   return (
     <Sidebar.Footer
       data-slot="app-shell-sidebar-footer"
-      className={cn('p-4 pt-0', className)}
+      className={cn('p-4', className)}
       {...props}
     >
       {children}
