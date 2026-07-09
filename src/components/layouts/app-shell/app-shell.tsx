@@ -166,6 +166,7 @@ type AppShellSidebarContextValue = {
   toggleSidebar: () => void
   sidebarWidth: string
   setSidebarWidth: (width: string) => void
+  maxWidth?: number
 }
 
 const AppShellLeftSidebarContext =
@@ -209,10 +210,12 @@ function isEditableTarget(target: EventTarget | null) {
 function SidebarSideProvider({
   side,
   defaultOpen = true,
+  maxWidth,
   children,
 }: {
   side: AppShellSidebarSide
   defaultOpen?: boolean
+  maxWidth?: number
   children: React.ReactNode
 }) {
   const config = SIDEBAR_SIDE_CONFIG[side]
@@ -275,8 +278,9 @@ function SidebarSideProvider({
       toggleSidebar,
       sidebarWidth,
       setSidebarWidth,
+      maxWidth,
     }),
-    [side, state, open, setOpen, toggleSidebar, sidebarWidth],
+    [side, state, open, setOpen, toggleSidebar, sidebarWidth, maxWidth],
   )
 
   const Context =
@@ -304,7 +308,7 @@ function SidebarSideProvider({
   )
 }
 
-type AppShellSidebarProp = boolean | { defaultOpen?: boolean }
+type AppShellSidebarProp = boolean | { defaultOpen?: boolean; maxWidth?: number }
 
 /**
  * Mounts a side's state when the matching root prop enables it. Skips when an
@@ -330,6 +334,7 @@ function OptionalSidebarProvider({
     <SidebarSideProvider
       side={side}
       defaultOpen={typeof config === 'object' ? config.defaultOpen : undefined}
+      maxWidth={typeof config === 'object' ? config.maxWidth : undefined}
     >
       {children}
     </SidebarSideProvider>
@@ -381,6 +386,7 @@ function SidebarSidePanel({
     toggleSidebar,
     setOpen,
     setSidebarWidth,
+    maxWidth: maxSidebarWidth,
   } = context
 
   // Dragging toward the shell center collapses; away from it expands.
@@ -480,7 +486,7 @@ function SidebarSidePanel({
 
           const newWidth = Math.max(
             MIN_SIDEBAR_WIDTH,
-            Math.min(MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH + delta),
+            Math.min(maxSidebarWidth ?? MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH + delta),
           )
 
           wrapper.style.setProperty(config.widthVar, `${newWidth}px`)
@@ -539,7 +545,7 @@ function SidebarSidePanel({
 
         const newWidth = Math.max(
           MIN_SIDEBAR_WIDTH,
-          Math.min(MAX_SIDEBAR_WIDTH, rawWidth),
+          Math.min(maxSidebarWidth ?? MAX_SIDEBAR_WIDTH, rawWidth),
         )
         wrapper.style.setProperty(config.widthVar, `${newWidth}px`)
       }
