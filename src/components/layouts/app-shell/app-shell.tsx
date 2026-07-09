@@ -58,10 +58,18 @@ import { Tooltip } from '@/components/ui/tooltip'
  * `AppShell.Navbar`. `AppShell.Header` automatically renders one toggle per
  * enabled side (left before the title, right after the actions), so any
  * sidebar combination — none, left only, right only, both — gets exactly
- * the toggles that apply. `AppShell.LeftSidebarTrigger` and
- * `AppShell.RightSidebarTrigger` exist for custom placements (both accept a
- * custom `icon`), and `useLeftSidebarToggle`/`useRightSidebarToggle` expose
- * just the toggle function for fully custom elements.
+ * the toggles that apply; its `leftSidebarTrigger`/`rightSidebarTrigger`
+ * slots replace that default (pass a node) or remove it (pass `null`).
+ * `AppShell.LeftSidebarTrigger` and `AppShell.RightSidebarTrigger` exist for
+ * custom placements (both accept a custom `icon`), and
+ * `useLeftSidebarToggle`/`useRightSidebarToggle` expose just the toggle
+ * function for fully custom elements.
+ *
+ * `AppShell.Inset` additionally takes pinned `top`/`bottom` slots
+ * (`<AppShell.Inset top={…} bottom={…}>`): rows fixed on screen above/below
+ * the rounded panel, on the shell background (Linear-style), while the page
+ * scrolls the panel between them — the sticky Header docks right below the
+ * `top` row.
  */
 function AppShellRoot({
   leftSidebar,
@@ -115,6 +123,11 @@ const MAX_SIDEBAR_WIDTH = 20 * 16 // 20rem
 const COLLAPSE_THRESHOLD = MIN_SIDEBAR_WIDTH / 2 // 8rem — collapse only past half minimum
 
 const SIDEBAR_COOKIE_TTL_DAYS = 365
+
+// Single source of truth for every open/collapse animation (gaps, fixed
+// containers, rails and the inset margins) so both sides always move in the
+// exact same time.
+const SIDEBAR_ANIMATION_DURATION = 'duration-300'
 
 type AppShellSidebarSide = 'left' | 'right'
 
@@ -579,7 +592,8 @@ function SidebarSidePanel({
         aria-hidden
         data-slot={config.gapSlot}
         className={cn(
-          'relative shrink-0 bg-transparent transition-[width] duration-300',
+          'relative shrink-0 bg-transparent transition-[width]',
+          SIDEBAR_ANIMATION_DURATION,
           state === 'expanded'
             ? side === 'left'
               ? 'w-(--left-sidebar-width)'
@@ -596,7 +610,8 @@ function SidebarSidePanel({
       <div
         data-slot={config.containerSlot}
         className={cn(
-          'fixed z-10 hidden overflow-clip bg-sidebar transition-[width] duration-300 lg:flex',
+          'fixed z-10 hidden overflow-clip bg-sidebar transition-[width] lg:flex',
+          SIDEBAR_ANIMATION_DURATION,
           side === 'left'
             ? 'left-0 w-(--left-sidebar-width) group-data-[collapsible=offcanvas]:w-0 justify-end'
             : 'right-0 w-(--right-sidebar-width) group-data-[collapsible=offcanvas]:w-0',
@@ -638,8 +653,9 @@ function SidebarSidePanel({
           'hover:after:translate-x-0 hover:after:bg-sidebar-border',
           'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring bg-transparent!',
           side === 'left'
-            ? 'left-(--left-sidebar-width) group-data-[collapsible=offcanvas]:left-0 -translate-x-1/2 after:left-1/2 after:-translate-x-1/2 transition-[left,transform] duration-300'
-            : 'right-(--right-sidebar-width) group-data-[collapsible=offcanvas]:right-0 translate-x-1/2 after:right-1/2 after:translate-x-1/2 transition-[right,transform] duration-300',
+            ? 'left-(--left-sidebar-width) group-data-[collapsible=offcanvas]:left-0 -translate-x-1/2 after:left-1/2 after:-translate-x-1/2 transition-[left,transform]'
+            : 'right-(--right-sidebar-width) group-data-[collapsible=offcanvas]:right-0 translate-x-1/2 after:right-1/2 after:translate-x-1/2 transition-[right,transform]',
+          SIDEBAR_ANIMATION_DURATION,
           isDragging && 'after:translate-x-0 after:bg-sidebar-border',
         )}
       />
@@ -1256,6 +1272,8 @@ function AppShellHeader({
   title,
   actions,
   user,
+  leftSidebarTrigger,
+  rightSidebarTrigger,
   leftSidebarToggleLabel = 'Toggle left sidebar',
   rightSidebarToggleLabel = 'Toggle right sidebar',
   mobileActionsClassName,
@@ -1269,6 +1287,20 @@ function AppShellHeader({
   actions?: React.ReactNode
   /** Mobile-only user slot (top-right, e.g. avatar). */
   user?: React.ReactNode
+  /**
+   * Left sidebar toggle slot (desktop header only — mobile has no sidebars).
+   * Omit for the automatic trigger (shown while `leftSidebar` is enabled on
+   * AppShell), pass a node to replace it (e.g.
+   * `<AppShell.LeftSidebarTrigger icon="…" />`), or `null` to render none.
+   */
+  leftSidebarTrigger?: React.ReactNode
+  /**
+   * Right sidebar toggle slot (desktop header only — mobile has no
+   * sidebars). Omit for the automatic trigger (shown while `rightSidebar`
+   * is enabled on AppShell), pass a node to replace it, or `null` to render
+   * none.
+   */
+  rightSidebarTrigger?: React.ReactNode
   /** Tooltip label of the auto-rendered left sidebar toggle. */
   leftSidebarToggleLabel?: string
   /** Tooltip label of the auto-rendered right sidebar toggle. */
@@ -1277,13 +1309,29 @@ function AppShellHeader({
 }) {
   // One toggle per enabled side — the `leftSidebar`/`rightSidebar` props on
   // AppShell are the signal, so any sidebar combination (none, left, right,
-  // both) gets exactly the toggles that apply.
+  // both) gets exactly the toggles that apply. The `leftSidebarTrigger`/
+  // `rightSidebarTrigger` slots override that default: a node replaces the
+  // automatic trigger, `null` removes it.
   const leftSidebar = React.useContext(AppShellLeftSidebarContext)
   const rightSidebar = React.useContext(AppShellRightSidebarContext)
 
+  const resolvedLeftTrigger =
+    leftSidebarTrigger === undefined
+      ? leftSidebar && (
+          <AppShellLeftSidebarTrigger label={leftSidebarToggleLabel} />
+        )
+      : leftSidebarTrigger
+
+  const resolvedRightTrigger =
+    rightSidebarTrigger === undefined
+      ? rightSidebar && (
+          <AppShellRightSidebarTrigger label={rightSidebarToggleLabel} />
+        )
+      : rightSidebarTrigger
+
   return (
     <div data-slot="app-shell-header" className={cn('contents', className)} {...props}>
-      <div className="lg:hidden flex items-center justify-between gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 glass-dashboard-header max-lg:sticky top-(--announcement-height,0px) z-50 transition-all max-lg:border-b max-lg:border-border/70">
+      <div className="lg:hidden flex items-center justify-between gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 glass-dashboard-header max-lg:sticky top-[calc(var(--announcement-height,0px)_+_var(--inset-top-height,0px))] z-50 transition-colors max-lg:border-b max-lg:border-border/70">
         <div className="flex min-w-0 flex-1 items-center gap-4">
           {logo && <div className="shrink-0 active:scale-99">{logo}</div>}
 
@@ -1299,10 +1347,8 @@ function AppShellHeader({
         {user}
       </div>
 
-      <div className="max-lg:hidden sticky top-(--announcement-height,0px) z-50 w-full flex min-w-0 items-center gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 border-b glass-dashboard-header border-border/70 transition-colors lg:rounded-t-2xl">
-        {leftSidebar && (
-          <AppShellLeftSidebarTrigger label={leftSidebarToggleLabel} />
-        )}
+      <div className="max-lg:hidden sticky top-[calc(var(--announcement-height,0px)_+_var(--inset-top-height,0px))] z-50 w-full flex min-w-0 items-center gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 border-b glass-dashboard-header border-border/70 transition-colors lg:rounded-t-2xl">
+        {resolvedLeftTrigger}
 
         <div className="flex min-h-7 min-w-0 flex-1 items-center overflow-hidden">
           <div className="flex min-w-0 flex-1 items-center">{title}</div>
@@ -1314,9 +1360,7 @@ function AppShellHeader({
           </div>
         </div>
 
-        {rightSidebar && (
-          <AppShellRightSidebarTrigger label={rightSidebarToggleLabel} />
-        )}
+        {resolvedRightTrigger}
       </div>
     </div>
   )
@@ -1414,6 +1458,8 @@ function AppShellInset({
   children,
   loading = false,
   spacing = 24,
+  top,
+  bottom,
   ...props
 }: React.ComponentProps<'div'> & {
   /**
@@ -1423,48 +1469,168 @@ function AppShellInset({
   loading?: boolean
   /** Spacing scale unit for `--calculated-spacing` (bottom paddings, widget offsets). */
   spacing?: number
+  /**
+   * Pinned row rendered above the inset panel, on the shell background.
+   * The page keeps its normal document scroll — the row stays fixed on
+   * screen (below the announcement banner) while the panel slides beneath
+   * it, and the sticky Header docks right under it.
+   */
+  top?: React.ReactNode
+  /**
+   * Pinned row rendered below the inset panel, on the shell background
+   * (Linear-style). The page keeps its normal document scroll — the row
+   * stays fixed at the bottom of the screen while the panel slides beneath
+   * it. Below `lg`, the row hides automatically whenever an
+   * `AppShell.Navbar` is mounted (the floating navbar owns that space).
+   */
+  bottom?: React.ReactNode
 }) {
   const leftSidebar = React.useContext(AppShellLeftSidebarContext)
   const rightSidebar = React.useContext(AppShellRightSidebarContext)
 
   const hasSidebar = Boolean(leftSidebar || rightSidebar)
 
+  const columnRef = React.useRef<HTMLDivElement>(null)
+  const topRef = React.useRef<HTMLDivElement>(null)
+
+  // Publish the pinned top row's height on the column so the sticky Header
+  // inside the panel docks below the fixed row instead of overlapping it
+  // (same pattern the AnnouncementBanner uses with the global
+  // `--announcement-height`). Known SSR window: the variable only exists
+  // after this client effect runs, so statically-rendered HTML painted with
+  // a restored scroll position can show the Header behind the row until
+  // hydration — unavoidable without a server-side measurement.
+  React.useLayoutEffect(() => {
+    const column = columnRef.current
+    if (!column) return
+
+    const el = topRef.current
+
+    if (!top || !el) {
+      column.style.setProperty('--inset-top-height', '0px')
+      return
+    }
+
+    const update = () => {
+      // getBoundingClientRect over offsetHeight: the row's real height can be
+      // fractional (zoom, non-16px root font); rounding it up would open a
+      // hairline gap between the row and the docked Header.
+      column.style.setProperty(
+        '--inset-top-height',
+        `${el.getBoundingClientRect().height}px`,
+      )
+    }
+
+    update()
+
+    if (typeof ResizeObserver === 'undefined') return
+
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+
+    return () => {
+      ro.disconnect()
+      column.style.setProperty('--inset-top-height', '0px')
+    }
+  }, [top])
+
+  // Opaque shell-background behind the pinned rows so the panel scrolling
+  // beneath them never shows through.
+  const pinnedRowBackground = cn(
+    'bg-dashboard-background',
+    hasSidebar && 'lg:bg-sidebar',
+  )
+
   return (
+    // Transparent column that owns the inset's flex cell so pinned rows can
+    // live outside the rounded panel, over the shell background. The page
+    // keeps its document scroll: the sticky rows hold their screen position
+    // while the panel in between slides normally.
     <div
-      data-slot="app-shell-inset"
-      style={
-        {
-          '--sidebar-spacing': spacing,
-          ...style,
-        } as React.CSSProperties
-      }
-      className={cn(
-        'relative flex w-full min-h-full flex-1 flex-col transition-[margin] duration-300',
-        // The inset chrome (margins + rounding) only exists when at least one
-        // sidebar provider frames the page; each margin collapses against the
-        // side whose sidebar is expanded.
-        hasSidebar && 'lg:m-2 lg:rounded-2xl',
-        leftSidebar?.state === 'expanded' && 'lg:ml-0',
-        rightSidebar?.state === 'expanded' && 'lg:mr-0',
-        loading && 'min-h-0 overflow-hidden',
-        'max-lg:bg-dashboard-background! bg-dashboard-background',
-        '[--calculated-spacing:--spacing(var(--sidebar-spacing))]',
-        // `isolate` keeps composited children (e.g. the glass header's
-        // backdrop-filter) inside the rounded overflow clip on all engines.
-        'w-full min-w-0 lg:overflow-clip isolate',
-        'max-lg:pb-(--calculated-spacing)',
-        className,
-      )}
-      {...props}
+      ref={columnRef}
+      data-slot="app-shell-inset-column"
+      className="relative flex w-full min-w-0 min-h-full flex-1 flex-col"
     >
-      {loading && <AppShellLoading />}
+      {/* Ternary (not `&&`) so falsy-numeric slot values like 0 render
+          nothing instead of a stray "0" text node. */}
+      {top ? (
+        <div
+          ref={topRef}
+          data-slot="app-shell-inset-top"
+          className={cn(
+            'sticky top-(--announcement-height,0px) z-40 shrink-0',
+            // On mobile the row and the panel share the same background —
+            // without a divider, scrolling content is chopped at an
+            // invisible line. Desktop gets a tonal boundary from bg-sidebar.
+            'max-lg:border-b max-lg:border-border/70',
+            pinnedRowBackground,
+          )}
+        >
+          {top}
+        </div>
+      ) : null}
 
       <div
-        aria-hidden={loading || undefined}
-        className={cn(loading ? 'hidden' : 'contents')}
+        data-slot="app-shell-inset"
+        style={
+          {
+            '--sidebar-spacing': spacing,
+            ...style,
+          } as React.CSSProperties
+        }
+        className={cn(
+          // No `w-full` here: the column's cross-axis stretch sizes the panel
+          // to its width MINUS the side margins below — `w-full` + `mr-2`
+          // would overflow the column by the margin, gluing the panel to the
+          // viewport edge (and clipping its rounded corner) whenever the
+          // right sidebar is collapsed.
+          'relative flex flex-1 flex-col transition-[margin]',
+          SIDEBAR_ANIMATION_DURATION,
+          // The inset chrome (margins + rounding) only exists when at least one
+          // sidebar provider frames the page; each margin collapses against the
+          // side whose sidebar is expanded.
+          hasSidebar && 'lg:m-2 lg:rounded-2xl',
+          leftSidebar?.state === 'expanded' && 'lg:ml-0',
+          rightSidebar?.state === 'expanded' && 'lg:mr-0',
+          loading && 'min-h-0 overflow-hidden',
+          'max-lg:bg-dashboard-background! bg-dashboard-background',
+          '[--calculated-spacing:--spacing(var(--sidebar-spacing))]',
+          // `isolate` keeps composited children (e.g. the glass header's
+          // backdrop-filter) inside the rounded overflow clip on all engines.
+          'min-w-0 isolate lg:overflow-clip',
+          'max-lg:pb-(--calculated-spacing)',
+          className,
+        )}
+        {...props}
       >
-        {children}
+        {loading && <AppShellLoading />}
+
+        <div
+          aria-hidden={loading || undefined}
+          className={cn(loading ? 'hidden' : 'contents')}
+        >
+          {children}
+        </div>
       </div>
+
+      {bottom ? (
+        <div
+          data-slot="app-shell-inset-bottom"
+          className={cn(
+            'sticky bottom-0 z-40 shrink-0',
+            // Divider against the same-background panel on mobile (mirrors
+            // the mobile Header's border-b).
+            'max-lg:border-t max-lg:border-border/70',
+            // The floating mobile Navbar (fixed bottom, z-50, ~100px tall)
+            // would bury and cover this row — when a Navbar is mounted in
+            // the shell, the row yields to it below `lg`.
+            'max-lg:[[data-slot=app-shell]:has([data-slot=app-shell-navbar])_&]:hidden',
+            pinnedRowBackground,
+          )}
+        >
+          {bottom}
+        </div>
+      ) : null}
     </div>
   )
 }

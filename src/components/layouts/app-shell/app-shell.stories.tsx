@@ -7,6 +7,7 @@ import { Icon } from '@/components/icon'
 
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Kbd } from '@/components/ui/kbd'
 import { OnnebookLogo } from '@/components/ui/logo'
 import { Sidebar } from '@/components/ui/sidebar'
 
@@ -23,6 +24,11 @@ const meta: Meta<typeof AppShell> = {
   parameters: {
     layout: 'fullscreen',
     docs: {
+      // Fullscreen shell layouts rendered inline on the docs page stretch to
+      // their content's full height (no scroll). An iframe with a fixed
+      // height gives every preview a real viewport: compact, and the page
+      // scroll works inside it.
+      story: { inline: false, height: '640px' },
       description: {
         component: [
           'Esqueleto das dashboards: sidebars laterais redimensionáveis (inset), header sticky com efeito glass, navbar flutuante no mobile e área de conteúdo (`AppShell.Inset`) que reage às sidebars habilitadas.',
@@ -31,13 +37,17 @@ const meta: Meta<typeof AppShell> = {
           '',
           'Nenhum lado é privilegiado — um produto pode não ter sidebar, ter só a esquerda, só a direita ou as duas. Cada lado é habilitado por uma prop no root (`leftSidebar` / `rightSidebar`, aceitam `boolean` ou `{ defaultOpen?: boolean }`) e renderizado pelo painel correspondente (`AppShell.LeftSidebar` / `AppShell.RightSidebar`). Os building blocks (`SidebarHeader`, `SidebarSection`, `SidebarContent`, `SidebarGroup`, `SidebarItem`, `SidebarFooter`) funcionam em qualquer um dos lados.',
           '',
-          'O `AppShell.Header` renderiza automaticamente um toggle para cada lado habilitado — o da esquerda antes do título, o da direita depois das ações. Para posicionamento customizado existem `AppShell.LeftSidebarTrigger` e `AppShell.RightSidebarTrigger`.',
+          'O `AppShell.Header` renderiza automaticamente um toggle para cada lado habilitado — o da esquerda antes do título, o da direita depois das ações. Os slots `leftSidebarTrigger`/`rightSidebarTrigger` do header substituem esse padrão (passe um nó, ex. `<AppShell.LeftSidebarTrigger icon="…" />`) ou o removem (passe `null`). Para posicionamento customizado fora do header existem `AppShell.LeftSidebarTrigger` e `AppShell.RightSidebarTrigger`, e os hooks `useLeftSidebarToggle`/`useRightSidebarToggle` expõem só a função de toggle.',
           '',
           '## Interações',
           '',
           '- **Atalhos**: `[` alterna a sidebar esquerda e `]` a direita (ignorados enquanto um campo editável está focado).',
           '- **Rail de resize**: arraste para redimensionar entre 16–20rem; clique alterna; duplo clique restaura a largura padrão (18rem na esquerda, 20rem na direita); arrastar além do limiar colapsa, e arrastar a partir do estado colapsado reabre.',
           '- **Persistência**: estado e largura de cada lado ficam em cookies próprios (`left-sidebar-state|width`, `right-sidebar-state|width`).',
+          '',
+          '## Inset',
+          '',
+          'O `AppShell.Inset` é o painel arredondado do conteúdo. Os slots `top` e `bottom` fixam faixas acima/abaixo do painel, sobre o fundo do shell (estilo Linear). O scroll continua sendo o da página: as faixas ficam fixas na tela enquanto o painel central desliza entre elas, e o header gruda logo abaixo da faixa de cima. Combinados com as duas sidebars, dão posicionamento nos quatro lados da página.',
           '',
           '## Mobile',
           '',
@@ -220,12 +230,22 @@ function DemoRightSidebarContent() {
   )
 }
 
-function DemoHeader({ title = 'Visão Geral' }: { title?: string }) {
+function DemoHeader({
+  title = 'Visão Geral',
+  leftSidebarTrigger,
+  rightSidebarTrigger,
+}: {
+  title?: string
+  leftSidebarTrigger?: React.ReactNode
+  rightSidebarTrigger?: React.ReactNode
+}) {
   return (
     <AppShell.Header
       logo={<OnnebookLogo variant="icon" />}
       leftSidebarToggleLabel="Alternar sidebar esquerda"
       rightSidebarToggleLabel="Alternar sidebar direita"
+      leftSidebarTrigger={leftSidebarTrigger}
+      rightSidebarTrigger={rightSidebarTrigger}
       title={<span className="truncate font-medium">{title}</span>}
       user={
         <Avatar className="size-10 rounded-2xl border lg:hidden">
@@ -273,57 +293,153 @@ function withoutAnnouncement(Story: React.ComponentType) {
   )
 }
 
+type TriggerMode = 'automático' | 'customizado' | 'oculto'
+
 type PlaygroundArgs = {
   leftSidebar: boolean
   rightSidebar: boolean
-  loading: boolean
-  announcement: boolean
+  header: boolean
   title: string
+  leftTrigger: TriggerMode
+  rightTrigger: TriggerMode
+  insetTop: boolean
+  insetBottom: boolean
+  tallContent: boolean
+  loading: boolean
+  navbar: boolean
+  announcement: boolean
+}
+
+function resolveTriggerSlot(
+  mode: TriggerMode,
+  side: 'left' | 'right',
+): React.ReactNode {
+  if (mode === 'oculto') return null
+  if (mode === 'automático') return undefined
+
+  const Trigger =
+    side === 'left' ? AppShell.LeftSidebarTrigger : AppShell.RightSidebarTrigger
+
+  return (
+    <Trigger
+      label={side === 'left' ? 'Alternar navegação' : 'Alternar painel'}
+      icon={(state) => (
+        <Icon
+          name={
+            side === 'left'
+              ? state === 'expanded'
+                ? 'ArrowLeftToLine'
+                : 'ArrowRightFromLine'
+              : state === 'expanded'
+                ? 'ArrowRightToLine'
+                : 'ArrowLeftFromLine'
+          }
+          className="size-4"
+        />
+      )}
+    />
+  )
 }
 
 /**
- * Monte a combinação que quiser pelos controls: cada região do shell liga e
- * desliga de forma independente. Experimente também os atalhos `[`/`]` e o
- * arraste nos rails para sentir o comportamento das sidebars.
+ * Todos os recursos do shell em um só lugar: monte a combinação que quiser
+ * pelos controls — sidebars, header e seus triggers, faixas fixas do inset,
+ * navbar mobile, loading e announcement. Experimente também os atalhos
+ * `[`/`]` e o arraste nos rails.
  */
 export const Playground: StoryObj<PlaygroundArgs> = {
   args: {
     leftSidebar: true,
     rightSidebar: true,
-    loading: false,
-    announcement: false,
+    header: true,
     title: 'Visão Geral',
+    leftTrigger: 'automático',
+    rightTrigger: 'automático',
+    insetTop: false,
+    insetBottom: false,
+    tallContent: false,
+    loading: false,
+    navbar: true,
+    announcement: false,
   },
   argTypes: {
     leftSidebar: {
       control: 'boolean',
       description:
         'Habilita a sidebar esquerda (painel, toggle no header e atalho `[`).',
+      table: { category: 'Sidebars' },
     },
     rightSidebar: {
       control: 'boolean',
       description:
         'Habilita a sidebar direita (painel, toggle no header e atalho `]`).',
+      table: { category: 'Sidebars' },
+    },
+    header: {
+      control: 'boolean',
+      description: 'Renderiza o `AppShell.Header` no topo do inset.',
+      table: { category: 'Header' },
+    },
+    title: {
+      control: 'text',
+      description: 'Título exibido no `AppShell.Header`.',
+      table: { category: 'Header' },
+    },
+    leftTrigger: {
+      control: 'radio',
+      options: ['automático', 'customizado', 'oculto'],
+      description:
+        'Slot `leftSidebarTrigger` do header: automático, substituído por um trigger com ícone próprio, ou removido (`null`).',
+      table: { category: 'Header' },
+    },
+    rightTrigger: {
+      control: 'radio',
+      options: ['automático', 'customizado', 'oculto'],
+      description:
+        'Slot `rightSidebarTrigger` do header: automático, substituído por um trigger com ícone próprio, ou removido (`null`).',
+      table: { category: 'Header' },
+    },
+    insetTop: {
+      control: 'boolean',
+      description:
+        'Slot `top` do inset — banner de trial fixo acima do painel.',
+      table: { category: 'Inset' },
+    },
+    insetBottom: {
+      control: 'boolean',
+      description:
+        'Slot `bottom` do inset — barra da assistente fixa abaixo do painel (no mobile cede ao navbar).',
+      table: { category: 'Inset' },
+    },
+    tallContent: {
+      control: 'boolean',
+      description:
+        'Conteúdo longo para testar o scroll da página com as faixas fixas.',
+      table: { category: 'Inset' },
     },
     loading: {
       control: 'boolean',
       description: 'Overlay de carregamento do `AppShell.Inset`.',
+      table: { category: 'Inset' },
+    },
+    navbar: {
+      control: 'boolean',
+      description:
+        'Renderiza o `AppShell.Navbar` (flutuante, visível só abaixo de `lg`).',
+      table: { category: 'Shell' },
     },
     announcement: {
       control: 'boolean',
       description:
         'Mostra o `AnnouncementBanner` acima do shell (desloca header e sidebars).',
-    },
-    title: {
-      control: 'text',
-      description: 'Título exibido no `AppShell.Header`.',
+      table: { category: 'Shell' },
     },
   },
   parameters: {
     docs: {
       description: {
         story:
-          'Playground interativo — use os controls para combinar sidebars, overlay de loading, banner de announcement e título do header.',
+          'Playground interativo com todos os recursos do shell: sidebars por lado, header com slots de trigger (automático/customizado/oculto), faixas fixas `top`/`bottom` do inset, conteúdo longo para sentir o scroll, navbar mobile, loading e announcement — tudo combinável pelos controls.',
       },
     },
   },
@@ -349,11 +465,24 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </AppShell.LeftSidebar>
           )}
 
-          <DemoNavbar />
+          {args.navbar && <DemoNavbar />}
 
-          <AppShell.Inset loading={args.loading}>
-            <DemoHeader title={args.title} />
-            <DemoContent />
+          <AppShell.Inset
+            loading={args.loading}
+            top={args.insetTop ? <DemoTrialBanner /> : undefined}
+            bottom={args.insetBottom ? <DemoAssistantBar /> : undefined}
+          >
+            {args.header && (
+              <DemoHeader
+                title={args.title}
+                leftSidebarTrigger={resolveTriggerSlot(args.leftTrigger, 'left')}
+                rightSidebarTrigger={resolveTriggerSlot(
+                  args.rightTrigger,
+                  'right',
+                )}
+              />
+            )}
+            {args.tallContent ? <DemoTallContent /> : <DemoContent />}
           </AppShell.Inset>
 
           {args.rightSidebar && (
@@ -576,6 +705,222 @@ export const SidebarTriggers: StoryObj<typeof meta> = {
     await expect(canvas.getByText('Triggers prontos')).toBeInTheDocument()
     await expect(canvas.getByText('Alternar esquerda')).toBeInTheDocument()
   },
+}
+
+/**
+ * Os slots `leftSidebarTrigger`/`rightSidebarTrigger` do header controlam os
+ * toggles automáticos: `null` remove (a sidebar continua funcionando via
+ * atalho/rail/triggers próprios) e um nó substitui pelo seu.
+ */
+export const HeaderTriggerSlots: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Header com `leftSidebarTrigger={null}` (toggle esquerdo removido — a sidebar segue operável pelo atalho `[` e pelo rail) e `rightSidebarTrigger` substituído por um trigger com ícone customizado.',
+      },
+    },
+  },
+  render: () => (
+    <AppShell leftSidebar rightSidebar>
+      <AppShell.LeftSidebar>
+        <DemoLeftSidebarContent />
+      </AppShell.LeftSidebar>
+
+      <AppShell.Inset>
+        <AppShell.Header
+          logo={<OnnebookLogo variant="icon" />}
+          title={
+            <span className="truncate font-medium">Header trigger slots</span>
+          }
+          leftSidebarTrigger={null}
+          rightSidebarTrigger={
+            <AppShell.RightSidebarTrigger
+              label="Alternar painel de filtros"
+              icon={(state) => (
+                <Icon
+                  name={state === 'expanded' ? 'Eye' : 'Gear'}
+                  className="size-4"
+                />
+              )}
+            />
+          }
+          user={
+            <Avatar className="size-10 rounded-2xl border lg:hidden">
+              <Avatar.Fallback name="User Example" />
+            </Avatar>
+          }
+        />
+        <DemoContent />
+      </AppShell.Inset>
+
+      <AppShell.RightSidebar>
+        <DemoRightSidebarContent />
+      </AppShell.RightSidebar>
+    </AppShell>
+  ),
+}
+
+function DemoTallContent() {
+  return (
+    <main className="flex flex-1 flex-col gap-4 p-4">
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="h-32 rounded-2xl bg-card" />
+        <div className="h-32 rounded-2xl bg-card" />
+        <div className="h-32 rounded-2xl bg-card" />
+      </div>
+      {Array.from({ length: 8 }).map((_, index) => (
+        <div key={index} className="h-40 shrink-0 rounded-2xl bg-card" />
+      ))}
+    </main>
+  )
+}
+
+function DemoTrialBanner() {
+  return (
+    <div className="flex min-h-12 flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2">
+      <p className="text-sm text-muted-foreground">
+        <Icon name="Clock" className="mr-1.5 inline size-3.5 align-[-2px]" />
+        Seu período de teste termina em{' '}
+        <strong className="font-medium text-foreground">5 dias</strong>.
+      </p>
+      <Button size="sm" variant="primary">
+        Fazer upgrade
+      </Button>
+    </div>
+  )
+}
+
+function DemoAssistantBar() {
+  return (
+    <div className="flex items-center justify-between gap-4 px-4 py-2">
+      <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <Icon name="ArrowRotate" className="size-3.5" />
+        Sincronizado agora há pouco
+      </p>
+
+      <div className="flex items-center gap-1">
+        <Button size="sm" variant="ghost">
+          <Icon name="Sparkle" className="size-4" />
+          Perguntar à assistente
+          <Kbd keys={['Mod', 'K']} className="ml-1" />
+        </Button>
+        <Button size="icon-sm" variant="ghost" aria-label="Conversas recentes">
+          <Icon name="Message" className="size-4" />
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Slot `top` do `AppShell.Inset`: faixa fixa acima do painel, sobre o fundo
+ * do shell — aqui um aviso de fim de período de teste, o caso clássico de
+ * SaaS. A página rola normalmente; a faixa nunca se move.
+ */
+export const InsetPinnedTop: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Só o slot `top`: um banner de cobrança/trial fixo acima do painel ("Seu período de teste termina em 5 dias" + upgrade). Serve igualmente para avisos de incidente ou modo de manutenção. Role a página — o painel desliza por baixo, o header gruda sob o banner e o banner não se move.',
+      },
+    },
+  },
+  render: () => (
+    <AppShell leftSidebar>
+      <AppShell.LeftSidebar>
+        <DemoLeftSidebarContent />
+      </AppShell.LeftSidebar>
+
+      <AppShell.Inset top={<DemoTrialBanner />}>
+        <DemoHeader title="Visão Geral" />
+        <DemoTallContent />
+      </AppShell.Inset>
+    </AppShell>
+  ),
+}
+
+/**
+ * Slot `bottom` do `AppShell.Inset`: barra fixa abaixo do painel, sobre o
+ * fundo do shell — o padrão do Linear, aqui como barra da assistente com
+ * status de sincronização. A página rola; a barra fica fixa no rodapé.
+ */
+export const InsetPinnedBottom: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Só o slot `bottom`: a barra da assistente fixa sob o painel (status de sincronização à esquerda, "Perguntar à assistente" com atalho à direita), como o "Ask Linear" do Linear. Outros usos reais: player de áudio, ações de seleção em massa, status de conexão.',
+      },
+    },
+  },
+  render: () => (
+    <AppShell leftSidebar rightSidebar>
+      <AppShell.LeftSidebar>
+        <DemoLeftSidebarContent />
+      </AppShell.LeftSidebar>
+
+      <AppShell.Inset bottom={<DemoAssistantBar />}>
+        <DemoHeader title="Calendário" />
+        <DemoTallContent />
+      </AppShell.Inset>
+
+      <AppShell.RightSidebar>
+        <DemoRightSidebarContent />
+      </AppShell.RightSidebar>
+    </AppShell>
+  ),
+}
+
+/**
+ * Os dois slots do `AppShell.Inset` juntos: impersonation de suporte no topo
+ * e a barra da assistente embaixo — o painel desliza no meio, as faixas nunca
+ * se movem.
+ */
+export const InsetPinnedSlots: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '`top` e `bottom` juntos: no topo a faixa de impersonation ("Você está visualizando como…", padrão de painéis de suporte/admin) e embaixo a barra da assistente. O scroll é o da página — as duas faixas ficam fixas na tela e o painel central desliza entre elas. Com as duas sidebars, o shell oferece encaixes nos quatro lados da página.',
+      },
+    },
+  },
+  render: () => (
+    <AppShell leftSidebar rightSidebar>
+      <AppShell.LeftSidebar>
+        <DemoLeftSidebarContent />
+      </AppShell.LeftSidebar>
+
+      <AppShell.Inset
+        top={
+          <div className="flex min-h-9 flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4 py-1.5 text-xs text-muted-foreground">
+            <Icon name="Eye" className="size-3.5" />
+            Você está visualizando como{' '}
+            <strong className="font-medium text-foreground">
+              Acme Barbearia
+            </strong>
+            <Button size="sm" variant="outline" className="ml-1 h-6 px-2 text-xs">
+              Sair da visualização
+            </Button>
+          </div>
+        }
+        bottom={<DemoAssistantBar />}
+      >
+        <DemoHeader title="Visão Geral" />
+        <DemoTallContent />
+      </AppShell.Inset>
+
+      <AppShell.RightSidebar>
+        <DemoRightSidebarContent />
+      </AppShell.RightSidebar>
+    </AppShell>
+  ),
 }
 
 /**

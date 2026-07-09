@@ -50,6 +50,7 @@ export * from './ui/tabs';
 export * from './ui/text';
 export * from './ui/textarea';
 export * from './ui/toast';
+export * from './ui/tooltip';
 export * from './blocks/video-player';
 
 export * from './ui/avatar';
