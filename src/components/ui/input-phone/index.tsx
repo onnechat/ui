@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { cn } from '@/lib/cn'
+import { cn } from '@/lib/cn';
 
-import { useElementSize } from '@/hooks/use-element-size'
-import type { Country } from '@/hooks/use-phone-input'
-import { usePhoneInput } from '@/hooks/use-phone-input'
+import { useElementSize } from '@/hooks/use-element-size';
+import type { Country } from '@/hooks/use-phone-input';
+import { usePhoneInput } from '@/hooks/use-phone-input';
 
-import { Input } from '@/components/ui/input'
-import { FlagIcon } from '@/components/icon/flag'
-import { Select } from '@/components/ui/select'
+import { Input } from '@/components/ui/input';
+import { FlagIcon } from '@/components/icon/flag';
+import { Select } from '@/components/ui/select';
 
-export interface PhoneInputProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'onChange'
-> {
-  value?: string
-  onChange?: (value: string) => void
-  onCountryChange?: (country: Country) => void
-  disableCountrySelect?: boolean
-  locale?: string
-  align?: 'start' | 'center' | 'end'
+export interface PhoneInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  value?: string;
+  onChange?: (value: string) => void;
+  onCountryChange?: (country: Country) => void;
+  disableCountrySelect?: boolean;
+  locale?: string;
+  align?: 'start' | 'center' | 'end';
+  /** Accessible name for the embedded country select trigger. */
+  countrySelectAriaLabel?: string;
 }
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   (props, ref) => {
@@ -35,11 +35,12 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       placeholder,
       disableCountrySelect = false,
       align = 'start',
+      countrySelectAriaLabel = 'Country',
       ...inputProps
-    } = props
+    } = props;
 
-    const triggerRef = React.useRef<HTMLButtonElement>(null)
-    const { width: triggerWidth } = useElementSize(triggerRef)
+    const triggerRef = React.useRef<HTMLButtonElement>(null);
+    const { width: triggerWidth } = useElementSize(triggerRef);
 
     const {
       formattedPhoneNumber,
@@ -53,7 +54,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       onChange,
       onCountryChange,
       locale,
-    })
+    });
 
     return (
       <div className="flex w-full">
@@ -64,6 +65,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
         >
           <Select.Trigger
             ref={triggerRef}
+            aria-label={countrySelectAriaLabel}
             className={cn(
               'w-fit! rounded-r-none border-r-0 focus:z-10 bg-accent select-none',
               disableCountrySelect && '[&>svg]:hidden',
@@ -87,7 +89,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             className="min-w-max"
             style={triggerWidth > 0 ? { width: triggerWidth } : {}}
           >
-            {countries.map((country) => (
+            {countries.map(country => (
               <Select.Item key={country.code} value={country.code}>
                 <div className="flex items-center gap-2">
                   <FlagIcon
@@ -117,11 +119,11 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           {...inputProps}
         />
       </div>
-    )
+    );
   },
-)
+);
 
-PhoneInput.displayName = 'PhoneInput'
+PhoneInput.displayName = 'PhoneInput';
 
-export { PhoneInput }
-export type { Country }
+export { PhoneInput };
+export type { Country };

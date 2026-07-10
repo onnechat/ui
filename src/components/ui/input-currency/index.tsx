@@ -1,29 +1,29 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { cn } from '@/lib/cn'
+import { cn } from '@/lib/cn';
 
-import type { Currency } from '@/hooks/use-currency-input'
-import { useCurrencyInput } from '@/hooks/use-currency-input'
-import { useElementSize } from '@/hooks/use-element-size'
+import type { Currency } from '@/hooks/use-currency-input';
+import { useCurrencyInput } from '@/hooks/use-currency-input';
+import { useElementSize } from '@/hooks/use-element-size';
 
-import { Input } from '@/components/ui/input'
-import { Select } from '@/components/ui/select'
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 
-export interface CurrencyInputProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'onChange'
-> {
-  value?: number
-  locale?: string
-  allowZero?: boolean
-  defaultCurrency?: string
-  disableCurrencySelect?: boolean
-  centsMode?: boolean
-  onChange?: (value: number) => void
-  onCurrencyChange?: (currency: Currency) => void
-  align?: 'start' | 'center' | 'end'
+export interface CurrencyInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  value?: number;
+  locale?: string;
+  allowZero?: boolean;
+  defaultCurrency?: string;
+  disableCurrencySelect?: boolean;
+  centsMode?: boolean;
+  onChange?: (value: number) => void;
+  onCurrencyChange?: (currency: Currency) => void;
+  align?: 'start' | 'center' | 'end';
+  /** Accessible name for the embedded currency select trigger. */
+  currencySelectAriaLabel?: string;
 }
 
 const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
@@ -41,11 +41,12 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       defaultCurrency,
       allowZero = true,
       align = 'start',
+      currencySelectAriaLabel = 'Currency',
       ...inputProps
-    } = props
+    } = props;
 
-    const triggerRef = React.useRef<HTMLButtonElement>(null)
-    const { width: triggerWidth } = useElementSize(triggerRef)
+    const triggerRef = React.useRef<HTMLButtonElement>(null);
+    const { width: triggerWidth } = useElementSize(triggerRef);
 
     const {
       displayValue,
@@ -65,7 +66,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
       locale,
       defaultCurrency,
       allowZero,
-    })
+    });
 
     return (
       <div className="flex w-full">
@@ -76,6 +77,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         >
           <Select.Trigger
             ref={triggerRef}
+            aria-label={currencySelectAriaLabel}
             className={cn(
               'w-fit! rounded-r-none border-r-0 focus:z-10 bg-accent',
               disableCurrencySelect && '[&>svg]:hidden',
@@ -94,7 +96,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
             className="min-w-32"
             style={triggerWidth > 0 ? { width: triggerWidth } : {}}
           >
-            {currencies.map((currency) => (
+            {currencies.map(currency => (
               <Select.Item key={currency.code} value={currency.code}>
                 <span className="text-sm font-mono text-muted-foreground">
                   {currency.symbol}
@@ -105,10 +107,12 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         </Select>
 
         <Input
-          ref={(node) => {
-            inputRef.current = node
-            if (typeof ref === 'function') ref(node)
-            else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node
+          ref={node => {
+            inputRef.current = node;
+            if (typeof ref === 'function') ref(node);
+            else if (ref)
+              (ref as React.MutableRefObject<HTMLInputElement | null>).current =
+                node;
           }}
           type="text"
           inputMode="decimal"
@@ -122,11 +126,11 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
           {...inputProps}
         />
       </div>
-    )
+    );
   },
-)
+);
 
-CurrencyInput.displayName = 'CurrencyInput'
+CurrencyInput.displayName = 'CurrencyInput';
 
-export { CurrencyInput }
-export type { Currency }
+export { CurrencyInput };
+export type { Currency };

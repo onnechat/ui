@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
+import { expect, fn } from 'storybook/test';
 
 import { CurrencyInput } from './index';
 
@@ -8,10 +8,6 @@ const meta: Meta<typeof CurrencyInput> = {
   component: CurrencyInput,
   parameters: {
     layout: 'centered',
-    // TODO(a11y): o Select.Trigger interno de moeda não expõe nome acessível
-    // (violação button-name do axe) e o componente não aceita prop para
-    // rotulá-lo. Corrigir no componente e remover este todo.
-    a11y: { test: 'todo' },
   },
   tags: ['autodocs'],
   decorators: [
@@ -77,6 +73,14 @@ const meta: Meta<typeof CurrencyInput> = {
         'Placeholder do campo. Quando omitido, usa o formato da moeda (ex.: `0,00`).',
       table: { category: 'Conteúdo' },
     },
+    currencySelectAriaLabel: {
+      control: 'text',
+      description: '`aria-label` do seletor de moeda embutido.',
+      table: {
+        category: 'Conteúdo',
+        defaultValue: { summary: "'Currency'" },
+      },
+    },
     disabled: {
       control: 'boolean',
       description: 'Desabilita o campo e o seletor de moeda.',
@@ -116,17 +120,26 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  play: async ({ canvas, userEvent }) => {
+  args: { onChange: fn() },
+  play: async ({ args, canvas, userEvent }) => {
     const input = canvas.getByRole('textbox');
 
     // Moeda padrão BRL: digitar preenche os centavos da direita para a esquerda.
     await userEvent.type(input, '1234');
     await expect(input).toHaveValue('12,34');
+
+    // onChange recebe o valor numérico em centavos a cada tecla.
+    await expect(args.onChange).toHaveBeenCalledTimes(4);
+    await expect(args.onChange).toHaveBeenLastCalledWith(1234);
   },
 };
 
 export const WithValue: Story = {
   args: { value: 1500 },
+  play: async ({ canvas }) => {
+    // O valor controlado (1500 centavos) é exibido formatado na moeda padrão.
+    await expect(canvas.getByRole('textbox')).toHaveValue('15,00');
+  },
 };
 
 export const Disabled: Story = {

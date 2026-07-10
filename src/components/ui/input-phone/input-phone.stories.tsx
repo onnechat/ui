@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
+import { expect, fn } from 'storybook/test';
 
 import { PhoneInput } from './index';
 
@@ -8,10 +8,6 @@ const meta: Meta<typeof PhoneInput> = {
   component: PhoneInput,
   parameters: {
     layout: 'centered',
-    // TODO(a11y): o Select.Trigger interno de país não expõe nome acessível
-    // (violação button-name do axe) e o componente não aceita prop para
-    // rotulá-lo. Corrigir no componente e remover este todo.
-    a11y: { test: 'todo' },
   },
   tags: ['autodocs'],
   decorators: [
@@ -56,6 +52,14 @@ const meta: Meta<typeof PhoneInput> = {
         'Placeholder do campo. Quando omitido, usa a máscara do país selecionado.',
       table: { category: 'Conteúdo' },
     },
+    countrySelectAriaLabel: {
+      control: 'text',
+      description: '`aria-label` do seletor de país embutido.',
+      table: {
+        category: 'Conteúdo',
+        defaultValue: { summary: "'Country'" },
+      },
+    },
     disabled: {
       control: 'boolean',
       description: 'Desabilita o campo e o seletor de país.',
@@ -93,17 +97,26 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  play: async ({ canvas, userEvent }) => {
+  args: { onChange: fn() },
+  play: async ({ args, canvas, userEvent }) => {
     const input = canvas.getByRole('textbox');
 
     // País padrão BR: a máscara (##) #####-#### é aplicada ao digitar.
     await userEvent.type(input, '11987654321');
     await expect(input).toHaveValue('(11) 98765-4321');
+
+    // onChange recebe o telefone em formato internacional a cada tecla.
+    await expect(args.onChange).toHaveBeenCalledTimes(11);
+    await expect(args.onChange).toHaveBeenLastCalledWith('+5511987654321');
   },
 };
 
 export const WithValue: Story = {
   args: { value: '+5511999999999' },
+  play: async ({ canvas }) => {
+    // O valor controlado define o país (BR) e é exibido com a máscara aplicada.
+    await expect(canvas.getByRole('textbox')).toHaveValue('(11) 99999-9999');
+  },
 };
 
 export const Disabled: Story = {
