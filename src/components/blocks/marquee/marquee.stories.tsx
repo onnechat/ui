@@ -1,23 +1,113 @@
-import * as React from 'react'
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Marquee, MarqueeContent, MarqueeFade, MarqueeItem } from './marquee'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import {
+  Marquee,
+  MarqueeContent,
+  type MarqueeContentProps,
+  MarqueeFade,
+  MarqueeItem,
+  type MarqueeProps,
+} from './marquee';
 
-const meta: Meta<typeof Marquee> = {
+// O Marquee raiz é só o container; as props de animação vivem no
+// MarqueeContent. O Playground junta as duas camadas em um único set de args.
+type PlaygroundArgs = MarqueeProps &
+  Pick<
+    MarqueeContentProps,
+    'autoFill' | 'direction' | 'loop' | 'pauseOnHover' | 'speed'
+  >;
+
+const meta: Meta<PlaygroundArgs> = {
   title: 'Blocks/Marquee',
   component: Marquee,
+  subcomponents: {
+    MarqueeContent,
+    MarqueeFade,
+    MarqueeItem,
+  } as Meta<typeof Marquee>['subcomponents'],
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-}
+  argTypes: {
+    speed: {
+      control: { type: 'range', min: 10, max: 200, step: 10 },
+      description: 'Velocidade de rolagem, em px/s (`MarqueeContent`).',
+      table: {
+        category: 'Comportamento',
+        defaultValue: { summary: '50' },
+      },
+    },
+    direction: {
+      control: 'select',
+      options: ['left', 'right', 'up', 'down'],
+      description: 'Direção da rolagem (`MarqueeContent`).',
+      table: {
+        category: 'Comportamento',
+        defaultValue: { summary: "'left'" },
+      },
+    },
+    pauseOnHover: {
+      control: 'boolean',
+      description: 'Pausa a rolagem enquanto o cursor está sobre o conteúdo.',
+      table: {
+        category: 'Comportamento',
+        defaultValue: { summary: 'true' },
+      },
+    },
+    autoFill: {
+      control: 'boolean',
+      description: 'Duplica os itens até preencher toda a largura disponível.',
+      table: {
+        category: 'Comportamento',
+        defaultValue: { summary: 'true' },
+      },
+    },
+    loop: {
+      control: 'number',
+      description: 'Número de ciclos da animação; `0` repete indefinidamente.',
+      table: {
+        category: 'Comportamento',
+        defaultValue: { summary: '0' },
+      },
+    },
+    className: {
+      control: 'text',
+      description: 'Classes extras aplicadas ao container raiz.',
+      table: { category: 'Aparência' },
+    },
+    children: {
+      control: false,
+      description:
+        'Composição com `MarqueeContent`, `MarqueeFade` e `MarqueeItem`.',
+      table: { category: 'Conteúdo' },
+    },
+  },
+  args: {
+    className: 'w-full max-w-xl',
+    speed: 50,
+    direction: 'left',
+    pauseOnHover: true,
+    autoFill: true,
+    loop: 0,
+  },
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 const Logos = () => (
   <>
-    {['React', 'Vue', 'Svelte', 'Angular', 'Next.js', 'Nuxt', 'Remix', 'Astro'].map((name) => (
+    {[
+      'React',
+      'Vue',
+      'Svelte',
+      'Angular',
+      'Next.js',
+      'Nuxt',
+      'Remix',
+      'Astro',
+    ].map(name => (
       <MarqueeItem key={name}>
         <div className="flex h-16 w-28 items-center justify-center rounded-lg border bg-card text-sm font-medium text-card-foreground">
           {name}
@@ -25,17 +115,23 @@ const Logos = () => (
       </MarqueeItem>
     ))}
   </>
-)
+);
 
-export const Default: Story = {
-  render: () => (
-    <Marquee className="w-full max-w-xl">
-      <MarqueeContent>
+export const Playground: Story = {
+  render: ({ autoFill, direction, loop, pauseOnHover, speed, ...props }) => (
+    <Marquee {...props}>
+      <MarqueeContent
+        autoFill={autoFill}
+        direction={direction}
+        loop={loop}
+        pauseOnHover={pauseOnHover}
+        speed={speed}
+      >
         <Logos />
       </MarqueeContent>
     </Marquee>
   ),
-}
+};
 
 export const WithFade: Story = {
   render: () => (
@@ -47,7 +143,7 @@ export const WithFade: Story = {
       <MarqueeFade side="right" />
     </Marquee>
   ),
-}
+};
 
 export const Reverse: Story = {
   render: () => (
@@ -57,7 +153,7 @@ export const Reverse: Story = {
       </MarqueeContent>
     </Marquee>
   ),
-}
+};
 
 export const Speed: Story = {
   render: () => (
@@ -85,7 +181,7 @@ export const Speed: Story = {
       </div>
     </div>
   ),
-}
+};
 
 export const WithLinks: Story = {
   render: () => (
@@ -124,17 +220,21 @@ export const WithLinks: Story = {
       </MarqueeContent>
     </Marquee>
   ),
-}
+};
 
 export const Gradient: Story = {
   render: () => (
     <Marquee className="w-full max-w-xl">
-      <MarqueeContent gradient gradientColor="var(--color-background)" gradientWidth={100}>
+      <MarqueeContent
+        gradient
+        gradientColor="var(--color-background)"
+        gradientWidth={100}
+      >
         <Logos />
       </MarqueeContent>
     </Marquee>
   ),
-}
+};
 
 export const PauseOnHover: Story = {
   render: () => (
@@ -146,4 +246,4 @@ export const PauseOnHover: Story = {
       <MarqueeFade side="right" />
     </Marquee>
   ),
-}
+};

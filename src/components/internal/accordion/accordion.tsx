@@ -80,14 +80,14 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          'focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-start gap-4 rounded-md p-4 text-left text-sm font-medium transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none cursor-pointer disabled:opacity-50 [&[data-panel-open]>svg]:rotate-0',
+          'focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-start gap-4 rounded-md p-4 text-left text-sm font-medium transition-colors outline-none focus-visible:ring-[3px] disabled:pointer-events-none cursor-pointer disabled:opacity-50 [&[data-panel-open]>svg]:rotate-180',
           className,
         )}
         {...props}
       >
         {children}
 
-        <Icon name="ChevronDown" className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200 -rotate-90 ml-auto" />
+        <Icon name="ChevronDown" className="text-muted-foreground pointer-events-none size-4 shrink-0 transition-transform duration-[450ms] ease-spring motion-reduce:transition-none ml-auto" />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )
@@ -101,7 +101,16 @@ function AccordionContent({
   return (
     <AccordionPrimitive.Panel
       data-slot="accordion-content"
-      className="h-(--accordion-panel-height) data-starting-style:h-0 data-ending-style:h-0 transition-[height] duration-200 ease-out overflow-hidden text-sm"
+      className={cn(
+        'h-(--accordion-panel-height) overflow-hidden text-sm',
+        'data-starting-style:h-0 data-ending-style:h-0',
+        'data-starting-style:opacity-0 data-ending-style:opacity-0',
+        // Abrindo (data-open presente) a altura segue a mola com overshoot;
+        // fechando, cai no ease suave — saídas devem ser mais discretas.
+        'transition-[height,opacity] duration-[350ms] ease-out-soft',
+        'data-open:duration-[550ms] data-open:ease-spring',
+        'motion-reduce:transition-none',
+      )}
       {...props}
     >
       <div className={cn('p-4', className)}>{children}</div>

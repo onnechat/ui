@@ -74,6 +74,15 @@
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  /* Mola subamortecida (ζ=0.65, overshoot ≈7%) aproximada com linear(). */
+  --ease-spring: linear(
+    0, 0.0511, 0.174, 0.331, 0.4949, 0.6475, 0.7785, 0.8831, 0.9611, 1.0145,
+    1.0473, 1.0637, 1.0681, 1.0644, 1.056, 1.0452, 1.0341, 1.0237, 1.0149,
+    1.0078, 1.0025, 0.9989, 0.9967, 0.9956, 0.9954, 0.9956, 0.9962, 0.9969,
+    0.9977, 0.9984, 0.999, 0.9995, 1
+  );
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /*

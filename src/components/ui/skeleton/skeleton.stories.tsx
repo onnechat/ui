@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+
 import { Skeleton } from './skeleton';
 
 const meta: Meta<typeof Skeleton> = {
@@ -8,29 +9,38 @@ const meta: Meta<typeof Skeleton> = {
     layout: 'centered',
   },
   tags: ['autodocs', 'new'],
-};
-
-export default meta;
-
-export const Default: StoryObj<typeof meta> = {
+  argTypes: {
+    className: {
+      control: 'text',
+      description:
+        'Classes extras que definem dimensões e forma do placeholder (ex.: `h-4 w-48`, `size-12 rounded-full`).',
+      table: { category: 'Aparência' },
+    },
+  },
   args: {
     className: 'h-4 w-48',
   },
 };
 
-export const TextLine: StoryObj<typeof meta> = {
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};
+
+export const TextLine: Story = {
   args: {
     className: 'h-3 w-64',
   },
 };
 
-export const Avatar: StoryObj<typeof meta> = {
+export const Avatar: Story = {
   args: {
     className: 'size-12 rounded-full',
   },
 };
 
-export const Card: StoryObj<typeof meta> = {
+export const Card: Story = {
   render: () => (
     <div className="flex w-80 flex-col gap-4 rounded-2xl bg-card p-6">
       <div className="flex items-center gap-4">
@@ -52,7 +62,7 @@ export const Card: StoryObj<typeof meta> = {
   ),
 };
 
-export const TextBlock: StoryObj<typeof meta> = {
+export const TextBlock: Story = {
   render: () => (
     <div className="flex w-64 flex-col gap-2">
       {Array.from({ length: 4 }).map((_, i) => (
@@ -66,7 +76,7 @@ export const TextBlock: StoryObj<typeof meta> = {
   ),
 };
 
-export const Profile: StoryObj<typeof meta> = {
+export const Profile: Story = {
   render: () => (
     <div className="flex w-72 flex-col items-center gap-4 rounded-2xl bg-card p-6 text-center">
       <Skeleton className="size-16 rounded-full" />

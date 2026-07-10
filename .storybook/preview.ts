@@ -31,6 +31,11 @@ const preview: Preview = {
         cellAmount: 32,
       },
     },
+    // Violações de acessibilidade falham as stories rodadas como teste
+    // (addon-vitest). Use 'todo' por story para exceções ainda não corrigidas.
+    a11y: {
+      test: 'error',
+    },
     layout: 'fullscreen',
   },
   initialGlobals: {

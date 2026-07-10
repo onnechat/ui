@@ -1,24 +1,24 @@
-import React from 'react'
+import React from 'react';
 
-import { cn } from '@/lib/cn'
+import { cn } from '@/lib/cn';
 
-import { Icon, type IconType } from '@/components/icon'
+import { Icon, type IconType } from '@/components/icon';
 
-import { Button } from '@/components/ui/button'
-import { DropdownMenu } from '@/components/ui/dropdown-menu'
-import type { ComponentVariant } from '@/types'
+import { Button } from '@/components/ui/button';
+import { DropdownMenu } from '@/components/ui/dropdown-menu';
+import type { ComponentVariant } from '@/types';
 
 type ActionItem = {
-  label: string
-  icon?: IconType
-  href?: string
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
-  disabled?: boolean
-  className?: string
-  variant?: ComponentVariant
-}
+  label: string;
+  icon?: IconType;
+  href?: string;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  className?: string;
+  variant?: ComponentVariant;
+};
 
-type ActionGroupAlign = 'start' | 'center' | 'end'
+type ActionGroupAlign = 'start' | 'center' | 'end';
 
 export function ActionGroup({
   items = [],
@@ -26,15 +26,18 @@ export function ActionGroup({
   children,
   className,
   align = 'end',
+  triggerAriaLabel = 'Actions',
 }: {
-  items?: ActionItem[][]
-  disabled?: boolean
-  className?: string
-  children?: React.ReactNode
-  align?: ActionGroupAlign
+  items?: ActionItem[][];
+  disabled?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+  align?: ActionGroupAlign;
+  /** Accessible name for the default icon-only trigger button. */
+  triggerAriaLabel?: string;
 }) {
-  const itemsLength = items.flat().length
-  const isDisabled = !!disabled || itemsLength === 0
+  const itemsLength = items.flat().length;
+  const isDisabled = !!disabled || itemsLength === 0;
 
   return (
     // `display: contents`: keeps Base UI's Menu internals (focus-guard/aria-owns
@@ -49,12 +52,13 @@ export function ActionGroup({
           disabled={isDisabled}
           className={className}
           data-action-group-trigger
-          onClick={(e) => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
         >
           {children ?? (
             <Button
               variant="secondary"
               disabled={isDisabled}
+              aria-label={triggerAriaLabel}
               className="relative min-h-8 min-w-8 max-h-8 max-w-8 p-0 shrink-0 disabled:opacity-50"
             >
               <Icon className="h-4 w-4" name="Dots" />
@@ -73,23 +77,24 @@ export function ActionGroup({
           className="min-w-36 w-(--anchor-width) bg-sidebar/50 rounded-2xl overflow-hidden"
         >
           {items.map((group, groupIndex) => {
-            const isLastGroup = groupIndex === items.length - 1
+            const isLastGroup = groupIndex === items.length - 1;
 
             return (
               <React.Fragment key={groupIndex}>
                 <DropdownMenu.Group key={groupIndex} className="flex flex-col">
                   {group.map((item, itemIndex) => {
-                    const isFirst = groupIndex === 0 && itemIndex === 0
-                    const isLast = isLastGroup && itemIndex === group.length - 1
+                    const isFirst = groupIndex === 0 && itemIndex === 0;
+                    const isLast =
+                      isLastGroup && itemIndex === group.length - 1;
 
                     return (
                       <DropdownMenu.Item
                         key={`${item.label}-${itemIndex}`}
-                        onClick={(e) => {
-                          e.stopPropagation()
+                        onClick={e => {
+                          e.stopPropagation();
                           item.onClick?.(
                             e as unknown as React.MouseEvent<HTMLButtonElement>,
-                          )
+                          );
                         }}
                         data-variant={item.variant ?? 'default'}
                         className={cn(
@@ -109,7 +114,7 @@ export function ActionGroup({
 
                         {item.label}
                       </DropdownMenu.Item>
-                    )
+                    );
                   })}
                 </DropdownMenu.Group>
 
@@ -117,10 +122,10 @@ export function ActionGroup({
                   <DropdownMenu.Separator className="max-lg:hidden" />
                 )}
               </React.Fragment>
-            )
+            );
           })}
         </DropdownMenu.Content>
       </DropdownMenu>
     </div>
-  )
+  );
 }

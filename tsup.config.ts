@@ -5,7 +5,9 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   dts: true,
   splitting: false,
-  sourcemap: true,
+  // Sem sourcemaps no pacote publicado — corta ~metade do peso no npm.
+  sourcemap: false,
+  treeshake: true,
   clean: true,
   external: ['react', 'react-dom'],
   esbuildOptions(options) {
