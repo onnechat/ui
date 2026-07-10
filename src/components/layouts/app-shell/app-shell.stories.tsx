@@ -22,9 +22,6 @@ import {
  * TODO(a11y): violações dos próprios componentes (não das stories), presentes
  * em toda story que renderiza o conteúdo demo das sidebars — corrigir nos
  * componentes e remover este override:
- * - `list`: `Sidebar.Menu` renderiza `<ul>` com filhos que não são `<li>`
- *   (`AppShell.SidebarItem` é um `motion.div` e o `AppShell.SidebarContent`
- *   envolve os grupos direto no menu);
  * - `color-contrast`: `AppShell.Copyright` e o título do
  *   `AppShell.SidebarGroup` usam `text-muted-foreground/50`, e o fallback do
  *   `Avatar` usa `bg-primary`/`text-primary-foreground` — abaixo de 4.5:1;
@@ -133,27 +130,29 @@ export default meta;
 function DemoWorkspaceSwitcher() {
   return (
     <Sidebar.Menu>
-      <Sidebar.MenuButton
-        size="lg"
-        className="[&>svg]:size-5 cursor-pointer h-12"
-      >
-        <Avatar className="relative flex shrink-0 overflow-hidden size-8 rounded-lg border">
-          <Avatar.Fallback name="Acme Barbearia" />
-        </Avatar>
+      <Sidebar.MenuItem>
+        <Sidebar.MenuButton
+          size="lg"
+          className="[&>svg]:size-5 cursor-pointer h-12"
+        >
+          <Avatar className="relative flex shrink-0 overflow-hidden size-8 rounded-lg border">
+            <Avatar.Fallback name="Acme Barbearia" />
+          </Avatar>
 
-        <div className="grid flex-1 min-w-0 text-left leading-tight">
-          <span className="text-sm truncate font-medium">Acme Barbearia</span>
+          <div className="grid flex-1 min-w-0 text-left leading-tight">
+            <span className="text-sm truncate font-medium">Acme Barbearia</span>
 
-          <span className="truncate text-xs text-muted-foreground -mt-0.5">
-            @acme-barbearia
-          </span>
-        </div>
+            <span className="truncate text-xs text-muted-foreground -mt-0.5">
+              @acme-barbearia
+            </span>
+          </div>
 
-        <Icon
-          name="CaretExpandY"
-          className="ml-auto shrink-0 size-5 text-muted-foreground"
-        />
-      </Sidebar.MenuButton>
+          <Icon
+            name="CaretExpandY"
+            className="ml-auto shrink-0 size-5 text-muted-foreground"
+          />
+        </Sidebar.MenuButton>
+      </Sidebar.MenuItem>
     </Sidebar.Menu>
   );
 }

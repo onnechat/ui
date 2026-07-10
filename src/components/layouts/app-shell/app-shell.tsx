@@ -1,21 +1,21 @@
-'use client'
+'use client';
 
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react';
 
-import { cn } from '@/lib/cn'
+import { cn } from '@/lib/cn';
 
-import { ANIMATION } from '@/constants/animations'
+import { ANIMATION } from '@/constants/animations';
 
-import { Icon, type IconType } from '@/components/icon'
+import { Icon, type IconType } from '@/components/icon';
 
-import { Button } from '@/components/ui/button'
-import { Loader } from '@/components/ui/loader'
-import { Sidebar, SIDEBAR_WIDTH } from '@/components/ui/sidebar'
-import { Tooltip } from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button';
+import { Loader } from '@/components/ui/loader';
+import { Sidebar, SIDEBAR_WIDTH } from '@/components/ui/sidebar';
+import { Tooltip } from '@/components/ui/tooltip';
 
 /**
  * Application shell layout, composition-first. Encodes the structure of our
@@ -82,12 +82,12 @@ function AppShellRoot({
    * Enables the left sidebar state (`[` shortcut, cookie persistence, header
    * toggle). Pass `{ defaultOpen: false }` to start collapsed.
    */
-  leftSidebar?: AppShellSidebarProp
+  leftSidebar?: AppShellSidebarProp;
   /**
    * Enables the right (context) sidebar state (`]` shortcut, cookie
    * persistence). Pass `{ defaultOpen: false }` to start collapsed.
    */
-  rightSidebar?: AppShellSidebarProp
+  rightSidebar?: AppShellSidebarProp;
 }) {
   return (
     <OptionalSidebarProvider side="left" config={leftSidebar}>
@@ -105,7 +105,7 @@ function AppShellRoot({
         </div>
       </OptionalSidebarProvider>
     </OptionalSidebarProvider>
-  )
+  );
 }
 
 /* -------------------------------------------------------------------------
@@ -118,18 +118,18 @@ function AppShellRoot({
  * between 16–20rem and collapses past the threshold) and a trigger button.
  * ---------------------------------------------------------------------- */
 
-const MIN_SIDEBAR_WIDTH = 16 * 16 // 16rem
-const MAX_SIDEBAR_WIDTH = 20 * 16 // 20rem
-const COLLAPSE_THRESHOLD = MIN_SIDEBAR_WIDTH / 2 // 8rem — collapse only past half minimum
+const MIN_SIDEBAR_WIDTH = 16 * 16; // 16rem
+const MAX_SIDEBAR_WIDTH = 20 * 16; // 20rem
+const COLLAPSE_THRESHOLD = MIN_SIDEBAR_WIDTH / 2; // 8rem — collapse only past half minimum
 
-const SIDEBAR_COOKIE_TTL_DAYS = 365
+const SIDEBAR_COOKIE_TTL_DAYS = 365;
 
 // Single source of truth for every open/collapse animation (gaps, fixed
 // containers, rails and the inset margins) so both sides always move in the
 // exact same time.
-const SIDEBAR_ANIMATION_DURATION = 'duration-300'
+const SIDEBAR_ANIMATION_DURATION = 'duration-300';
 
-type AppShellSidebarSide = 'left' | 'right'
+type AppShellSidebarSide = 'left' | 'right';
 
 // Cookies, CSS vars and data-slots are all prefixed by the side name, and
 // deliberately distinct from ui/sidebar's own `--sidebar-width`/`sidebar-*`
@@ -156,47 +156,47 @@ const SIDEBAR_SIDE_CONFIG = {
     containerSlot: 'right-sidebar-container',
     keyboardShortcut: ']',
   },
-} as const
+} as const;
 
 type AppShellSidebarContextValue = {
-  side: AppShellSidebarSide
-  state: 'expanded' | 'collapsed'
-  open: boolean
-  setOpen: (open: boolean) => void
-  toggleSidebar: () => void
-  sidebarWidth: string
-  setSidebarWidth: (width: string) => void
-  maxWidth?: number
-}
+  side: AppShellSidebarSide;
+  state: 'expanded' | 'collapsed';
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
+  sidebarWidth: string;
+  setSidebarWidth: (width: string) => void;
+  maxWidth?: number;
+};
 
 const AppShellLeftSidebarContext =
-  React.createContext<AppShellSidebarContextValue | null>(null)
+  React.createContext<AppShellSidebarContextValue | null>(null);
 
 const AppShellRightSidebarContext =
-  React.createContext<AppShellSidebarContextValue | null>(null)
+  React.createContext<AppShellSidebarContextValue | null>(null);
 
 function useAppShellLeftSidebar() {
-  const context = React.useContext(AppShellLeftSidebarContext)
+  const context = React.useContext(AppShellLeftSidebarContext);
 
   if (!context) {
     throw new Error(
       'useAppShellLeftSidebar must be used within an AppShell.LeftSidebarProvider.',
-    )
+    );
   }
 
-  return context
+  return context;
 }
 
 function useAppShellRightSidebar() {
-  const context = React.useContext(AppShellRightSidebarContext)
+  const context = React.useContext(AppShellRightSidebarContext);
 
   if (!context) {
     throw new Error(
       'useAppShellRightSidebar must be used within an AppShell.RightSidebarProvider.',
-    )
+    );
   }
 
-  return context
+  return context;
 }
 
 function isEditableTarget(target: EventTarget | null) {
@@ -204,7 +204,7 @@ function isEditableTarget(target: EventTarget | null) {
     target instanceof HTMLElement &&
     (target.isContentEditable ||
       target.closest('input, textarea, select') !== null)
-  )
+  );
 }
 
 function SidebarSideProvider({
@@ -213,61 +213,61 @@ function SidebarSideProvider({
   maxWidth,
   children,
 }: {
-  side: AppShellSidebarSide
-  defaultOpen?: boolean
-  maxWidth?: number
-  children: React.ReactNode
+  side: AppShellSidebarSide;
+  defaultOpen?: boolean;
+  maxWidth?: number;
+  children: React.ReactNode;
 }) {
-  const config = SIDEBAR_SIDE_CONFIG[side]
+  const config = SIDEBAR_SIDE_CONFIG[side];
 
-  const [open, _setOpen] = React.useState(defaultOpen)
+  const [open, _setOpen] = React.useState(defaultOpen);
   const [sidebarWidth, setSidebarWidth] = React.useState<string>(
     config.defaultWidth,
-  )
+  );
 
   const setOpen = React.useCallback(
     (value: boolean) => {
-      _setOpen(value)
+      _setOpen(value);
       Cookies.set(config.stateCookie, String(value), {
         expires: SIDEBAR_COOKIE_TTL_DAYS,
         path: '/',
-      })
+      });
     },
     [config.stateCookie],
-  )
+  );
 
   const toggleSidebar = React.useCallback(() => {
-    _setOpen((open) => {
+    _setOpen(open => {
       Cookies.set(config.stateCookie, String(!open), {
         expires: SIDEBAR_COOKIE_TTL_DAYS,
         path: '/',
-      })
-      return !open
-    })
-  }, [config.stateCookie])
+      });
+      return !open;
+    });
+  }, [config.stateCookie]);
 
   React.useLayoutEffect(() => {
-    const savedOpen = Cookies.get(config.stateCookie)
-    if (savedOpen !== undefined) _setOpen(savedOpen === 'true')
+    const savedOpen = Cookies.get(config.stateCookie);
+    if (savedOpen !== undefined) _setOpen(savedOpen === 'true');
 
-    const savedWidth = Cookies.get(config.widthCookie)
-    if (savedWidth) setSidebarWidth(savedWidth)
-  }, [config.stateCookie, config.widthCookie])
+    const savedWidth = Cookies.get(config.widthCookie);
+    if (savedWidth) setSidebarWidth(savedWidth);
+  }, [config.stateCookie, config.widthCookie]);
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== config.keyboardShortcut) return
-      if (isEditableTarget(event.target)) return
+      if (event.key !== config.keyboardShortcut) return;
+      if (isEditableTarget(event.target)) return;
 
-      event.preventDefault()
-      toggleSidebar()
-    }
+      event.preventDefault();
+      toggleSidebar();
+    };
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [toggleSidebar, config.keyboardShortcut])
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleSidebar, config.keyboardShortcut]);
 
-  const state = open ? 'expanded' : 'collapsed'
+  const state = open ? 'expanded' : 'collapsed';
 
   const contextValue = React.useMemo<AppShellSidebarContextValue>(
     () => ({
@@ -281,10 +281,10 @@ function SidebarSideProvider({
       maxWidth,
     }),
     [side, state, open, setOpen, toggleSidebar, sidebarWidth, maxWidth],
-  )
+  );
 
   const Context =
-    side === 'left' ? AppShellLeftSidebarContext : AppShellRightSidebarContext
+    side === 'left' ? AppShellLeftSidebarContext : AppShellRightSidebarContext;
 
   return (
     <Context.Provider value={contextValue}>
@@ -305,10 +305,12 @@ function SidebarSideProvider({
         {children}
       </div>
     </Context.Provider>
-  )
+  );
 }
 
-type AppShellSidebarProp = boolean | { defaultOpen?: boolean; maxWidth?: number }
+type AppShellSidebarProp =
+  | boolean
+  | { defaultOpen?: boolean; maxWidth?: number };
 
 /**
  * Mounts a side's state when the matching root prop enables it. Skips when an
@@ -320,15 +322,15 @@ function OptionalSidebarProvider({
   config,
   children,
 }: {
-  side: AppShellSidebarSide
-  config: AppShellSidebarProp | undefined
-  children: React.ReactNode
+  side: AppShellSidebarSide;
+  config: AppShellSidebarProp | undefined;
+  children: React.ReactNode;
 }) {
   const existing = React.useContext(
     side === 'left' ? AppShellLeftSidebarContext : AppShellRightSidebarContext,
-  )
+  );
 
-  if (!config || existing) return <>{children}</>
+  if (!config || existing) return <>{children}</>;
 
   return (
     <SidebarSideProvider
@@ -338,23 +340,23 @@ function OptionalSidebarProvider({
     >
       {children}
     </SidebarSideProvider>
-  )
+  );
 }
 
 /** @deprecated Enable the sidebar with the `leftSidebar` prop on `AppShell` instead. */
 function AppShellLeftSidebarProvider(props: {
-  children: React.ReactNode
-  defaultOpen?: boolean
+  children: React.ReactNode;
+  defaultOpen?: boolean;
 }) {
-  return <SidebarSideProvider side="left" {...props} />
+  return <SidebarSideProvider side="left" {...props} />;
 }
 
 /** @deprecated Enable the sidebar with the `rightSidebar` prop on `AppShell` instead. */
 function AppShellRightSidebarProvider(props: {
-  children: React.ReactNode
-  defaultOpen?: boolean
+  children: React.ReactNode;
+  defaultOpen?: boolean;
 }) {
-  return <SidebarSideProvider side="right" {...props} />
+  return <SidebarSideProvider side="right" {...props} />;
 }
 
 function SidebarSidePanel({
@@ -363,21 +365,21 @@ function SidebarSidePanel({
   children,
   ...props
 }: React.ComponentProps<'aside'> & {
-  side: AppShellSidebarSide
+  side: AppShellSidebarSide;
 }) {
-  const config = SIDEBAR_SIDE_CONFIG[side]
+  const config = SIDEBAR_SIDE_CONFIG[side];
 
-  const leftContext = React.useContext(AppShellLeftSidebarContext)
-  const rightContext = React.useContext(AppShellRightSidebarContext)
+  const leftContext = React.useContext(AppShellLeftSidebarContext);
+  const rightContext = React.useContext(AppShellRightSidebarContext);
 
-  const context = side === 'left' ? leftContext : rightContext
+  const context = side === 'left' ? leftContext : rightContext;
 
   if (!context) {
     throw new Error(
       side === 'left'
         ? 'AppShell.LeftSidebar requires the `leftSidebar` prop on AppShell.'
         : 'AppShell.RightSidebar requires the `rightSidebar` prop on AppShell.',
-    )
+    );
   }
 
   const {
@@ -387,202 +389,212 @@ function SidebarSidePanel({
     setOpen,
     setSidebarWidth,
     maxWidth: maxSidebarWidth,
-  } = context
+  } = context;
 
   // Dragging toward the shell center collapses; away from it expands.
-  const directionSign = side === 'left' ? 1 : -1
+  const directionSign = side === 'left' ? 1 : -1;
 
-  const [isDragging, setIsDragging] = React.useState(false)
+  const [isDragging, setIsDragging] = React.useState(false);
   const railClickTimer = React.useRef<ReturnType<typeof setTimeout> | null>(
     null,
-  )
+  );
 
   const persistWidth = React.useCallback(
     (width: string) => {
       Cookies.set(config.widthCookie, width, {
         expires: SIDEBAR_COOKIE_TTL_DAYS,
         path: '/',
-      })
-      setSidebarWidth(width)
+      });
+      setSidebarWidth(width);
     },
     [config.widthCookie, setSidebarWidth],
-  )
+  );
 
   const handleRailClick = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       const wrapper = (e.currentTarget as HTMLElement).closest<HTMLElement>(
         `[data-slot="${config.wrapperSlot}"]`,
-      )
+      );
 
       if (railClickTimer.current) {
-        clearTimeout(railClickTimer.current)
-        railClickTimer.current = null
+        clearTimeout(railClickTimer.current);
+        railClickTimer.current = null;
 
-        if (!wrapper) return
+        if (!wrapper) return;
 
-        wrapper.style.setProperty(config.widthVar, config.defaultWidth)
-        persistWidth(config.defaultWidth)
+        wrapper.style.setProperty(config.widthVar, config.defaultWidth);
+        persistWidth(config.defaultWidth);
 
-        return
+        return;
       }
 
       railClickTimer.current = setTimeout(() => {
-        railClickTimer.current = null
-        toggleSidebar()
-      }, 150)
+        railClickTimer.current = null;
+        toggleSidebar();
+      }, 150);
     },
     [config, toggleSidebar, persistWidth],
-  )
+  );
 
   const handleResizeMouseDown = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       const wrapper = (e.currentTarget as HTMLElement).closest<HTMLElement>(
         `[data-slot="${config.wrapperSlot}"]`,
-      )
+      );
 
-      if (!wrapper) return
+      if (!wrapper) return;
 
-      const startX = e.clientX
+      const startX = e.clientX;
 
-      document.body.style.cursor = 'col-resize'
-      document.body.style.userSelect = 'none'
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
 
       const container = wrapper.querySelector<HTMLElement>(
         `[data-slot="${config.containerSlot}"]`,
-      )
+      );
 
       const gap = wrapper.querySelector<HTMLElement>(
         `[data-slot="${config.gapSlot}"]`,
-      )
+      );
 
       const disableTransitions = () => {
-        if (container) container.style.transition = 'none'
-        if (gap) gap.style.transition = 'none'
-      }
+        if (container) container.style.transition = 'none';
+        if (gap) gap.style.transition = 'none';
+      };
 
       const restoreTransitions = () => {
-        if (container) container.style.transition = ''
-        if (gap) gap.style.transition = ''
-      }
+        if (container) container.style.transition = '';
+        if (gap) gap.style.transition = '';
+      };
 
       if (!isSidebarOpen) {
-        let dragStarted = false
+        let dragStarted = false;
 
         const handleMouseMove = (moveEvent: MouseEvent) => {
-          const delta = (moveEvent.clientX - startX) * directionSign
+          const delta = (moveEvent.clientX - startX) * directionSign;
 
           if (!dragStarted) {
-            if (Math.abs(delta) < 4) return
+            if (Math.abs(delta) < 4) return;
 
-            dragStarted = true
-            setIsDragging(true)
+            dragStarted = true;
+            setIsDragging(true);
 
             wrapper.style.setProperty(
               config.widthVar,
               `${MIN_SIDEBAR_WIDTH}px`,
-            )
-            setOpen(true)
+            );
+            setOpen(true);
           }
 
           const newWidth = Math.max(
             MIN_SIDEBAR_WIDTH,
-            Math.min(maxSidebarWidth ?? MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH + delta),
-          )
+            Math.min(
+              maxSidebarWidth ?? MAX_SIDEBAR_WIDTH,
+              MIN_SIDEBAR_WIDTH + delta,
+            ),
+          );
 
-          wrapper.style.setProperty(config.widthVar, `${newWidth}px`)
-        }
+          wrapper.style.setProperty(config.widthVar, `${newWidth}px`);
+        };
 
         const handleMouseUp = (upEvent: MouseEvent) => {
-          document.body.style.cursor = ''
-          document.body.style.userSelect = ''
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
 
-          window.removeEventListener('mousemove', handleMouseMove)
-          window.removeEventListener('mouseup', handleMouseUp)
+          window.removeEventListener('mousemove', handleMouseMove);
+          window.removeEventListener('mouseup', handleMouseUp);
 
-          if (!dragStarted) return
+          if (!dragStarted) return;
 
-          setIsDragging(false)
+          setIsDragging(false);
 
           if ((upEvent.clientX - startX) * directionSign < -10) {
             wrapper.style.setProperty(
               config.widthVar,
               `${MIN_SIDEBAR_WIDTH}px`,
-            )
+            );
 
-            setOpen(false)
+            setOpen(false);
           } else {
             const newWidth = wrapper.style
               .getPropertyValue(config.widthVar)
-              .trim()
+              .trim();
 
-            persistWidth(newWidth)
+            persistWidth(newWidth);
           }
-        }
+        };
 
-        window.addEventListener('mousemove', handleMouseMove)
-        window.addEventListener('mouseup', handleMouseUp)
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
 
-        return
+        return;
       }
 
-      setIsDragging(true)
-      disableTransitions()
+      setIsDragging(true);
+      disableTransitions();
 
-      const rawWidth = wrapper.style.getPropertyValue(config.widthVar)
+      const rawWidth = wrapper.style.getPropertyValue(config.widthVar);
       const startWidth = rawWidth
         ? rawWidth.endsWith('rem')
           ? parseFloat(rawWidth) * 16
           : parseFloat(rawWidth)
-        : MIN_SIDEBAR_WIDTH
+        : MIN_SIDEBAR_WIDTH;
 
-      let pastCollapseThreshold = false
+      let pastCollapseThreshold = false;
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
-        const delta = (moveEvent.clientX - startX) * directionSign
-        const rawWidth = startWidth + delta
+        const delta = (moveEvent.clientX - startX) * directionSign;
+        const rawWidth = startWidth + delta;
 
-        pastCollapseThreshold = rawWidth < COLLAPSE_THRESHOLD
+        pastCollapseThreshold = rawWidth < COLLAPSE_THRESHOLD;
 
         const newWidth = Math.max(
           MIN_SIDEBAR_WIDTH,
           Math.min(maxSidebarWidth ?? MAX_SIDEBAR_WIDTH, rawWidth),
-        )
-        wrapper.style.setProperty(config.widthVar, `${newWidth}px`)
-      }
+        );
+        wrapper.style.setProperty(config.widthVar, `${newWidth}px`);
+      };
 
       const handleMouseUp = () => {
-        document.body.style.cursor = ''
-        document.body.style.userSelect = ''
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
 
-        setIsDragging(false)
-        restoreTransitions()
+        setIsDragging(false);
+        restoreTransitions();
 
-        window.removeEventListener('mousemove', handleMouseMove)
-        window.removeEventListener('mouseup', handleMouseUp)
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
 
         if (pastCollapseThreshold) {
-          toggleSidebar()
-          return
+          toggleSidebar();
+          return;
         }
 
-        const newWidth = wrapper.style.getPropertyValue(config.widthVar).trim()
+        const newWidth = wrapper.style.getPropertyValue(config.widthVar).trim();
 
-        persistWidth(newWidth)
-      }
+        persistWidth(newWidth);
+      };
 
-      window.addEventListener('mousemove', handleMouseMove)
-      window.addEventListener('mouseup', handleMouseUp)
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
     },
-    [config, directionSign, toggleSidebar, persistWidth, isSidebarOpen, setOpen],
-  )
+    [
+      config,
+      directionSign,
+      toggleSidebar,
+      persistWidth,
+      isSidebarOpen,
+      setOpen,
+    ],
+  );
 
   React.useEffect(() => {
     return () => {
       if (railClickTimer.current) {
-        clearTimeout(railClickTimer.current)
+        clearTimeout(railClickTimer.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <aside
@@ -647,7 +659,7 @@ function SidebarSidePanel({
         tabIndex={-1}
         onClick={handleRailClick}
         onMouseDown={handleResizeMouseDown}
-        onFocus={(e) => e.currentTarget.blur()}
+        onFocus={e => e.currentTarget.blur()}
         data-sidebar="rail"
         data-slot={side === 'left' ? 'left-sidebar-rail' : 'right-sidebar-rail'}
         aria-label="Resize sidebar"
@@ -666,7 +678,7 @@ function SidebarSidePanel({
         )}
       />
     </aside>
-  )
+  );
 }
 
 /**
@@ -675,7 +687,7 @@ function SidebarSidePanel({
  * on `AppShell`.
  */
 function AppShellLeftSidebar(props: React.ComponentProps<'aside'>) {
-  return <SidebarSidePanel side="left" {...props} />
+  return <SidebarSidePanel side="left" {...props} />;
 }
 
 /**
@@ -683,13 +695,13 @@ function AppShellLeftSidebar(props: React.ComponentProps<'aside'>) {
  * Requires the `rightSidebar` prop on `AppShell`.
  */
 function AppShellRightSidebar(props: React.ComponentProps<'aside'>) {
-  return <SidebarSidePanel side="right" {...props} />
+  return <SidebarSidePanel side="right" {...props} />;
 }
 
 type SidebarTriggerIcon =
   | IconType
   | React.ReactNode
-  | ((state: 'expanded' | 'collapsed') => React.ReactNode)
+  | ((state: 'expanded' | 'collapsed') => React.ReactNode);
 
 function SidebarSideTrigger({
   side,
@@ -698,26 +710,26 @@ function SidebarSideTrigger({
   className,
   ...props
 }: React.ComponentProps<typeof Button> & {
-  side: AppShellSidebarSide
-  label: string
-  icon?: SidebarTriggerIcon
+  side: AppShellSidebarSide;
+  label: string;
+  icon?: SidebarTriggerIcon;
 }) {
-  const leftContext = React.useContext(AppShellLeftSidebarContext)
-  const rightContext = React.useContext(AppShellRightSidebarContext)
+  const leftContext = React.useContext(AppShellLeftSidebarContext);
+  const rightContext = React.useContext(AppShellRightSidebarContext);
 
-  const context = side === 'left' ? leftContext : rightContext
+  const context = side === 'left' ? leftContext : rightContext;
 
   if (!context) {
     throw new Error(
       side === 'left'
         ? 'AppShell.LeftSidebarTrigger requires the `leftSidebar` prop on AppShell.'
         : 'AppShell.RightSidebarTrigger requires the `rightSidebar` prop on AppShell.',
-    )
+    );
   }
 
-  const { toggleSidebar, state } = context
+  const { toggleSidebar, state } = context;
 
-  const resolvedIcon = typeof icon === 'function' ? icon(state) : icon
+  const resolvedIcon = typeof icon === 'function' ? icon(state) : icon;
 
   return (
     <Tooltip>
@@ -756,7 +768,7 @@ function SidebarSideTrigger({
 
       <Tooltip.Content side="bottom">{label}</Tooltip.Content>
     </Tooltip>
-  )
+  );
 }
 
 /**
@@ -770,10 +782,10 @@ function AppShellLeftSidebarTrigger({
   label = 'Toggle left sidebar',
   ...props
 }: React.ComponentProps<typeof Button> & {
-  label?: string
-  icon?: SidebarTriggerIcon
+  label?: string;
+  icon?: SidebarTriggerIcon;
 }) {
-  return <SidebarSideTrigger side="left" label={label} {...props} />
+  return <SidebarSideTrigger side="left" label={label} {...props} />;
 }
 
 /**
@@ -787,10 +799,10 @@ function AppShellRightSidebarTrigger({
   label = 'Toggle right sidebar',
   ...props
 }: React.ComponentProps<typeof Button> & {
-  label?: string
-  icon?: SidebarTriggerIcon
+  label?: string;
+  icon?: SidebarTriggerIcon;
 }) {
-  return <SidebarSideTrigger side="right" label={label} {...props} />
+  return <SidebarSideTrigger side="right" label={label} {...props} />;
 }
 
 /**
@@ -798,15 +810,15 @@ function AppShellRightSidebarTrigger({
  * element to it. Requires the `leftSidebar` prop on `AppShell`.
  */
 function useLeftSidebarToggle() {
-  const context = React.useContext(AppShellLeftSidebarContext)
+  const context = React.useContext(AppShellLeftSidebarContext);
 
   if (!context) {
     throw new Error(
       'useLeftSidebarToggle requires the `leftSidebar` prop on AppShell.',
-    )
+    );
   }
 
-  return context.toggleSidebar
+  return context.toggleSidebar;
 }
 
 /**
@@ -814,15 +826,15 @@ function useLeftSidebarToggle() {
  * element to it. Requires the `rightSidebar` prop on `AppShell`.
  */
 function useRightSidebarToggle() {
-  const context = React.useContext(AppShellRightSidebarContext)
+  const context = React.useContext(AppShellRightSidebarContext);
 
   if (!context) {
     throw new Error(
       'useRightSidebarToggle requires the `rightSidebar` prop on AppShell.',
-    )
+    );
   }
 
-  return context.toggleSidebar
+  return context.toggleSidebar;
 }
 
 /* -------------------------------------------------------------------------
@@ -845,7 +857,7 @@ function AppShellSidebarHeader({
     >
       {children}
     </Sidebar.Header>
-  )
+  );
 }
 
 function AppShellSidebarSection({
@@ -861,7 +873,7 @@ function AppShellSidebarSection({
     >
       {children}
     </div>
-  )
+  );
 }
 
 function AppShellSidebarContent({
@@ -869,20 +881,21 @@ function AppShellSidebarContent({
   children,
   ...props
 }: React.ComponentProps<typeof Sidebar.Content>) {
+  // No list element here: the direct children are `AppShell.SidebarGroup`s
+  // (sections), and each group owns its own `<ul>` (`Sidebar.Menu`). A `<ul>`
+  // at this level would have non-`<li>` children — an axe `list` violation.
   return (
     <Sidebar.Content
       data-slot="app-shell-sidebar-content"
       className={cn(
-        'flex-1 overflow-x-hidden overflow-y-auto scroll-fade-y px-4 py-2',
+        'flex-1 gap-4 overflow-x-hidden overflow-y-auto scroll-fade-y px-4 py-2',
         className,
       )}
       {...props}
     >
-      <Sidebar.Menu className="flex flex-col gap-4 overflow-visible">
-        {children}
-      </Sidebar.Menu>
+      {children}
     </Sidebar.Content>
-  )
+  );
 }
 
 function AppShellSidebarGroup({
@@ -891,7 +904,7 @@ function AppShellSidebarGroup({
   children,
   ...props
 }: React.ComponentProps<typeof Sidebar.Group> & {
-  title?: string
+  title?: string;
 }) {
   return (
     <Sidebar.Group
@@ -905,11 +918,14 @@ function AppShellSidebarGroup({
         </span>
       )}
 
-      <Sidebar.GroupContent className="flex flex-col gap-1">
-        {children}
+      {/* Each group owns the actual `<ul>` so its `AppShell.SidebarItem`s
+          (`<li>`s) always have a list parent — groups themselves can sit in
+          any plain container (SidebarContent, SidebarSection). */}
+      <Sidebar.GroupContent>
+        <Sidebar.Menu>{children}</Sidebar.Menu>
       </Sidebar.GroupContent>
     </Sidebar.Group>
-  )
+  );
 }
 
 /* -------------------------------------------------------------------------
@@ -923,50 +939,50 @@ function itemAnimation({
   delay = 0,
   reverse = false,
 }: {
-  direction?: 'left' | 'right' | 'up' | 'down'
-  px?: number
-  duration?: number
-  delay?: number
-  reverse?: boolean
+  direction?: 'left' | 'right' | 'up' | 'down';
+  px?: number;
+  duration?: number;
+  delay?: number;
+  reverse?: boolean;
 } = {}) {
-  const axis = direction === 'left' || direction === 'right' ? 'x' : 'y'
+  const axis = direction === 'left' || direction === 'right' ? 'x' : 'y';
 
-  const initial = { opacity: 0, [axis]: px * (!reverse ? -1 : 1) }
-  const animate = { opacity: 1, [axis]: 0 }
+  const initial = { opacity: 0, [axis]: px * (!reverse ? -1 : 1) };
+  const animate = { opacity: 1, [axis]: 0 };
   const exit = {
     opacity: 0,
     [axis]: px * (!reverse ? -1 : 1),
     ...(delay > 0 ? { transition: { duration } } : {}),
-  }
-  const transition = delay > 0 ? { duration, delay } : { duration }
+  };
+  const transition = delay > 0 ? { duration, delay } : { duration };
 
-  return { initial, animate, exit, transition }
+  return { initial, animate, exit, transition };
 }
 
-const DROPDOWN_CHILD_STAGGER_DELAY = 0.035
-const MAX_DROPDOWN_CHILD_STAGGER_DELAY = 0.14
+const DROPDOWN_CHILD_STAGGER_DELAY = 0.035;
+const MAX_DROPDOWN_CHILD_STAGGER_DELAY = 0.14;
 
 export type AppShellSidebarItemData = {
-  title: string
-  icon?: IconType | React.ReactNode
-  href?: string
-  onClick?: () => void
+  title: string;
+  icon?: IconType | React.ReactNode;
+  href?: string;
+  onClick?: () => void;
   /** Marks the item as the current route. The shell has no router — compute it in the app. */
-  active?: boolean
-  disabled?: boolean
-  loading?: boolean
+  active?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
   /** "Coming soon" — disabled with a clock hint. */
-  soon?: boolean
+  soon?: boolean;
   /** External link — opens in a new tab with a hint icon. */
-  external?: boolean
-  items?: AppShellSidebarItemData[]
-}
+  external?: boolean;
+  items?: AppShellSidebarItemData[];
+};
 
 type AppShellSidebarItemProps = AppShellSidebarItemData & {
-  index?: number
-  isDropdownChild?: boolean
-  level?: number
-}
+  index?: number;
+  isDropdownChild?: boolean;
+  level?: number;
+};
 
 function AppShellSidebarItem({
   index = 0,
@@ -974,56 +990,56 @@ function AppShellSidebarItem({
   level = 0,
   ...item
 }: AppShellSidebarItemProps) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
-  const hasItems = !!item.items && item.items.length > 0
-  const hasHref = !!item.href
-  const hasLinkedChildren = hasItems && hasHref && !item.onClick
+  const hasItems = !!item.items && item.items.length > 0;
+  const hasHref = !!item.href;
+  const hasLinkedChildren = hasItems && hasHref && !item.onClick;
 
-  const isLoading = item.loading || false
-  const isSoon = item.soon || false
-  const isExternal = item.external || false
+  const isLoading = item.loading || false;
+  const isSoon = item.soon || false;
+  const isExternal = item.external || false;
 
-  const isDisabled = isLoading || item.disabled || isSoon || false
+  const isDisabled = isLoading || item.disabled || isSoon || false;
 
-  const useSplitDropdownLayout = hasLinkedChildren && !isLoading
+  const useSplitDropdownLayout = hasLinkedChildren && !isLoading;
 
-  const isActive = !isDisabled && !isLoading && !!item.active
+  const isActive = !isDisabled && !isLoading && !!item.active;
 
   const buttonClassName =
-    'relative z-10 group/menu-button hover:bg-sidebar-accent! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 h-auto! p-2.5! text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] cursor-pointer'
+    'relative z-10 group/menu-button hover:bg-sidebar-accent! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 h-auto! p-2.5! text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] cursor-pointer';
 
   const itemStyle = {
     marginLeft: `${level * 16}px`,
     maxWidth: `calc(100% - ${level * 16}px)`,
-  }
+  };
 
   const dropdownChildDelay = isDropdownChild
     ? Math.min(
         index * DROPDOWN_CHILD_STAGGER_DELAY,
         MAX_DROPDOWN_CHILD_STAGGER_DELAY,
       )
-    : 0
+    : 0;
 
   const handleNavigateClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (isDisabled) {
-      event.preventDefault()
+      event.preventDefault();
     }
-  }
+  };
 
   const handleToggleItems = () => {
     if (!isDisabled && hasItems) {
-      setOpen((open) => !open)
+      setOpen(open => !open);
     }
-  }
+  };
 
   const handleClick = () => {
     if (item.onClick) {
-      item.onClick()
+      item.onClick();
     } else if (!isDisabled && hasItems) {
-      handleToggleItems()
+      handleToggleItems();
     }
-  }
+  };
 
   const icon = (
     <div
@@ -1038,7 +1054,7 @@ function AppShellSidebarItem({
         item.icon
       )}
     </div>
-  )
+  );
 
   const trailing = isLoading ? (
     <Loader
@@ -1074,17 +1090,20 @@ function AppShellSidebarItem({
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 
-  const isPlainLink = !hasItems && !item.onClick
+  const isPlainLink = !hasItems && !item.onClick;
 
+  // A real `<li>` — items live inside the group's `Sidebar.Menu`/submenu
+  // `<ul>`s, and the axe `list` rule requires their direct children to be
+  // list items.
   return (
-    <motion.div
+    <motion.li
       {...itemAnimation({ direction: 'left', delay: dropdownChildDelay })}
       suppressHydrationWarning
       data-open={open}
       data-disabled={isDisabled}
-      className="relative flex flex-col group/menu-item data-[disabled=true]:opacity-50 data-[disabled=true]:pointer-events-none"
+      className="relative flex list-none flex-col group/menu-item data-[disabled=true]:opacity-50 data-[disabled=true]:pointer-events-none"
     >
       {useSplitDropdownLayout ? (
         <div
@@ -1128,7 +1147,10 @@ function AppShellSidebarItem({
             aria-expanded={open}
             aria-label={`${item.title} submenu`}
             onClick={handleToggleItems}
-            className={cn(buttonClassName, 'w-10 shrink-0 justify-center p-2.5!')}
+            className={cn(
+              buttonClassName,
+              'w-10 shrink-0 justify-center p-2.5!',
+            )}
           >
             {trailing}
           </Sidebar.MenuButton>
@@ -1157,10 +1179,7 @@ function AppShellSidebarItem({
             >
               {icon}
 
-              <span
-                data-active={isActive}
-                className="text-sm min-w-0 truncate"
-              >
+              <span data-active={isActive} className="text-sm min-w-0 truncate">
                 {item.title}
               </span>
 
@@ -1205,8 +1224,8 @@ function AppShellSidebarItem({
           </motion.ul>
         )}
       </AnimatePresence>
-    </motion.div>
-  )
+    </motion.li>
+  );
 }
 
 /* -------------------------------------------------------------------------
@@ -1232,7 +1251,7 @@ function AppShellCommandButton({
         {children}
       </span>
     </button>
-  )
+  );
 }
 
 function AppShellSidebarFooter({
@@ -1248,7 +1267,7 @@ function AppShellSidebarFooter({
     >
       {children}
     </Sidebar.Footer>
-  )
+  );
 }
 
 function AppShellCopyright({
@@ -1265,7 +1284,7 @@ function AppShellCopyright({
     >
       {children}
     </span>
-  )
+  );
 }
 
 /* -------------------------------------------------------------------------
@@ -1286,57 +1305,61 @@ function AppShellHeader({
   ...props
 }: Omit<React.ComponentProps<'div'>, 'title'> & {
   /** Mobile-only logo slot (top-left). */
-  logo?: React.ReactNode
+  logo?: React.ReactNode;
   /** Page title area (both breakpoints). */
-  title?: React.ReactNode
+  title?: React.ReactNode;
   /** Right-side actions (both breakpoints). */
-  actions?: React.ReactNode
+  actions?: React.ReactNode;
   /** Mobile-only user slot (top-right, e.g. avatar). */
-  user?: React.ReactNode
+  user?: React.ReactNode;
   /**
    * Left sidebar toggle slot (desktop header only — mobile has no sidebars).
    * Omit for the automatic trigger (shown while `leftSidebar` is enabled on
    * AppShell), pass a node to replace it (e.g.
    * `<AppShell.LeftSidebarTrigger icon="…" />`), or `null` to render none.
    */
-  leftSidebarTrigger?: React.ReactNode
+  leftSidebarTrigger?: React.ReactNode;
   /**
    * Right sidebar toggle slot (desktop header only — mobile has no
    * sidebars). Omit for the automatic trigger (shown while `rightSidebar`
    * is enabled on AppShell), pass a node to replace it, or `null` to render
    * none.
    */
-  rightSidebarTrigger?: React.ReactNode
+  rightSidebarTrigger?: React.ReactNode;
   /** Tooltip label of the auto-rendered left sidebar toggle. */
-  leftSidebarToggleLabel?: string
+  leftSidebarToggleLabel?: string;
   /** Tooltip label of the auto-rendered right sidebar toggle. */
-  rightSidebarToggleLabel?: string
-  mobileActionsClassName?: string
+  rightSidebarToggleLabel?: string;
+  mobileActionsClassName?: string;
 }) {
   // One toggle per enabled side — the `leftSidebar`/`rightSidebar` props on
   // AppShell are the signal, so any sidebar combination (none, left, right,
   // both) gets exactly the toggles that apply. The `leftSidebarTrigger`/
   // `rightSidebarTrigger` slots override that default: a node replaces the
   // automatic trigger, `null` removes it.
-  const leftSidebar = React.useContext(AppShellLeftSidebarContext)
-  const rightSidebar = React.useContext(AppShellRightSidebarContext)
+  const leftSidebar = React.useContext(AppShellLeftSidebarContext);
+  const rightSidebar = React.useContext(AppShellRightSidebarContext);
 
   const resolvedLeftTrigger =
     leftSidebarTrigger === undefined
       ? leftSidebar && (
           <AppShellLeftSidebarTrigger label={leftSidebarToggleLabel} />
         )
-      : leftSidebarTrigger
+      : leftSidebarTrigger;
 
   const resolvedRightTrigger =
     rightSidebarTrigger === undefined
       ? rightSidebar && (
           <AppShellRightSidebarTrigger label={rightSidebarToggleLabel} />
         )
-      : rightSidebarTrigger
+      : rightSidebarTrigger;
 
   return (
-    <div data-slot="app-shell-header" className={cn('contents', className)} {...props}>
+    <div
+      data-slot="app-shell-header"
+      className={cn('contents', className)}
+      {...props}
+    >
       <div className="lg:hidden flex items-center justify-between gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 glass-dashboard-header max-lg:sticky top-[calc(var(--announcement-height,0px)_+_var(--inset-top-height,0px))] z-50 transition-colors max-lg:border-b max-lg:border-border/70">
         <div className="flex min-w-0 flex-1 items-center gap-4">
           {logo && <div className="shrink-0 active:scale-99">{logo}</div>}
@@ -1369,7 +1392,7 @@ function AppShellHeader({
         {resolvedRightTrigger}
       </div>
     </div>
-  )
+  );
 }
 
 /* -------------------------------------------------------------------------
@@ -1384,7 +1407,7 @@ function AppShellNavbar({
   return (
     <nav
       data-slot="app-shell-navbar"
-      onContextMenu={(e) => e.preventDefault()}
+      onContextMenu={e => e.preventDefault()}
       className={cn(
         'fixed bottom-0 left-0 lg:hidden z-50 flex flex-col items-center justify-center w-full min-h-[100px] pointer-events-none transition-opacity duration-200',
         className,
@@ -1393,13 +1416,15 @@ function AppShellNavbar({
     >
       <div className="absolute inset-0 translate-y-px bg-linear-to-t from-black/80 to-transparent pointer-events-none -z-10 backdrop-blur-sm mask-t-from-0 mask-b-to-100" />
 
-      <ul className="relative flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-4 w-full h-full">
+      {/* Not a `<ul>`: the direct child is a chrome `<div>` and the items are
+          plain links/buttons, which violates the axe `list` rule on mobile. */}
+      <div className="relative flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-4 w-full h-full">
         <div className="flex items-center justify-center gap-1 w-fit glass-dashboard-chrome border border-border/50 p-1 rounded-2xl overflow-hidden z-10 pointer-events-auto">
           {children}
         </div>
-      </ul>
+      </div>
     </nav>
-  )
+  );
 }
 
 function AppShellNavbarItem({
@@ -1410,9 +1435,9 @@ function AppShellNavbarItem({
   children,
   ...props
 }: Omit<React.ComponentProps<'a'>, 'children'> & {
-  icon?: IconType | React.ReactNode
-  active?: boolean
-  children?: React.ReactNode
+  icon?: IconType | React.ReactNode;
+  active?: boolean;
+  children?: React.ReactNode;
 }) {
   const itemClassName = cn(
     'size-full flex items-center justify-center p-4 rounded-xl transition-colors text-xs cursor-pointer',
@@ -1421,7 +1446,7 @@ function AppShellNavbarItem({
       ? 'bg-primary/5 hover:bg-primary/25 dark:bg-primary/5 dark:hover:bg-primary/2'
       : 'bg-transparent hover:bg-accent/50',
     className,
-  )
+  );
 
   const content =
     children ??
@@ -1435,23 +1460,25 @@ function AppShellNavbarItem({
       />
     ) : (
       icon
-    ))
+    ));
 
   if (href) {
     return (
       <a href={href} className={itemClassName} {...props}>
         {content}
       </a>
-    )
+    );
   }
 
-  const { onClick } = props as { onClick?: React.MouseEventHandler<HTMLElement> }
+  const { onClick } = props as {
+    onClick?: React.MouseEventHandler<HTMLElement>;
+  };
 
   return (
     <button type="button" className={itemClassName} onClick={onClick}>
       {content}
     </button>
-  )
+  );
 }
 
 /* -------------------------------------------------------------------------
@@ -1472,16 +1499,16 @@ function AppShellInset({
    * Shows a blocking loading overlay while keeping the shell (sidebar,
    * navbar) interactive. Content stays mounted but hidden.
    */
-  loading?: boolean
+  loading?: boolean;
   /** Spacing scale unit for `--calculated-spacing` (bottom paddings, widget offsets). */
-  spacing?: number
+  spacing?: number;
   /**
    * Pinned row rendered above the inset panel, on the shell background.
    * The page keeps its normal document scroll — the row stays fixed on
    * screen (below the announcement banner) while the panel slides beneath
    * it, and the sticky Header docks right under it.
    */
-  top?: React.ReactNode
+  top?: React.ReactNode;
   /**
    * Pinned row rendered below the inset panel, on the shell background
    * (Linear-style). The page keeps its normal document scroll — the row
@@ -1489,15 +1516,15 @@ function AppShellInset({
    * it. Below `lg`, the row hides automatically whenever an
    * `AppShell.Navbar` is mounted (the floating navbar owns that space).
    */
-  bottom?: React.ReactNode
+  bottom?: React.ReactNode;
 }) {
-  const leftSidebar = React.useContext(AppShellLeftSidebarContext)
-  const rightSidebar = React.useContext(AppShellRightSidebarContext)
+  const leftSidebar = React.useContext(AppShellLeftSidebarContext);
+  const rightSidebar = React.useContext(AppShellRightSidebarContext);
 
-  const hasSidebar = Boolean(leftSidebar || rightSidebar)
+  const hasSidebar = Boolean(leftSidebar || rightSidebar);
 
-  const columnRef = React.useRef<HTMLDivElement>(null)
-  const topRef = React.useRef<HTMLDivElement>(null)
+  const columnRef = React.useRef<HTMLDivElement>(null);
+  const topRef = React.useRef<HTMLDivElement>(null);
 
   // Publish the pinned top row's height on the column so the sticky Header
   // inside the panel docks below the fixed row instead of overlapping it
@@ -1507,14 +1534,14 @@ function AppShellInset({
   // a restored scroll position can show the Header behind the row until
   // hydration — unavoidable without a server-side measurement.
   React.useLayoutEffect(() => {
-    const column = columnRef.current
-    if (!column) return
+    const column = columnRef.current;
+    if (!column) return;
 
-    const el = topRef.current
+    const el = topRef.current;
 
     if (!top || !el) {
-      column.style.setProperty('--inset-top-height', '0px')
-      return
+      column.style.setProperty('--inset-top-height', '0px');
+      return;
     }
 
     const update = () => {
@@ -1524,28 +1551,28 @@ function AppShellInset({
       column.style.setProperty(
         '--inset-top-height',
         `${el.getBoundingClientRect().height}px`,
-      )
-    }
+      );
+    };
 
-    update()
+    update();
 
-    if (typeof ResizeObserver === 'undefined') return
+    if (typeof ResizeObserver === 'undefined') return;
 
-    const ro = new ResizeObserver(update)
-    ro.observe(el)
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
 
     return () => {
-      ro.disconnect()
-      column.style.setProperty('--inset-top-height', '0px')
-    }
-  }, [top])
+      ro.disconnect();
+      column.style.setProperty('--inset-top-height', '0px');
+    };
+  }, [top]);
 
   // Opaque shell-background behind the pinned rows so the panel scrolling
   // beneath them never shows through.
   const pinnedRowBackground = cn(
     'bg-dashboard-background',
     hasSidebar && 'lg:bg-sidebar',
-  )
+  );
 
   return (
     // Transparent column that owns the inset's flex cell so pinned rows can
@@ -1638,7 +1665,7 @@ function AppShellInset({
         </div>
       ) : null}
     </div>
-  )
+  );
 }
 
 function AppShellLoading({ className, ...props }: React.ComponentProps<'div'>) {
@@ -1655,7 +1682,7 @@ function AppShellLoading({ className, ...props }: React.ComponentProps<'div'>) {
     >
       <Loader />
     </div>
-  )
+  );
 }
 
 const AppShell = Object.assign(AppShellRoot, {
@@ -1678,7 +1705,7 @@ const AppShell = Object.assign(AppShellRoot, {
   NavbarItem: AppShellNavbarItem,
   Inset: AppShellInset,
   Loading: AppShellLoading,
-})
+});
 
 export {
   AppShell,
@@ -1686,4 +1713,4 @@ export {
   useAppShellRightSidebar,
   useLeftSidebarToggle,
   useRightSidebarToggle,
-}
+};
