@@ -61,13 +61,7 @@ export function ActionGroup({
               aria-label={triggerAriaLabel}
               className="relative min-h-8 min-w-8 max-h-8 max-w-8 p-0 shrink-0 disabled:opacity-50"
             >
-              <Icon className="h-4 w-4" name="Dots" />
-
-              {isDisabled && (
-                <div className="absolute top-0 right-0 bg-card rounded-full p-1">
-                  <Icon className="size-2 shrink-0" name="Lock" />
-                </div>
-              )}
+              <Icon className="h-4 w-4" name={isDisabled ? 'Lock' : 'Dots'} />
             </Button>
           )}
         </DropdownMenu.Trigger>
@@ -98,19 +92,22 @@ export function ActionGroup({
                         }}
                         data-variant={item.variant ?? 'default'}
                         className={cn(
-                          'text-muted-foreground',
+                          'rounded-lg',
                           isFirst && 'rounded-t-xl',
                           isLast && 'rounded-b-xl',
                           item.disabled && 'opacity-50 cursor-not-allowed',
-                          'flex items-center gap-2 w-full relative z-10 group/menu-button hover:bg-muted! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] outline-none cursor-pointer ring-0!',
-                          'data-[variant=destructive]:text-destructive data-[variant=destructive]:hover:text-destructive/80 data-[variant=destructive]:hover:bg-destructive/10! data-[variant=destructive]:hover:border-destructive/20',
+                          /**
+                           * Rest, hover and destructive colors inherit from
+                           * `DropdownMenu.Item` (data-highlighted:bg-accent /
+                           * data-highlighted:text-accent-foreground, destructive
+                           * bg-destructive/5) to match the dropdown-menu exactly —
+                           * only layout, focus and animation live here.
+                           */
+                          'flex items-center gap-2 w-full relative z-10 group/menu-button focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] outline-none cursor-pointer ring-0!',
                           item.className,
                         )}
                       >
-                        <Icon
-                          name={item.icon ?? 'Dots'}
-                          className="size-4 text-current"
-                        />
+                        <Icon name={item.icon ?? 'Dots'} className="size-4" />
 
                         {item.label}
                       </DropdownMenu.Item>

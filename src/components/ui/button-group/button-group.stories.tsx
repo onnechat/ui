@@ -331,6 +331,80 @@ export const SplitWithDropdownMenu: Story = {
   },
 };
 
+/**
+ * Split button em tamanho grande para o outro produto: a ação principal usa
+ * `size="lg"` (h-12) e o gatilho de mais ações usa `size="icon-lg"` (size-12) —
+ * as duas alturas casam, então o grupo cola sem degraus.
+ */
+export const SplitLarge: Story = {
+  name: 'Split (icon-lg)',
+  render: () => (
+    <ButtonGroup>
+      <Button size="lg">Publicar</Button>
+      <ButtonGroupSeparator />
+      <ActionGroup
+        items={[
+          [
+            { label: 'Editar', icon: 'Pen3' as IconType, onClick: fn() },
+            { label: 'Duplicar', icon: 'Copy' as IconType, onClick: fn() },
+          ],
+          [
+            {
+              label: 'Excluir',
+              icon: 'Trash' as IconType,
+              onClick: fn(),
+              variant: 'destructive',
+            },
+          ],
+        ]}
+      >
+        <Button size="icon-lg" aria-label="Mais ações">
+          <Icon name="ChevronDown" />
+        </Button>
+      </ActionGroup>
+    </ButtonGroup>
+  ),
+};
+
+/**
+ * Grupo com DropdownMenu em tamanho grande: ação principal `size="lg"` + gatilho
+ * `size="icon-lg"` abrindo um menu. Mesmo cenário de botões um pouco maiores.
+ */
+export const LargeWithDropdownMenu: Story = {
+  name: 'With Dropdown (icon-lg)',
+  render: () => (
+    <ButtonGroup>
+      <Button size="lg">
+        <Icon name="Link" />
+        Compartilhar
+      </Button>
+      <ButtonGroupSeparator />
+      <DropdownMenu>
+        <DropdownMenu.Trigger asChild>
+          <Button size="icon-lg" aria-label="Mais opções de compartilhamento">
+            <Icon name="ChevronDown" />
+          </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content align="end" className="w-56">
+          <DropdownMenu.Item>
+            <Icon name="Envelope" className="size-4" />
+            Enviar por e-mail
+          </DropdownMenu.Item>
+          <DropdownMenu.Item>
+            <Icon name="Message" className="size-4" />
+            Enviar por mensagem
+          </DropdownMenu.Item>
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item>
+            <Icon name="Link" className="size-4" />
+            Copiar link
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu>
+    </ButtonGroup>
+  ),
+};
+
 export const WithInput: Story = {
   render: () => (
     <ButtonGroup>

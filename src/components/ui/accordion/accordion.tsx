@@ -35,12 +35,14 @@ function AccordionItemExtended({
     <AccordionItem
       className={cn(
         'overflow-hidden rounded-none border-0 bg-muted',
-        // Itens fechados adjacentes se fundem num grupo contínuo: só as
-        // bordas do grupo (extremos ou vizinhas de um item aberto) arredondam.
+        /**
+         * Adjacent closed items merge into one continuous group: only the
+         * group's edges (its ends, or neighbors of an open item) round off.
+         */
         'first:rounded-t-(--accordion-radius) last:rounded-b-(--accordion-radius)',
         '[[data-open]+&]:rounded-t-(--accordion-radius)',
         '[&:has(+[data-open])]:rounded-b-(--accordion-radius)',
-        // Item aberto destaca do grupo como um card próprio.
+        /** An open item stands out from the group as its own card. */
         'data-open:rounded-(--accordion-radius)',
         'data-open:not-first:mt-4 data-open:not-last:mb-4',
         'transition-[margin,border-radius] duration-[350ms] ease-out-soft',
