@@ -1,24 +1,23 @@
+import { Table } from '@tanstack/react-table';
 
-import { Table } from '@tanstack/react-table'
+import { Icon } from '@/components/icon';
 
-import { Icon } from '@/components/icon'
+import { Button } from '@/components/ui/button';
 
-import { Button } from '@/components/ui/button'
-
-import { Select } from '@/components/ui/select'
+import { Select } from '@/components/ui/select';
 
 interface CursorPaginationMeta {
-  hasNext?: boolean
-  hasPrevious?: boolean
-  limit?: number
+  hasNext?: boolean;
+  hasPrevious?: boolean;
+  limit?: number;
 }
 
 interface DataTablePaginationProps<TData> {
-  table: Table<TData>
-  pageSizeOptions?: number[]
-  cursorMeta?: CursorPaginationMeta
-  onNavigate?: (direction: 'next' | 'previous') => void
-  disablePageSize?: boolean
+  table: Table<TData>;
+  pageSizeOptions?: number[];
+  cursorMeta?: CursorPaginationMeta;
+  onNavigate?: (direction: 'next' | 'previous') => void;
+  disablePageSize?: boolean;
 }
 
 export function DataTablePagination<TData>({
@@ -28,29 +27,28 @@ export function DataTablePagination<TData>({
   onNavigate,
   disablePageSize,
 }: DataTablePaginationProps<TData>) {
+  const isCursorPagination = !!cursorMeta;
 
-  const isCursorPagination = !!cursorMeta
+  const hasNext = cursorMeta?.hasNext ?? table.getCanNextPage();
+  const hasPrevious = cursorMeta?.hasPrevious ?? table.getCanPreviousPage();
 
-  const hasNext = cursorMeta?.hasNext ?? table.getCanNextPage()
-  const hasPrevious = cursorMeta?.hasPrevious ?? table.getCanPreviousPage()
-
-  const hasRowsSelected = table.getFilteredSelectedRowModel().rows.length > 0
+  const hasRowsSelected = table.getFilteredSelectedRowModel().rows.length > 0;
 
   const handlePrevious = () => {
     if (isCursorPagination && onNavigate) {
-      onNavigate('previous')
+      onNavigate('previous');
     } else {
-      table.previousPage()
+      table.previousPage();
     }
-  }
+  };
 
   const handleNext = () => {
     if (isCursorPagination && onNavigate) {
-      onNavigate('next')
+      onNavigate('next');
     } else {
-      table.nextPage()
+      table.nextPage();
     }
-  }
+  };
 
   return (
     <div className="flex gap-4 sm:items-center sm:justify-between">
@@ -62,7 +60,6 @@ export function DataTablePagination<TData>({
       )}
 
       <div className="flex items-center space-x-2 w-fit">
-
         <p className="hidden sm:block text-sm text-muted-foreground text-nowrap">
           Rows per page
         </p>
@@ -70,14 +67,17 @@ export function DataTablePagination<TData>({
         <Select
           disabled={disablePageSize}
           value={`${table.getState().pagination.pageSize}`}
-          onValueChange={(value) => table.setPageSize(Number(value))}
+          onValueChange={value => table.setPageSize(Number(value))}
         >
-          <Select.Trigger className="h-10 min-w-[70px]">
+          <Select.Trigger
+            aria-label="Rows per page"
+            className="h-10 min-w-[70px]"
+          >
             <Select.Value placeholder={table.getState().pagination.pageSize} />
           </Select.Trigger>
 
           <Select.Content side="top">
-            {pageSizeOptions.map((pageSize) => (
+            {pageSizeOptions.map(pageSize => (
               <Select.Item key={pageSize} value={`${pageSize}`}>
                 {pageSize}
               </Select.Item>
@@ -138,5 +138,5 @@ export function DataTablePagination<TData>({
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -9,10 +9,6 @@ const meta: Meta<typeof InputTimeUnit> = {
   component: InputTimeUnit,
   parameters: {
     layout: 'centered',
-    // TODO(a11y): o Select.Trigger interno de unidade não expõe nome acessível
-    // (violação button-name do axe) e o componente não aceita prop para
-    // rotulá-lo. Corrigir no componente e remover este todo.
-    a11y: { test: 'todo' },
   },
   tags: ['autodocs'],
   decorators: [
@@ -86,6 +82,15 @@ const meta: Meta<typeof InputTimeUnit> = {
       table: {
         category: 'Aparência',
         defaultValue: { summary: "'start'" },
+      },
+    },
+    unitSelectAriaLabel: {
+      control: 'text',
+      description:
+        'Nome acessível (`aria-label`) do seletor de unidade embutido, que exibe apenas a abreviação da unidade.',
+      table: {
+        category: 'Acessibilidade',
+        defaultValue: { summary: "'Time unit'" },
       },
     },
     placeholder: {

@@ -77,6 +77,8 @@ export interface InputTimeUnitProps
   onUnitChange?: (unit: TimeUnit) => void;
   /** Alignment of the unit dropdown relative to the trigger. */
   align?: 'start' | 'center' | 'end';
+  /** Accessible name (`aria-label`) for the embedded unit Select trigger. */
+  unitSelectAriaLabel?: string;
   /** Extra classes for the outermost wrapper div. */
   containerClassName?: string;
   /**
@@ -131,6 +133,7 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
       placeholder,
       defaultUnit = 'minutes',
       align = 'start',
+      unitSelectAriaLabel = 'Time unit',
       labels,
       ...inputProps
     } = props;
@@ -149,12 +152,14 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
         return TIME_UNITS;
       }
 
-      return TIME_UNITS.filter((unit) => allowedUnits.includes(unit.value));
+      return TIME_UNITS.filter(unit => allowedUnits.includes(unit.value));
     }, [allowedUnits]);
 
     /** Resolved labels, merging user overrides with English defaults. */
     const resolvedLabels = React.useMemo(() => {
-      const merged: Record<TimeUnit, TimeUnitLabel> = { ...DEFAULT_UNIT_LABELS };
+      const merged: Record<TimeUnit, TimeUnitLabel> = {
+        ...DEFAULT_UNIT_LABELS,
+      };
 
       if (labels) {
         for (const unit of Object.keys(labels) as TimeUnit[]) {
@@ -171,8 +176,7 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
     /** Resolves the selected unit to its {@link TimeUnitOption}, falling back to the first available. */
     const selectedUnitOption = React.useMemo(
       () =>
-        availableUnits.find((u) => u.value === selectedUnit) ??
-        availableUnits[0],
+        availableUnits.find(u => u.value === selectedUnit) ?? availableUnits[0],
       [selectedUnit, availableUnits],
     );
 
@@ -213,7 +217,7 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
       onUnitChange?.(newUnit);
 
       if (value !== undefined && value !== null) {
-        const newUnitOption = availableUnits.find((u) => u.value === newUnit);
+        const newUnitOption = availableUnits.find(u => u.value === newUnit);
 
         if (newUnitOption) {
           const displayValue = value / newUnitOption.toMinutes;
@@ -272,11 +276,12 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
 
         <Select
           value={selectedUnit}
-          onValueChange={(value) => handleUnitChange(value as TimeUnit)}
+          onValueChange={value => handleUnitChange(value as TimeUnit)}
           disabled={disabled || disableUnitSelect}
         >
           <Select.Trigger
             ref={triggerRef}
+            aria-label={unitSelectAriaLabel}
             className={cn(
               'w-fit! rounded-l-none border-l-0 focus:z-10 bg-accent',
               disableUnitSelect && '[&_svg]:hidden',
@@ -294,7 +299,7 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
             className="min-w-42"
             style={triggerWidth > 0 ? { width: triggerWidth } : {}}
           >
-            {availableUnits.map((unit) => (
+            {availableUnits.map(unit => (
               <Select.Item key={unit.value} value={unit.value}>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-mono">

@@ -36,6 +36,15 @@ const meta: Meta<typeof Breadcrumb> = {
         defaultValue: { summary: 'false' },
       },
     },
+    backAriaLabel: {
+      control: 'text',
+      description:
+        'Nome acessível (`aria-label`) do link de voltar, que exibe apenas um ícone.',
+      table: {
+        category: 'Acessibilidade',
+        defaultValue: { summary: "'Back'" },
+      },
+    },
     className: {
       control: 'text',
       description: 'Classes extras aplicadas ao container raiz.',
@@ -57,15 +66,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// TODO(a11y): o botão de voltar do Breadcrumb é um link só com ícone, sem
-// aria-label (violação link-name). Corrigir no componente breadcrumb.tsx.
-const A11Y_TODO_BACK_BUTTON = {
-  a11y: { test: 'todo' },
-} as const;
-
-export const Playground: Story = {
-  parameters: A11Y_TODO_BACK_BUTTON,
-};
+export const Playground: Story = {};
 
 export const SingleItem: Story = {
   args: {
@@ -77,8 +78,6 @@ export const WithoutLinks: Story = {
   args: {
     disableLinks: true,
   },
-  // TODO(a11y): mesmo motivo do Playground — back button sem texto acessível.
-  parameters: A11Y_TODO_BACK_BUTTON,
 };
 
 export const WithoutBackButton: Story = {
@@ -97,6 +96,4 @@ export const LongPath: Story = {
       { label: 'Advanced' },
     ],
   },
-  // TODO(a11y): mesmo motivo do Playground — back button sem texto acessível.
-  parameters: A11Y_TODO_BACK_BUTTON,
 };

@@ -174,22 +174,20 @@ export const WithIcon: Story = {
 export const Loading: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
-      <Button isLoading aria-label="Default">
-        Default
-      </Button>
-      <Button isLoading variant="destructive" aria-label="Destructive">
+      <Button isLoading>Default</Button>
+      <Button isLoading variant="destructive">
         Destructive
       </Button>
-      <Button isLoading variant="outline" aria-label="Outline">
+      <Button isLoading variant="outline">
         Outline
       </Button>
-      <Button isLoading variant="primary" aria-label="Primary">
+      <Button isLoading variant="primary">
         Primary
       </Button>
-      <Button isLoading variant="secondary" aria-label="Secondary">
+      <Button isLoading variant="secondary">
         Secondary
       </Button>
-      <Button isLoading variant="ghost" aria-label="Ghost">
+      <Button isLoading variant="ghost">
         Ghost
       </Button>
     </div>

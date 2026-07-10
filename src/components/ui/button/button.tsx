@@ -96,7 +96,11 @@ const Button = React.forwardRef<
   };
 
   const content = isLoading ? (
-    <Loader variant="button" />
+    <>
+      <Loader variant="button" />
+      {/* Keeps the accessible name while the visible label is replaced by the loader. */}
+      <span className="sr-only">{children as React.ReactNode}</span>
+    </>
   ) : (
     (children as React.ReactNode)
   );
@@ -115,7 +119,13 @@ const Button = React.forwardRef<
                   children.props as React.ComponentPropsWithRef<'button'>,
                 ),
                 isLoading ? (
-                  <Loader variant="button" />
+                  <>
+                    <Loader variant="button" />
+                    {/* Keeps the accessible name while the visible label is replaced by the loader. */}
+                    <span className="sr-only">
+                      {children.props.children as React.ReactNode}
+                    </span>
+                  </>
                 ) : (
                   (children.props.children as React.ReactNode)
                 ),

@@ -3,17 +3,6 @@ import { expect, waitFor } from 'storybook/test';
 
 import { ANNOUNCEMENT_TYPES, AnnouncementBanner } from './announcement-banner';
 
-/**
- * TODO(a11y): violações do próprio componente (não das stories) — corrigir em
- * `announcement-banner.tsx` e remover este override:
- * - `button-name`: o botão de dismiss renderiza só o ícone `Xmark`, sem
- *   `aria-label`/texto acessível;
- * - `color-contrast`: os pares `--color-info(-foreground)` e
- *   `--color-destructive(-foreground)` (tipos NEW/INFO/UPDATE e
- *   ERROR/CRITICAL) ficam abaixo de 4.5:1 no chip e na mensagem.
- */
-const componentA11yTodo = { a11y: { test: 'todo' as const } };
-
 const meta: Meta<typeof AnnouncementBanner> = {
   title: 'Layouts/AnnouncementBanner',
   component: AnnouncementBanner,
@@ -67,6 +56,15 @@ const meta: Meta<typeof AnnouncementBanner> = {
       description: 'Callback disparado quando o usuário fecha o banner.',
       table: { category: 'Estado' },
     },
+    dismissAriaLabel: {
+      control: 'text',
+      description:
+        'Nome acessível (`aria-label`) do botão de fechar, que exibe apenas um ícone.',
+      table: {
+        category: 'Acessibilidade',
+        defaultValue: { summary: "'Dismiss announcement'" },
+      },
+    },
     closeButtonId: {
       control: 'text',
       description:
@@ -92,7 +90,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  parameters: { ...componentA11yTodo },
   play: async ({ canvas, userEvent }) => {
     const message = canvas.getByText(
       'A brand new analytics dashboard is now available.',
@@ -101,9 +98,9 @@ export const Playground: Story = {
     // O banner entra animando a opacidade — espera a entrada terminar.
     await waitFor(() => expect(message).toBeVisible());
 
-    // O botão de dismiss ainda não tem nome acessível (ver TODO no topo do
-    // arquivo), então a query é por role sem `name` — é o único botão do banner.
-    await userEvent.click(canvas.getByRole('button'));
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Dismiss announcement' }),
+    );
 
     await waitFor(() => expect(message).not.toBeInTheDocument());
   },
@@ -111,7 +108,6 @@ export const Playground: Story = {
 
 /** Tipos de erro (`ERROR`/`CRITICAL`) usam o par de cores destrutivo. */
 export const Critical: Story = {
-  parameters: { ...componentA11yTodo },
   args: {
     type: 'CRITICAL',
     typeLabel: 'Critical',
@@ -122,7 +118,6 @@ export const Critical: Story = {
 
 /** Aviso de manutenção com o par de cores de warning. */
 export const Maintenance: Story = {
-  parameters: { ...componentA11yTodo },
   args: {
     type: 'MAINTENANCE',
     typeLabel: 'Maintenance',
@@ -145,7 +140,6 @@ export const NotDismissible: Story = {
  * indo e voltando para continuarem legíveis.
  */
 export const OverflowingMessage: Story = {
-  parameters: { ...componentA11yTodo },
   render: args => (
     <div className="mx-auto max-w-md">
       <AnnouncementBanner {...args} className="max-w-md mx-auto" />

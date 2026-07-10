@@ -7,11 +7,6 @@ const meta: Meta<typeof InputTime> = {
   component: InputTime,
   parameters: {
     layout: 'centered',
-    // TODO(a11y): o Select.Trigger interno de tipo (ícone) não expõe nome
-    // acessível (violação button-name do axe) e o campo vazio usa
-    // text-muted-foreground/50, reprovando em color-contrast. Ambos vêm do
-    // componente; corrigir lá e remover este todo.
-    a11y: { test: 'todo' },
   },
   tags: ['autodocs'],
   decorators: [
@@ -48,6 +43,15 @@ const meta: Meta<typeof InputTime> = {
       table: {
         category: 'Aparência',
         defaultValue: { summary: "'start'" },
+      },
+    },
+    typeSelectAriaLabel: {
+      control: 'text',
+      description:
+        'Nome acessível (`aria-label`) do seletor de tipo embutido, que exibe apenas um ícone.',
+      table: {
+        category: 'Acessibilidade',
+        defaultValue: { summary: "'Input type'" },
       },
     },
     placeholder: {
@@ -98,17 +102,32 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
+// TODO(a11y): com o campo vazio, o placeholder usa text-muted-foreground/50 e
+// reprova em color-contrast (contraste fica fora do escopo por ora). Vale só
+// para as stories sem valor — WithValue passa com 'error'.
+const PLACEHOLDER_CONTRAST_A11Y_TODO = {
+  a11y: { test: 'todo' },
+} as const;
+
+export const Playground: Story = {
+  parameters: PLACEHOLDER_CONTRAST_A11Y_TODO,
+};
 
 export const Date: Story = {
+  // TODO(a11y): mesmo motivo do Playground — contraste do placeholder.
+  parameters: PLACEHOLDER_CONTRAST_A11Y_TODO,
   args: { type: 'date' },
 };
 
 export const Time: Story = {
+  // TODO(a11y): mesmo motivo do Playground — contraste do placeholder.
+  parameters: PLACEHOLDER_CONTRAST_A11Y_TODO,
   args: { type: 'time' },
 };
 
 export const DateTimeLocal: Story = {
+  // TODO(a11y): mesmo motivo do Playground — contraste do placeholder.
+  parameters: PLACEHOLDER_CONTRAST_A11Y_TODO,
   args: { type: 'datetime-local' },
 };
 

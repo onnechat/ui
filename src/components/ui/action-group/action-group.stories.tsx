@@ -45,6 +45,15 @@ const meta: Meta<typeof ActionGroup> = {
         'Trigger customizado do menu. Quando omitido, um botão de ícone padrão é renderizado.',
       table: { category: 'Conteúdo' },
     },
+    triggerAriaLabel: {
+      control: 'text',
+      description:
+        'Nome acessível (`aria-label`) do botão padrão de ícone. Ignorado quando um trigger customizado é passado via `children`.',
+      table: {
+        category: 'Acessibilidade',
+        defaultValue: { summary: "'Actions'" },
+      },
+    },
     className: {
       control: 'text',
       description: 'Classes extras aplicadas ao trigger.',
@@ -76,9 +85,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  // TODO(a11y): o trigger padrão do ActionGroup (botão só com o ícone "Dots")
-  // não expõe aria-label — corrigir no componente.
-  parameters: { a11y: { test: 'todo' } },
   render: args => (
     <div className="flex justify-center">
       <ActionGroup {...args} />

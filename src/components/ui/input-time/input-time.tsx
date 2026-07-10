@@ -32,12 +32,17 @@ const INPUT_TIME_LABELS: Record<InputTimeType, string> = {
 };
 
 export interface InputTimeProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'type' | 'onChange'
+  > {
   type?: InputTimeType;
   defaultType?: InputTimeType;
   onTypeChange?: (type: InputTimeType) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   align?: 'start' | 'center' | 'end';
+  /** Accessible name (`aria-label`) for the embedded type Select trigger. */
+  typeSelectAriaLabel?: string;
 }
 
 function InputTime({
@@ -47,6 +52,7 @@ function InputTime({
   className,
   placeholder,
   align = 'start',
+  typeSelectAriaLabel = 'Input type',
   ...props
 }: InputTimeProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -85,7 +91,7 @@ function InputTime({
           !hasValue && 'text-sm text-muted-foreground/50',
           className,
         )}
-        onChange={(e) => {
+        onChange={e => {
           setHasValue(e.target.value !== '');
           props.onChange?.(e);
         }}
@@ -93,9 +99,14 @@ function InputTime({
       />
 
       <div className="relative shrink-0">
-        <Select value={type} onValueChange={handleTypeChange} disabled={typeProp !== undefined}>
+        <Select
+          value={type}
+          onValueChange={handleTypeChange}
+          disabled={typeProp !== undefined}
+        >
           <Select.Trigger
             ref={triggerRef}
+            aria-label={typeSelectAriaLabel}
             className={cn(
               'w-fit! rounded-l-none border-l-0 focus:z-10 bg-accent',
               typeProp !== undefined && '[&>svg]:hidden',
@@ -111,10 +122,14 @@ function InputTime({
             className="min-w-max"
             style={triggerWidth > 0 ? { width: triggerWidth } : {}}
           >
-            {(Object.keys(INPUT_TIME_ICONS) as InputTimeType[]).map((t) => (
+            {(Object.keys(INPUT_TIME_ICONS) as InputTimeType[]).map(t => (
               <Select.Item key={t} value={t}>
                 <div className="flex items-center gap-2">
-                  <Icon variant="fill" name={INPUT_TIME_ICONS[t]} className="size-4" />
+                  <Icon
+                    variant="fill"
+                    name={INPUT_TIME_ICONS[t]}
+                    className="size-4"
+                  />
                   <span className="text-sm">{INPUT_TIME_LABELS[t]}</span>
                 </div>
               </Select.Item>

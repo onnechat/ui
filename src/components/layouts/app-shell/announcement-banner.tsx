@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react';
 
-import { cn } from '@/lib/cn'
+import { cn } from '@/lib/cn';
 
-import { useIsClient } from '@/hooks/use-is-client'
+import { useIsClient } from '@/hooks/use-is-client';
 
-import { Icon } from '@/components/icon'
+import { Icon } from '@/components/icon';
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 
 export const ANNOUNCEMENT_TYPES = {
   CRITICAL: 'CRITICAL',
@@ -22,10 +22,10 @@ export const ANNOUNCEMENT_TYPES = {
   SUCCESS: 'SUCCESS',
   UPDATE: 'UPDATE',
   WARNING: 'WARNING',
-} as const
+} as const;
 
 export type AnnouncementType =
-  (typeof ANNOUNCEMENT_TYPES)[keyof typeof ANNOUNCEMENT_TYPES]
+  (typeof ANNOUNCEMENT_TYPES)[keyof typeof ANNOUNCEMENT_TYPES];
 
 const ANNOUNCEMENT_COLORS: Record<
   AnnouncementType,
@@ -67,17 +67,17 @@ const ANNOUNCEMENT_COLORS: Record<
     background: 'var(--color-info)',
     foreground: 'var(--color-info-foreground)',
   },
-}
+};
 
 function resolveAnnouncementType(type: string): AnnouncementType {
   if ((Object.values(ANNOUNCEMENT_TYPES) as string[]).includes(type)) {
-    return type as AnnouncementType
+    return type as AnnouncementType;
   }
 
-  return ANNOUNCEMENT_TYPES.NEW
+  return ANNOUNCEMENT_TYPES.NEW;
 }
 
-const ANNOUNCEMENT_BANNER_HEIGHT = 40
+const ANNOUNCEMENT_BANNER_HEIGHT = 40;
 
 function RoundedCornerTriangle({ className }: { className?: string }) {
   return (
@@ -89,24 +89,26 @@ function RoundedCornerTriangle({ className }: { className?: string }) {
     >
       <path d="M 0 -1 L 0 12 A 12 12, 0, 0, 1, 12 0 L 12 -1 Z" />
     </svg>
-  )
+  );
 }
 
 export type AnnouncementBannerProps = {
   /** Banner message. The banner is not rendered when empty. */
-  message?: string
+  message?: string;
   /** Semantic type; controls the color pair. Unknown values fall back to `NEW`. */
-  type?: AnnouncementType | (string & NonNullable<unknown>)
+  type?: AnnouncementType | (string & NonNullable<unknown>);
   /** Chip label shown before the message on desktop. Defaults to the type itself — pass a translated label if needed. */
-  typeLabel?: string
+  typeLabel?: string;
   /** Hides the close button when `false`. */
-  dismissible?: boolean
+  dismissible?: boolean;
   /** Called when the user dismisses the banner. */
-  onDismiss?: () => void
+  onDismiss?: () => void;
+  /** Accessible name (`aria-label`) for the icon-only close button. */
+  dismissAriaLabel?: string;
   /** Optional `id` for the close button (e.g. an analytics id). */
-  closeButtonId?: string
-  className?: string
-}
+  closeButtonId?: string;
+  className?: string;
+};
 
 /**
  * Fixed top banner for product announcements. Sets the global
@@ -120,87 +122,94 @@ export function AnnouncementBanner({
   typeLabel,
   dismissible = true,
   onDismiss,
+  dismissAriaLabel = 'Dismiss announcement',
   closeButtonId,
   className,
 }: AnnouncementBannerProps) {
-  const mounted = useIsClient()
+  const mounted = useIsClient();
 
-  const [hidden, setHidden] = React.useState(false)
+  const [hidden, setHidden] = React.useState(false);
 
-  const announcementColors = ANNOUNCEMENT_COLORS[resolveAnnouncementType(type)]
+  const announcementColors = ANNOUNCEMENT_COLORS[resolveAnnouncementType(type)];
 
-  const hasAnnouncement = message.length > 0
+  const hasAnnouncement = message.length > 0;
 
-  const announcementTypeLabel = typeLabel ?? type
+  const announcementTypeLabel = typeLabel ?? type;
 
-  const messageContainerRef = React.useRef<HTMLDivElement>(null)
-  const messageTextRef = React.useRef<HTMLSpanElement>(null)
+  const messageContainerRef = React.useRef<HTMLDivElement>(null);
+  const messageTextRef = React.useRef<HTMLSpanElement>(null);
 
   const [messageScroll, setMessageScroll] = React.useState({
     delta: 0,
     overflow: false,
-  })
+  });
 
   const handleHide = () => {
-    setHidden(true)
-    onDismiss?.()
-  }
+    setHidden(true);
+    onDismiss?.();
+  };
 
   React.useLayoutEffect(() => {
-    const container = messageContainerRef.current
-    const text = messageTextRef.current
+    const container = messageContainerRef.current;
+    const text = messageTextRef.current;
 
-    if (!container || !text) return
+    if (!container || !text) return;
 
     const update = () => {
-      const available = container.clientWidth
-      const full = text.scrollWidth
+      const available = container.clientWidth;
+      const full = text.scrollWidth;
 
-      const delta = Math.max(0, full - available)
-      const overflow = delta > 1
+      const delta = Math.max(0, full - available);
+      const overflow = delta > 1;
 
-      setMessageScroll((prev) =>
+      setMessageScroll(prev =>
         prev.delta === delta && prev.overflow === overflow
           ? prev
           : { delta, overflow },
-      )
-    }
+      );
+    };
 
-    update()
+    update();
 
-    const ro = new ResizeObserver(update)
-    ro.observe(container)
+    const ro = new ResizeObserver(update);
+    ro.observe(container);
 
-    const parent = container.parentElement
+    const parent = container.parentElement;
     if (parent) {
-      ro.observe(parent)
+      ro.observe(parent);
     }
 
-    window.addEventListener('resize', update)
+    window.addEventListener('resize', update);
 
     return () => {
-      ro.disconnect()
-      window.removeEventListener('resize', update)
-    }
-  }, [message, hasAnnouncement])
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, [message, hasAnnouncement]);
 
   React.useEffect(() => {
     if (hidden || !hasAnnouncement) {
-      document.documentElement.style.setProperty('--announcement-height', '0px')
-      return
+      document.documentElement.style.setProperty(
+        '--announcement-height',
+        '0px',
+      );
+      return;
     }
 
     document.documentElement.style.setProperty(
       '--announcement-height',
       `${ANNOUNCEMENT_BANNER_HEIGHT}px`,
-    )
+    );
 
     return () => {
-      document.documentElement.style.setProperty('--announcement-height', '0px')
-    }
-  }, [hasAnnouncement, hidden])
+      document.documentElement.style.setProperty(
+        '--announcement-height',
+        '0px',
+      );
+    };
+  }, [hasAnnouncement, hidden]);
 
-  if (!mounted || hidden || !hasAnnouncement) return null
+  if (!mounted || hidden || !hasAnnouncement) return null;
 
   return (
     <>
@@ -285,6 +294,7 @@ export function AnnouncementBanner({
                   size="icon"
                   variant="ghost"
                   id={closeButtonId}
+                  aria-label={dismissAriaLabel}
                   onClick={handleHide}
                   className="hover:bg-(--banner-foreground)/20! hover:text-(--banner-foreground)! max-h-8 max-w-8 shrink-0"
                 >
@@ -301,5 +311,5 @@ export function AnnouncementBanner({
         </motion.div>
       </AnimatePresence>
     </>
-  )
+  );
 }

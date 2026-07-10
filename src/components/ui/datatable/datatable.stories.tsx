@@ -41,12 +41,6 @@ const meta: Meta<typeof DataCustomTable<User>> = {
   component: DataCustomTable,
   parameters: {
     layout: 'padded',
-    // TODO(a11y): o Select de "Rows per page" (DataTablePagination) não tem
-    // rótulo acessível (violação button-name) e as linhas entram com animação
-    // de opacidade que dispara falsos positivos de color-contrast durante o
-    // fade. Ambos exigem correção nos componentes de table/ — como a paginação
-    // aparece em todas as stories, o todo vale para o arquivo inteiro.
-    a11y: { test: 'todo' },
   },
   tags: ['autodocs'],
   argTypes: {
@@ -173,7 +167,17 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
+// TODO(a11y): as linhas entram com animação de opacidade (motion) e o axe roda
+// durante o fade, gerando falsos positivos de color-contrast nas células.
+// Vale apenas para as stories que renderizam linhas com dados — Loading e
+// Empty passam com 'error'.
+const ROW_FADE_A11Y_TODO = {
+  a11y: { test: 'todo' },
+} as const;
+
+export const Playground: Story = {
+  parameters: ROW_FADE_A11Y_TODO,
+};
 
 export const Loading: Story = {
   args: {
@@ -190,6 +194,8 @@ export const Empty: Story = {
 };
 
 export const LoadingToLoaded: Story = {
+  // TODO(a11y): mesmo motivo do Playground — fade de entrada das linhas.
+  parameters: ROW_FADE_A11Y_TODO,
   render: function Render() {
     const [isLoading, setIsLoading] = React.useState(true);
 
@@ -217,6 +223,8 @@ export const LoadingToLoaded: Story = {
 };
 
 export const CursorPagination: Story = {
+  // TODO(a11y): mesmo motivo do Playground — fade de entrada das linhas.
+  parameters: ROW_FADE_A11Y_TODO,
   args: {
     cursorMeta: {
       hasNext: true,
@@ -247,6 +255,8 @@ export const CursorPagination: Story = {
 };
 
 export const WithRowSelection: Story = {
+  // TODO(a11y): mesmo motivo do Playground — fade de entrada das linhas.
+  parameters: ROW_FADE_A11Y_TODO,
   args: {
     showCheckboxCol: true,
   },
