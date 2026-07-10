@@ -34,13 +34,15 @@ const INPUT_TIME_LABELS: Record<InputTimeType, string> = {
 export interface InputTimeProps
   extends Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'type' | 'onChange'
+    'type' | 'onChange' | 'size'
   > {
   type?: InputTimeType;
   defaultType?: InputTimeType;
   onTypeChange?: (type: InputTimeType) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   align?: 'start' | 'center' | 'end';
+  /** Field height. Mirrors the Button/Input scale: `sm` h-8, `default` h-10, `lg` h-12. */
+  size?: 'sm' | 'default' | 'lg';
   /** Accessible name (`aria-label`) for the embedded type Select trigger. */
   typeSelectAriaLabel?: string;
 }
@@ -52,6 +54,7 @@ function InputTime({
   className,
   placeholder,
   align = 'start',
+  size,
   typeSelectAriaLabel = 'Input type',
   ...props
 }: InputTimeProps) {
@@ -80,10 +83,11 @@ function InputTime({
   };
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full" data-size={size ?? 'default'}>
       <Input
         ref={inputRef}
         type={type}
+        size={size}
         placeholder={resolvedPlaceholder}
         onClick={handleInputClick}
         className={cn(
@@ -106,6 +110,7 @@ function InputTime({
         >
           <Select.Trigger
             ref={triggerRef}
+            size={size}
             aria-label={typeSelectAriaLabel}
             className={cn(
               'w-fit! rounded-l-none border-l-0 focus:z-10 bg-accent',

@@ -2,6 +2,8 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { cva } from 'class-variance-authority'
+
 import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
@@ -14,9 +16,28 @@ import { Drawer } from '@/components/ui/drawer'
 import { Input } from '@/components/ui/input'
 import { Popover } from '@/components/ui/popover'
 
+// Growable field (badges wrap like a textarea) → scales min-h, not a fixed height.
+// Min-height mirrors the Button/Input field scale: 32 / 40 / 48px.
+const selectMultiTriggerVariants = cva(
+  'border-transparent text-foreground flex w-full min-w-0 items-center justify-between gap-2 rounded-xl bg-input transition-[color] disabled:cursor-not-allowed disabled:opacity-75 focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer outline-none',
+  {
+    variants: {
+      size: {
+        sm: 'min-h-8 px-3 py-1 text-sm',
+        default: 'min-h-10 px-4 py-2 text-sm',
+        lg: 'min-h-12 px-4 py-2.5 text-base',
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  },
+)
+
 export interface SelectMultiProps<T extends object> {
   values: string[]
   onValuesChange: (values: string[]) => void
+  size?: 'sm' | 'default' | 'lg'
   options?: T[]
   isLoading?: boolean
   disabled?: boolean
@@ -38,6 +59,7 @@ function SelectMulti<T extends object>({
   options = [],
   isLoading = false,
   disabled = false,
+  size,
   id,
   className,
   getItemValue,
@@ -64,7 +86,7 @@ function SelectMulti<T extends object>({
     (itemValue: string) => {
       onValuesChange(
         values.includes(itemValue)
-          ? values.filter((v) => v !== itemValue)
+          ? values.filter(v => v !== itemValue)
           : [...values, itemValue],
       )
     },
@@ -75,7 +97,7 @@ function SelectMulti<T extends object>({
     if (!search) return options
     const lower = search.toLowerCase()
 
-    return options.filter((item) =>
+    return options.filter(item =>
       filterFn
         ? filterFn(item, lower)
         : getItemValue(item).toLowerCase().includes(lower),
@@ -83,7 +105,7 @@ function SelectMulti<T extends object>({
   }, [options, search, filterFn, getItemValue])
 
   const selectedItems = useMemo(
-    () => options.filter((item) => values.includes(getItemValue(item))),
+    () => options.filter(item => values.includes(getItemValue(item))),
     [options, values, getItemValue],
   )
 
@@ -97,9 +119,7 @@ function SelectMulti<T extends object>({
   const hasValues = values.length > 0
 
   const triggerClassName = cn(
-    'border-transparent text-foreground flex min-h-10 w-full min-w-0 items-center justify-between gap-2 rounded-xl bg-input px-4 py-2 text-sm',
-    'transition-[color] disabled:cursor-not-allowed disabled:opacity-75',
-    'focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer outline-none',
+    selectMultiTriggerVariants({ size }),
     !hasValues ? 'text-muted-foreground/50' : 'pl-2 pr-4',
     className,
   )
@@ -111,7 +131,7 @@ function SelectMulti<T extends object>({
       <div className="flex min-w-0 flex-1 flex-wrap items-start gap-2 text-left">
         {hasValues ? (
           <>
-            {selectedItems.slice(0, MAX_BADGES).map((item) => {
+            {selectedItems.slice(0, MAX_BADGES).map(item => {
               const itemValue = getItemValue(item)
               const label = getBadgeLabel?.(item) ?? itemValue
 
@@ -128,11 +148,11 @@ function SelectMulti<T extends object>({
                     role="button"
                     tabIndex={0}
                     className="mt-0.5 shrink-0 hover:text-destructive transition-colors"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation()
                       toggle(itemValue)
                     }}
-                    onKeyDown={(e) => {
+                    onKeyDown={e => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.stopPropagation()
                         toggle(itemValue)
@@ -180,7 +200,7 @@ function SelectMulti<T extends object>({
           <Input
             ref={searchInputRef}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
             placeholder={searchPlaceholder}
             className="px-11 h-12 sm:h-10 text-sm"
             autoComplete="off"
@@ -199,7 +219,7 @@ function SelectMulti<T extends object>({
       </div>
 
       <div
-        onWheel={(e) => e.stopPropagation()}
+        onWheel={e => e.stopPropagation()}
         className="scroll-fade-y max-h-64 overflow-y-auto overflow-x-hidden p-1"
       >
         {isLoading ? (
@@ -209,7 +229,7 @@ function SelectMulti<T extends object>({
             {emptyText}
           </p>
         ) : (
-          filteredOptions.map((item) => {
+          filteredOptions.map(item => {
             const itemValue = getItemValue(item)
             const isSelected = values.includes(itemValue)
 
@@ -260,6 +280,7 @@ function SelectMulti<T extends object>({
           id={id}
           type="button"
           disabled={disabled}
+          data-size={size ?? 'default'}
           className={triggerClassName}
           onClick={() => !disabled && handleOpenChange(true)}
         >
@@ -278,7 +299,12 @@ function SelectMulti<T extends object>({
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
       <Popover.Trigger asChild disabled={disabled}>
-        <button id={id} type="button" className={triggerClassName}>
+        <button
+          id={id}
+          type="button"
+          data-size={size ?? 'default'}
+          className={triggerClassName}
+        >
           {TriggerBody}
         </button>
       </Popover.Trigger>
@@ -295,4 +321,4 @@ function SelectMulti<T extends object>({
   )
 }
 
-export { SelectMulti }
+export { SelectMulti, selectMultiTriggerVariants }

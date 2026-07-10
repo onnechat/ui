@@ -5,6 +5,8 @@ import * as React from 'react'
 import { Select as SelectPrimitive } from '@base-ui/react/select'
 import { Separator as SeparatorPrimitive } from '@base-ui/react/separator'
 
+import { cva, type VariantProps } from 'class-variance-authority'
+
 import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
@@ -90,7 +92,7 @@ function SelectRoot({
   const registerLabel = React.useCallback(
     (itemValue: string, label: React.ReactNode) => {
       const text = extractText(label)
-      setItemLabels((prev) => {
+      setItemLabels(prev => {
         if (prev[itemValue]?.text === text) return prev
         return { ...prev, [itemValue]: { text, node: label } }
       })
@@ -184,13 +186,31 @@ function SelectValue({
   )
 }
 
+const selectTriggerVariants = cva(
+  'border-transparent text-foreground flex w-full items-center justify-between gap-2 rounded-xl bg-input transition-[color] disabled:cursor-not-allowed disabled:opacity-75 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 *:data-[slot=select-value]:min-w-max [&_svg]:pointer-events-none [&_svg]:shrink-0 outline-none aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-placeholder:text-muted-foreground/50 focus-visible:border-transparent focus-visible:aria-invalid:ring-destructive focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer select-none',
+  {
+    variants: {
+      // Height mirrors the Button/Input field scale: h-8 / h-10 / h-12.
+      size: {
+        sm: 'h-8 px-3 py-1 text-sm',
+        default: 'h-10 px-4 py-2 text-sm',
+        lg: 'h-12 px-4 py-2.5 text-base',
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  },
+)
+
 const SelectTrigger = React.forwardRef<
   HTMLButtonElement,
-  SelectPrimitive.Trigger.Props & {
+  Omit<SelectPrimitive.Trigger.Props, 'size'> & {
     removeIcon?: boolean
+    size?: VariantProps<typeof selectTriggerVariants>['size']
   }
 >(function SelectTrigger(
-  { className, children, removeIcon = false, ...props },
+  { className, children, removeIcon = false, size, ...props },
   ref,
 ) {
   const mode = React.useContext(SelectItemModeContext)
@@ -205,13 +225,10 @@ const SelectTrigger = React.forwardRef<
       ref={ref}
       suppressHydrationWarning
       data-slot="select-trigger"
-      className={cn(
-        'border-transparent text-foreground flex h-10 w-full items-center justify-between gap-2 rounded-xl bg-input px-4 py-2 text-sm transition-[color] disabled:cursor-not-allowed disabled:opacity-75 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 *:data-[slot=select-value]:min-w-max [&_svg]:pointer-events-none [&_svg]:shrink-0 outline-none aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-placeholder:text-muted-foreground/50',
-        'focus-visible:border-transparent focus-visible:aria-invalid:ring-destructive focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer select-none',
-        className,
-      )}
+      data-size={size ?? 'default'}
+      className={cn(selectTriggerVariants({ size }), className)}
       {...props}
-      onClick={(e) => {
+      onClick={e => {
         trigger('click')
         props.onClick?.(e)
       }}
@@ -391,10 +408,7 @@ function SelectItem({
   )
 }
 
-function SelectSeparator({
-  className,
-  ...props
-}: SeparatorPrimitive.Props) {
+function SelectSeparator({ className, ...props }: SeparatorPrimitive.Props) {
   return (
     <SeparatorPrimitive
       data-slot="select-separator"

@@ -2,9 +2,40 @@
 
 import * as React from 'react';
 
+import { cva } from 'class-variance-authority';
+
 import { cn } from '@/lib/cn';
 
 import { Select } from '@/components/ui/select';
+
+const inputTimePickerVariants = cva(
+  'flex w-full items-center justify-between rounded-lg bg-input ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 min-w-24 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
+  {
+    variants: {
+      // Height mirrors the Button/Input field scale: h-8 / h-10 / h-12.
+      size: {
+        sm: 'h-8 text-sm',
+        default: 'h-10 text-sm',
+        lg: 'h-12 text-base',
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  },
+);
+
+/**
+ * Padding for the transparent inner Select triggers, scaled per size.
+ * The trigger's own `className` wins over `selectTriggerVariants`, so the
+ * container cva (above) drives height while this keeps horizontal spacing
+ * proportional to the field size.
+ */
+const TRIGGER_PADDING: Record<'sm' | 'default' | 'lg', string> = {
+  sm: 'p-2',
+  default: 'p-3',
+  lg: 'p-4',
+};
 
 export interface InputTimePickerProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -25,6 +56,8 @@ export interface InputTimePickerProps
   hourAriaLabel?: string;
   /** `aria-label` for the minute Select trigger. Defaults to `"Minutes"`. */
   minuteAriaLabel?: string;
+  /** Field height. Mirrors the Button/Input scale: `sm` h-8, `default` h-10, `lg` h-12. */
+  size?: 'sm' | 'default' | 'lg';
 }
 
 /**
@@ -62,10 +95,12 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
       minutePlaceholder = 'MM',
       hourAriaLabel = 'Hours',
       minuteAriaLabel = 'Minutes',
+      size,
       ...props
     },
     ref,
   ) => {
+    const triggerPadding = TRIGGER_PADDING[size ?? 'default'];
     const hours = React.useMemo(() => {
       return Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
     }, []);
@@ -94,11 +129,8 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          'flex h-10 w-full items-center justify-between rounded-lg bg-input text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 min-w-24',
-          'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
-          className,
-        )}
+        data-size={size ?? 'default'}
+        className={cn(inputTimePickerVariants({ size }), className)}
         {...props}
       >
         <Select
@@ -109,12 +141,15 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
           <Select.Trigger
             removeIcon
             aria-label={hourAriaLabel}
-            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
+            className={cn(
+              'h-auto w-fit border-none bg-transparent focus:ring-0',
+              triggerPadding,
+            )}
           >
             <Select.Value placeholder={hourPlaceholder} />
           </Select.Trigger>
           <Select.Content>
-            {hours.map((hour) => (
+            {hours.map(hour => (
               <Select.Item key={hour} value={hour}>
                 {hour}
               </Select.Item>
@@ -131,13 +166,16 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
         >
           <Select.Trigger
             removeIcon
-            className="h-auto w-fit border-none bg-transparent focus:ring-0 p-3"
+            className={cn(
+              'h-auto w-fit border-none bg-transparent focus:ring-0',
+              triggerPadding,
+            )}
             aria-label={minuteAriaLabel}
           >
             <Select.Value placeholder={minutePlaceholder} />
           </Select.Trigger>
           <Select.Content>
-            {minutes.map((minute) => (
+            {minutes.map(minute => (
               <Select.Item key={minute} value={minute}>
                 {minute}
               </Select.Item>
@@ -151,4 +189,4 @@ const InputTimePicker = React.forwardRef<HTMLDivElement, InputTimePickerProps>(
 
 InputTimePicker.displayName = 'InputTimePicker';
 
-export { InputTimePicker };
+export { InputTimePicker, inputTimePickerVariants };
