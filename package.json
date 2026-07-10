@@ -16,6 +16,9 @@
   "files": [
     "dist"
   ],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
     "build": "tsup",
     "watch": "tsup --watch",
@@ -62,10 +65,8 @@
     "@storybook/addon-themes": "^10.4.6",
     "@storybook/addon-vitest": "^10.4.6",
     "@storybook/react-vite": "^10.4.6",
-    "@storybook/test-runner": "^0.24.4",
-    "@storybook/testing-library": "^0.2.2",
     "@tailwindcss/postcss": "^4.1.12",
-    "@types/minimatch": "^6.0.0",
+    "@types/js-cookie": "^3.0.6",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
@@ -86,16 +87,13 @@
     "tailwindcss-animate": "^1.0.7",
     "tsup": "^8.0.1",
     "typescript": "^5",
+    "vite": "^8.0.16",
     "vitest": "^4.1.8"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
-    "@hookform/resolvers": "^5.4.0",
-    "@number-flow/react": "^0.6.0",
     "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-table": "^8.21.3",
-    "@types/js-cookie": "^3.0.6",
-    "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.0.0",
     "cmdk": "^1.1.1",
@@ -115,11 +113,8 @@
     "recharts": "^3.8.1",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
-    "torph": "^0.0.9",
     "vaul": "^1.1.2",
-    "vite": "^8.0.16",
     "web-haptics": "^0.0.6",
-    "zod": "^4.4.3",
     "zustand": "^5.0.12"
   },
   "publishConfig": {
