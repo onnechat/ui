@@ -87,9 +87,9 @@ function PopoverContent({
           data-slot="popover-content"
           className={cn(
             'bg-popover text-popover-foreground z-50 w-72 rounded-lg border p-4 shadow-md outline-hidden origin-(--transform-origin)',
-            'transition-[transform,scale,opacity] duration-150 ease-out',
-            'data-starting-style:scale-95 data-starting-style:opacity-0',
-            'data-ending-style:scale-95 data-ending-style:opacity-0 data-ending-style:duration-100 data-ending-style:ease-in',
+            'transition-[transform,scale,opacity] duration-300 ease-spring motion-reduce:transition-none',
+            'data-starting-style:scale-[0.96] data-starting-style:opacity-0',
+            'data-ending-style:scale-[0.96] data-ending-style:opacity-0 data-ending-style:duration-150 data-ending-style:ease-in',
             className,
           )}
           {...props}
@@ -111,16 +111,13 @@ function PopoverContent({
   )
 }
 
-function PopoverAnchor({
-  children,
-  ...props
-}: React.ComponentProps<'span'>) {
+function PopoverAnchor({ children, ...props }: React.ComponentProps<'span'>) {
   const anchorCtx = React.useContext(PopoverAnchorContext)
 
   return (
     <span
       data-slot="popover-anchor"
-      ref={(el) => anchorCtx?.setAnchor(el)}
+      ref={el => anchorCtx?.setAnchor(el)}
       {...props}
     >
       {children}
@@ -128,5 +125,9 @@ function PopoverAnchor({
   )
 }
 
-const Popover = Object.assign(PopoverRoot, { Trigger: PopoverTrigger, Content: PopoverContent, Anchor: PopoverAnchor })
+const Popover = Object.assign(PopoverRoot, {
+  Trigger: PopoverTrigger,
+  Content: PopoverContent,
+  Anchor: PopoverAnchor,
+})
 export { Popover }
