@@ -1,76 +1,152 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, waitFor } from 'storybook/test';
 
-import { AnnouncementBanner } from './announcement-banner'
+import { ANNOUNCEMENT_TYPES, AnnouncementBanner } from './announcement-banner';
+
+/**
+ * TODO(a11y): violações do próprio componente (não das stories) — corrigir em
+ * `announcement-banner.tsx` e remover este override:
+ * - `button-name`: o botão de dismiss renderiza só o ícone `Xmark`, sem
+ *   `aria-label`/texto acessível;
+ * - `color-contrast`: os pares `--color-info(-foreground)` e
+ *   `--color-destructive(-foreground)` (tipos NEW/INFO/UPDATE e
+ *   ERROR/CRITICAL) ficam abaixo de 4.5:1 no chip e na mensagem.
+ */
+const componentA11yTodo = { a11y: { test: 'todo' as const } };
 
 const meta: Meta<typeof AnnouncementBanner> = {
   title: 'Layouts/AnnouncementBanner',
   component: AnnouncementBanner,
   parameters: {
     layout: 'fullscreen',
+    docs: {
+      // O banner usa position: fixed — um iframe por story dá a cada preview
+      // um viewport próprio em vez de todos os banners empilharem no topo da
+      // página de docs.
+      story: { inline: false, height: '120px' },
+      description: {
+        component:
+          'Banner fixo no topo da página para avisos do produto. Define a variável global `--announcement-height` (usada pelo `AppShell` para deslocar header e sidebars) e aplica marquee automático quando a mensagem não cabe na largura disponível.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
+    message: {
+      control: 'text',
+      description: 'Mensagem do banner. Vazia, o banner não é renderizado.',
+      table: { category: 'Conteúdo' },
+    },
+    typeLabel: {
+      control: 'text',
+      description:
+        'Rótulo do chip exibido antes da mensagem no desktop. Por padrão usa o próprio `type` — passe um rótulo traduzido se necessário.',
+      table: { category: 'Conteúdo' },
+    },
     type: {
       control: 'select',
-      options: [
-        'NEW',
-        'SALE',
-        'WARNING',
-        'INFO',
-        'SUCCESS',
-        'ERROR',
-        'CRITICAL',
-        'MAINTENANCE',
-        'UPDATE',
-      ],
+      options: Object.values(ANNOUNCEMENT_TYPES),
+      description:
+        'Tipo semântico; controla o par de cores. Valores desconhecidos caem em `NEW`.',
+      table: {
+        category: 'Aparência',
+        type: { summary: 'AnnouncementType' },
+        defaultValue: { summary: "'NEW'" },
+      },
+    },
+    dismissible: {
+      control: 'boolean',
+      description: 'Mostra o botão de fechar o banner.',
+      table: {
+        category: 'Comportamento',
+        defaultValue: { summary: 'true' },
+      },
+    },
+    onDismiss: {
+      control: false,
+      description: 'Callback disparado quando o usuário fecha o banner.',
+      table: { category: 'Estado' },
+    },
+    closeButtonId: {
+      control: 'text',
+      description:
+        '`id` opcional aplicado ao botão de fechar (ex.: um id de analytics).',
+      table: { category: 'Comportamento' },
+    },
+    className: {
+      control: 'text',
+      description: 'Classes extras aplicadas ao container do banner.',
+      table: { category: 'Aparência' },
     },
   },
-}
-
-export default meta
-
-export const Default: StoryObj<typeof meta> = {
   args: {
+    message: 'A brand new analytics dashboard is now available.',
     type: 'NEW',
     typeLabel: 'New',
-    message: 'A brand new analytics dashboard is now available.',
+    dismissible: true,
   },
-  play: async ({ canvas }) => {
-    await expect(
-      canvas.getByText('A brand new analytics dashboard is now available.'),
-    ).toBeInTheDocument()
-  },
-}
+};
 
-export const Critical: StoryObj<typeof meta> = {
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {
+  parameters: { ...componentA11yTodo },
+  play: async ({ canvas, userEvent }) => {
+    const message = canvas.getByText(
+      'A brand new analytics dashboard is now available.',
+    );
+
+    // O banner entra animando a opacidade — espera a entrada terminar.
+    await waitFor(() => expect(message).toBeVisible());
+
+    // O botão de dismiss ainda não tem nome acessível (ver TODO no topo do
+    // arquivo), então a query é por role sem `name` — é o único botão do banner.
+    await userEvent.click(canvas.getByRole('button'));
+
+    await waitFor(() => expect(message).not.toBeInTheDocument());
+  },
+};
+
+/** Tipos de erro (`ERROR`/`CRITICAL`) usam o par de cores destrutivo. */
+export const Critical: Story = {
+  parameters: { ...componentA11yTodo },
   args: {
     type: 'CRITICAL',
     typeLabel: 'Critical',
     message:
       'Your subscription is inactive. Update your billing information to keep using the product.',
   },
-}
+};
 
-export const Maintenance: StoryObj<typeof meta> = {
+/** Aviso de manutenção com o par de cores de warning. */
+export const Maintenance: Story = {
+  parameters: { ...componentA11yTodo },
   args: {
     type: 'MAINTENANCE',
     typeLabel: 'Maintenance',
     message: 'Scheduled maintenance this Saturday from 02:00 to 04:00 UTC.',
   },
-}
+};
 
-export const NotDismissible: StoryObj<typeof meta> = {
+/** `dismissible={false}` remove o botão de fechar. */
+export const NotDismissible: Story = {
   args: {
     type: 'WARNING',
     typeLabel: 'Warning',
     message: 'This banner cannot be dismissed.',
     dismissible: false,
   },
-}
+};
 
-export const OverflowingMessage: StoryObj<typeof meta> = {
-  render: (args) => (
+/**
+ * Mensagens maiores que a largura disponível entram em marquee automático,
+ * indo e voltando para continuarem legíveis.
+ */
+export const OverflowingMessage: Story = {
+  parameters: { ...componentA11yTodo },
+  render: args => (
     <div className="mx-auto max-w-md">
       <AnnouncementBanner {...args} className="max-w-md mx-auto" />
     </div>
@@ -81,4 +157,4 @@ export const OverflowingMessage: StoryObj<typeof meta> = {
     message:
       'This is a very long announcement message that will not fit in the available space, so it automatically scrolls back and forth like a marquee to stay readable.',
   },
-}
+};

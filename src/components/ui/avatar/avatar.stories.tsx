@@ -1,31 +1,76 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Avatar } from './avatar'
+import type { ComponentProps } from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+
+import { Avatar } from './avatar';
 
 const meta: Meta<typeof Avatar> = {
   title: 'UI/Avatar',
   component: Avatar,
+  subcomponents: {
+    'Avatar.Image': Avatar.Image,
+    'Avatar.Fallback': Avatar.Fallback,
+  } as Meta<typeof Avatar>['subcomponents'],
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-}
+  argTypes: {
+    children: {
+      control: false,
+      description: 'Composição com `Avatar.Image` e `Avatar.Fallback`.',
+      table: { category: 'Conteúdo' },
+    },
+    className: {
+      control: 'text',
+      description:
+        'Classes extras aplicadas ao container (ex.: `size-12`, `rounded-full`).',
+      table: { category: 'Aparência' },
+    },
+  },
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
-const IMG = 'https://github.com/shadcn.png'
+const IMG = 'https://github.com/shadcn.png';
 
-export const Default: Story = {
-  render: () => (
-    <Avatar>
-      <Avatar.Image src={IMG} />
-      <Avatar.Fallback name="Shadcn" />
+type PlaygroundArgs = ComponentProps<typeof Avatar> & {
+  src?: string;
+  name?: string;
+};
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  argTypes: {
+    src: {
+      control: 'text',
+      description:
+        'URL da imagem (`Avatar.Image`). Deixe vazio para ver o fallback.',
+      table: { category: 'Conteúdo' },
+    },
+    name: {
+      control: 'text',
+      description:
+        'Nome usado para gerar as iniciais do fallback (`Avatar.Fallback`).',
+      table: { category: 'Conteúdo' },
+    },
+  },
+  args: {
+    src: IMG,
+    name: 'Shadcn',
+  },
+  render: ({ src, name, ...args }) => (
+    <Avatar {...args}>
+      <Avatar.Image src={src} />
+      <Avatar.Fallback name={name} />
     </Avatar>
   ),
-}
+};
 
-export const Initials: StoryObj = {
+export const Initials: Story = {
+  // TODO(a11y): o fallback usa bg-primary/text-primary-foreground com
+  // contraste < 4.5:1 — corrigir tokens no componente/tema.
+  parameters: { a11y: { test: 'todo' } },
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Avatar>
@@ -39,9 +84,12 @@ export const Initials: StoryObj = {
       </Avatar>
     </div>
   ),
-}
+};
 
-export const CustomFallback: StoryObj = {
+export const CustomFallback: Story = {
+  // TODO(a11y): o fallback usa bg-primary/text-primary-foreground com
+  // contraste < 4.5:1 — corrigir tokens no componente/tema.
+  parameters: { a11y: { test: 'todo' } },
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Avatar>
@@ -54,12 +102,12 @@ export const CustomFallback: StoryObj = {
       </Avatar>
     </div>
   ),
-}
+};
 
-export const Sizes: StoryObj = {
+export const Sizes: Story = {
   render: () => (
     <div className="flex flex-wrap items-center gap-2">
-      {[6, 8, 10, 12, 14].map((size) => (
+      {[6, 8, 10, 12, 14].map(size => (
         <Avatar key={size} className={`size-${size}`}>
           <Avatar.Image src={IMG} />
           <Avatar.Fallback name="Shadcn">S</Avatar.Fallback>
@@ -67,9 +115,12 @@ export const Sizes: StoryObj = {
       ))}
     </div>
   ),
-}
+};
 
-export const Group: StoryObj = {
+export const Group: Story = {
+  // TODO(a11y): o fallback usa bg-primary/text-primary-foreground com
+  // contraste < 4.5:1 — corrigir tokens no componente/tema.
+  parameters: { a11y: { test: 'todo' } },
   render: () => (
     <div className="flex -space-x-2">
       {['John Doe', 'Maria Silva', 'Bob Lee', 'Ana Costa'].map((name, i) => (
@@ -80,9 +131,12 @@ export const Group: StoryObj = {
       ))}
     </div>
   ),
-}
+};
 
-export const RoundedGroup: StoryObj = {
+export const RoundedGroup: Story = {
+  // TODO(a11y): o fallback usa bg-primary/text-primary-foreground com
+  // contraste < 4.5:1 — corrigir tokens no componente/tema.
+  parameters: { a11y: { test: 'todo' } },
   render: () => (
     <div className="flex -space-x-2">
       {['John Doe', 'Maria Silva', 'Bob Lee', 'Ana Costa'].map((name, i) => (
@@ -93,9 +147,9 @@ export const RoundedGroup: StoryObj = {
       ))}
     </div>
   ),
-}
+};
 
-export const WithStatusIndicator: StoryObj = {
+export const WithStatusIndicator: Story = {
   render: () => (
     <div className="flex flex-wrap gap-4">
       <div className="relative">
@@ -121,4 +175,4 @@ export const WithStatusIndicator: StoryObj = {
       </div>
     </div>
   ),
-}
+};

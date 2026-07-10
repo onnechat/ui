@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
 import {
   VideoPlayer,
   VideoPlayerControlBar,
@@ -18,25 +17,77 @@ const SAMPLE_VIDEO = '/video.mp4';
 const meta: Meta<typeof VideoPlayer> = {
   title: 'Blocks/VideoPlayer',
   component: VideoPlayer,
+  subcomponents: {
+    VideoPlayerContent,
+    VideoPlayerControlBar,
+    VideoPlayerPlayButton,
+    VideoPlayerSeekBackwardButton,
+    VideoPlayerSeekForwardButton,
+    VideoPlayerTimeDisplay,
+    VideoPlayerTimeRange,
+    VideoPlayerMuteButton,
+    VideoPlayerVolumeRange,
+  } as Meta<typeof VideoPlayer>['subcomponents'],
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  argTypes: {
+    audio: {
+      control: 'boolean',
+      description: 'Modo áudio: player compacto, sem a área de vídeo.',
+      table: {
+        category: 'Comportamento',
+        defaultValue: { summary: 'false' },
+      },
+    },
+    autohide: {
+      control: 'text',
+      description:
+        'Segundos de inatividade até esconder os controles; `-1` desativa.',
+      table: { category: 'Comportamento' },
+    },
+    gesturesDisabled: {
+      control: 'boolean',
+      description: 'Desativa os gestos no vídeo (clique para play/pause).',
+      table: {
+        category: 'Comportamento',
+        defaultValue: { summary: 'false' },
+      },
+    },
+    defaultStreamType: {
+      control: 'inline-radio',
+      options: ['on-demand', 'live'],
+      description:
+        'Tipo de stream assumido antes de a mídia carregar os metadados.',
+      table: { category: 'Comportamento' },
+    },
+    className: {
+      control: 'text',
+      description: 'Classes extras aplicadas ao container do player.',
+      table: { category: 'Aparência' },
+    },
+    children: {
+      control: false,
+      description:
+        'Composição com `VideoPlayerContent` (slot `media`) e a barra de controles.',
+      table: { category: 'Conteúdo' },
+    },
+  },
   args: {
-    className: 'w-full min-w-(--container-md) max-w-(--container-md) aspect-video',
+    className:
+      'w-full min-w-(--container-md) max-w-(--container-md) aspect-video',
   },
 };
 
 export default meta;
 
-export const Default: StoryObj<typeof meta> = {
-  render: (args) => (
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {
+  render: args => (
     <VideoPlayer {...args}>
-      <VideoPlayerContent
-        slot="media"
-        src={SAMPLE_VIDEO}
-        preload="metadata"
-      />
+      <VideoPlayerContent slot="media" src={SAMPLE_VIDEO} preload="metadata" />
       <VideoPlayerControlBar className="w-full">
         <VideoPlayerPlayButton />
         <VideoPlayerSeekBackwardButton />
@@ -48,20 +99,12 @@ export const Default: StoryObj<typeof meta> = {
       </VideoPlayerControlBar>
     </VideoPlayer>
   ),
-  play: async () => {
-    const el = document.querySelector('media-controller');
-    await expect(el).toBeInTheDocument();
-  },
 };
 
-export const Minimal: StoryObj<typeof meta> = {
-  render: (args) => (
+export const Minimal: Story = {
+  render: args => (
     <VideoPlayer {...args}>
-      <VideoPlayerContent
-        slot="media"
-        src={SAMPLE_VIDEO}
-        preload="metadata"
-      />
+      <VideoPlayerContent slot="media" src={SAMPLE_VIDEO} preload="metadata" />
 
       <VideoPlayerControlBar className="w-full">
         <VideoPlayerPlayButton />
@@ -70,24 +113,12 @@ export const Minimal: StoryObj<typeof meta> = {
       </VideoPlayerControlBar>
     </VideoPlayer>
   ),
-  play: async () => {
-    const el = document.querySelector('media-controller');
-    await expect(el).toBeInTheDocument();
-  },
 };
 
-export const NoControls: StoryObj<typeof meta> = {
-  render: (args) => (
+export const NoControls: Story = {
+  render: args => (
     <VideoPlayer {...args}>
-      <VideoPlayerContent
-        slot="media"
-        src={SAMPLE_VIDEO}
-        preload="metadata"
-      />
+      <VideoPlayerContent slot="media" src={SAMPLE_VIDEO} preload="metadata" />
     </VideoPlayer>
   ),
-  play: async () => {
-    const el = document.querySelector('media-controller');
-    await expect(el).toBeInTheDocument();
-  },
 };

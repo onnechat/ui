@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Separator } from './separator'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+
+import { Separator } from './separator';
 
 const meta: Meta<typeof Separator> = {
   title: 'UI/Separator',
@@ -8,11 +9,50 @@ const meta: Meta<typeof Separator> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-}
+  argTypes: {
+    orientation: {
+      control: 'inline-radio',
+      options: ['horizontal', 'vertical'],
+      description: 'Direção do separador.',
+      table: {
+        category: 'Aparência',
+        type: { summary: "'horizontal' | 'vertical'" },
+        defaultValue: { summary: "'horizontal'" },
+      },
+    },
+    className: {
+      control: 'text',
+      description: 'Classes extras aplicadas ao separador.',
+      table: { category: 'Aparência' },
+    },
+  },
+  args: {
+    orientation: 'horizontal',
+  },
+};
 
-export default meta
+export default meta;
 
-export const Horizontal: StoryObj = {
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {
+  render: args =>
+    args.orientation === 'vertical' ? (
+      <div className="flex h-8 items-center gap-3">
+        <span className="text-sm">Left</span>
+        <Separator {...args} />
+        <span className="text-sm">Right</span>
+      </div>
+    ) : (
+      <div className="flex w-72 flex-col gap-3">
+        <span className="text-sm">Above</span>
+        <Separator {...args} />
+        <span className="text-sm">Below</span>
+      </div>
+    ),
+};
+
+export const Horizontal: Story = {
   render: () => (
     <div className="flex w-72 flex-col gap-3">
       <span className="text-sm">Above</span>
@@ -20,9 +60,9 @@ export const Horizontal: StoryObj = {
       <span className="text-sm">Below</span>
     </div>
   ),
-}
+};
 
-export const Vertical: StoryObj = {
+export const Vertical: Story = {
   render: () => (
     <div className="flex h-8 items-center gap-3">
       <span className="text-sm">Left</span>
@@ -30,9 +70,9 @@ export const Vertical: StoryObj = {
       <span className="text-sm">Right</span>
     </div>
   ),
-}
+};
 
-export const WithContent: StoryObj = {
+export const WithContent: Story = {
   render: () => (
     <div className="w-80 space-y-3">
       <div className="space-y-1">
@@ -50,4 +90,4 @@ export const WithContent: StoryObj = {
       </div>
     </div>
   ),
-}
+};

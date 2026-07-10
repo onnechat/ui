@@ -1,8 +1,9 @@
-import * as React from 'react'
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { Label } from './label'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
+
+import { Label } from './label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 
 const meta: Meta<typeof Label> = {
   title: 'UI/Label',
@@ -14,22 +15,54 @@ const meta: Meta<typeof Label> = {
   argTypes: {
     children: {
       control: 'text',
+      description: 'Texto (ou nós) exibido dentro do label.',
+      table: { category: 'Conteúdo' },
+    },
+    required: {
+      control: 'boolean',
+      description: 'Exibe um asterisco indicando campo obrigatório.',
+      table: {
+        category: 'Aparência',
+        defaultValue: { summary: 'false' },
+      },
+    },
+    htmlFor: {
+      control: 'text',
+      description: 'Id do controle associado ao label.',
+      table: { category: 'Comportamento' },
+    },
+    className: {
+      control: 'text',
+      description: 'Classes extras aplicadas ao elemento `label`.',
+      table: { category: 'Aparência' },
     },
   },
-}
+  args: {
+    children: 'Name',
+    required: false,
+    htmlFor: 'name',
+  },
+};
 
-export default meta
+export default meta;
 
-export const Default: StoryObj = {
-  render: () => (
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {
+  render: args => (
     <div className="flex items-center gap-2">
-      <Label htmlFor="name">Name</Label>
+      <Label {...args} />
       <Input id="name" placeholder="Enter your name" />
     </div>
   ),
-}
+  play: async ({ canvas, userEvent }) => {
+    // Clicar no label deve focar o input associado via htmlFor.
+    await userEvent.click(canvas.getByText('Name'));
+    await expect(canvas.getByPlaceholderText('Enter your name')).toHaveFocus();
+  },
+};
 
-export const WithCheckbox: StoryObj = {
+export const WithCheckbox: Story = {
   render: () => (
     <div className="flex flex-col gap-3">
       {[
@@ -39,25 +72,28 @@ export const WithCheckbox: StoryObj = {
       ].map(({ id, label, disabled }) => (
         <div key={id} className="flex items-center gap-2">
           <Checkbox id={id} disabled={disabled} />
-          <Label htmlFor={id} className={disabled ? 'opacity-50 cursor-not-allowed' : ''}>
+          <Label
+            htmlFor={id}
+            className={disabled ? 'opacity-50 cursor-not-allowed' : ''}
+          >
             {label}
           </Label>
         </div>
       ))}
     </div>
   ),
-}
+};
 
-export const WithInput: StoryObj = {
+export const WithInput: Story = {
   render: () => (
     <div className="flex w-72 flex-col gap-2">
       <Label htmlFor="email">Email address</Label>
       <Input id="email" type="email" placeholder="you@example.com" />
     </div>
   ),
-}
+};
 
-export const Required: StoryObj = {
+export const Required: Story = {
   render: () => (
     <div className="flex w-72 flex-col gap-2">
       <Label htmlFor="username" required>
@@ -66,9 +102,9 @@ export const Required: StoryObj = {
       <Input id="username" placeholder="Required field" required />
     </div>
   ),
-}
+};
 
-export const WithDescription: StoryObj = {
+export const WithDescription: Story = {
   render: () => (
     <div className="flex w-72 flex-col gap-2">
       <Label htmlFor="password">Password</Label>
@@ -78,9 +114,9 @@ export const WithDescription: StoryObj = {
       </p>
     </div>
   ),
-}
+};
 
-export const Inline: StoryObj = {
+export const Inline: Story = {
   render: () => (
     <div className="flex w-96 flex-col gap-4">
       <div className="flex items-center gap-3">
@@ -99,4 +135,4 @@ export const Inline: StoryObj = {
       </div>
     </div>
   ),
-}
+};

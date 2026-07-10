@@ -20,15 +20,39 @@ import { cn } from '@/lib/cn';
 const meta: Meta<typeof ButtonGroup> = {
   title: 'UI/ButtonGroup',
   component: ButtonGroup,
+  subcomponents: {
+    ButtonGroupSeparator,
+    ButtonGroupText,
+  } as Meta<typeof ButtonGroup>['subcomponents'],
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
   argTypes: {
     orientation: {
-      control: 'radio',
+      control: 'inline-radio',
       options: ['horizontal', 'vertical'],
+      description: 'Direção em que os itens do grupo são empilhados.',
+      table: {
+        category: 'Aparência',
+        type: { summary: "'horizontal' | 'vertical'" },
+        defaultValue: { summary: "'horizontal'" },
+      },
     },
+    children: {
+      control: false,
+      description:
+        'Itens do grupo: botões, inputs, selects e afins. As bordas internas são coladas e o arredondamento é mantido apenas nas extremidades.',
+      table: { category: 'Conteúdo' },
+    },
+    className: {
+      control: 'text',
+      description: 'Classes extras aplicadas ao container do grupo.',
+      table: { category: 'Aparência' },
+    },
+  },
+  args: {
+    orientation: 'horizontal',
   },
 };
 
@@ -36,9 +60,9 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => (
-    <ButtonGroup>
+export const Playground: Story = {
+  render: args => (
+    <ButtonGroup {...args}>
       <Button>Button 1</Button>
       <Button>Button 2</Button>
     </ButtonGroup>
@@ -132,7 +156,7 @@ export const Split: Story = {
           ],
         ]}
       >
-        <Button size="icon">
+        <Button size="icon" aria-label="More actions">
           <Icon name="ChevronDown" />
         </Button>
       </ActionGroup>
@@ -269,13 +293,13 @@ export const SplitWithDropdownMenu: Story = {
 
     return (
       <ButtonGroup>
-        <Button>
+        <Button aria-label="Toggle microphone">
           <Icon name="Microphone" className="size-4" />
         </Button>
         <ButtonGroupSeparator />
         <DropdownMenu>
           <DropdownMenu.Trigger asChild>
-            <Button size="icon">
+            <Button size="icon" aria-label="Voice settings">
               <Icon name="ChevronUp" />
             </Button>
           </DropdownMenu.Trigger>

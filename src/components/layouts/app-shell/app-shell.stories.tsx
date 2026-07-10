@@ -1,26 +1,60 @@
-import type * as React from 'react'
+import type * as React from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, waitFor } from 'storybook/test';
 
-import { Icon } from '@/components/icon'
+import { Icon } from '@/components/icon';
 
-import { Avatar } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Kbd } from '@/components/ui/kbd'
-import { OnnebookLogo } from '@/components/ui/logo'
-import { Sidebar } from '@/components/ui/sidebar'
+import { Avatar } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Kbd } from '@/components/ui/kbd';
+import { OnnebookLogo } from '@/components/ui/logo';
+import { Sidebar } from '@/components/ui/sidebar';
 
-import { AnnouncementBanner } from './announcement-banner'
+import { AnnouncementBanner } from './announcement-banner';
 import {
   AppShell,
   useLeftSidebarToggle,
   useRightSidebarToggle,
-} from './app-shell'
+} from './app-shell';
+
+/**
+ * TODO(a11y): violações dos próprios componentes (não das stories), presentes
+ * em toda story que renderiza o conteúdo demo das sidebars — corrigir nos
+ * componentes e remover este override:
+ * - `list`: `Sidebar.Menu` renderiza `<ul>` com filhos que não são `<li>`
+ *   (`AppShell.SidebarItem` é um `motion.div` e o `AppShell.SidebarContent`
+ *   envolve os grupos direto no menu);
+ * - `color-contrast`: `AppShell.Copyright` e o título do
+ *   `AppShell.SidebarGroup` usam `text-muted-foreground/50`, e o fallback do
+ *   `Avatar` usa `bg-primary`/`text-primary-foreground` — abaixo de 4.5:1;
+ * - em `WithAnnouncement` e no Playground com `announcement` ligado somam-se
+ *   as violações do `AnnouncementBanner` (ver
+ *   `announcement-banner.stories.tsx`).
+ */
+const componentA11yTodo = { a11y: { test: 'todo' as const } };
 
 const meta: Meta<typeof AppShell> = {
   title: 'Layouts/AppShell',
   component: AppShell,
+  subcomponents: {
+    'AppShell.LeftSidebar': AppShell.LeftSidebar,
+    'AppShell.RightSidebar': AppShell.RightSidebar,
+    'AppShell.LeftSidebarTrigger': AppShell.LeftSidebarTrigger,
+    'AppShell.RightSidebarTrigger': AppShell.RightSidebarTrigger,
+    'AppShell.SidebarHeader': AppShell.SidebarHeader,
+    'AppShell.SidebarSection': AppShell.SidebarSection,
+    'AppShell.SidebarContent': AppShell.SidebarContent,
+    'AppShell.SidebarGroup': AppShell.SidebarGroup,
+    'AppShell.SidebarItem': AppShell.SidebarItem,
+    'AppShell.SidebarFooter': AppShell.SidebarFooter,
+    'AppShell.CommandButton': AppShell.CommandButton,
+    'AppShell.Copyright': AppShell.Copyright,
+    'AppShell.Header': AppShell.Header,
+    'AppShell.Navbar': AppShell.Navbar,
+    'AppShell.NavbarItem': AppShell.NavbarItem,
+    'AppShell.Inset': AppShell.Inset,
+  } as Meta<typeof AppShell>['subcomponents'],
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -64,20 +98,37 @@ const meta: Meta<typeof AppShell> = {
     leftSidebar: {
       control: 'boolean',
       description:
-        'Habilita o estado da sidebar esquerda: painel, toggle automático no header, atalho `[` e cookies `left-sidebar-*`.',
-      table: { type: { summary: 'boolean | { defaultOpen?: boolean }' } },
+        'Habilita o estado da sidebar esquerda: painel, toggle automático no header, atalho `[` e cookies `left-sidebar-*`. Aceita um objeto para começar fechada (`defaultOpen`) e limitar a largura do resize (`maxWidth`, em px).',
+      table: {
+        category: 'Comportamento',
+        type: {
+          summary: 'boolean | { defaultOpen?: boolean; maxWidth?: number }',
+        },
+        defaultValue: { summary: 'false' },
+      },
     },
     rightSidebar: {
       control: 'boolean',
       description:
-        'Habilita o estado da sidebar direita: painel, toggle automático no header, atalho `]` e cookies `right-sidebar-*`.',
-      table: { type: { summary: 'boolean | { defaultOpen?: boolean }' } },
+        'Habilita o estado da sidebar direita: painel, toggle automático no header, atalho `]` e cookies `right-sidebar-*`. Aceita um objeto para começar fechada (`defaultOpen`) e limitar a largura do resize (`maxWidth`, em px).',
+      table: {
+        category: 'Comportamento',
+        type: {
+          summary: 'boolean | { defaultOpen?: boolean; maxWidth?: number }',
+        },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    className: {
+      control: 'text',
+      description: 'Classes extras aplicadas ao container raiz do shell.',
+      table: { category: 'Aparência' },
     },
   },
   tags: ['autodocs'],
-}
+};
 
-export default meta
+export default meta;
 
 function DemoWorkspaceSwitcher() {
   return (
@@ -104,7 +155,7 @@ function DemoWorkspaceSwitcher() {
         />
       </Sidebar.MenuButton>
     </Sidebar.Menu>
-  )
+  );
 }
 
 function DemoUser() {
@@ -122,7 +173,7 @@ function DemoUser() {
         </span>
       </div>
     </Sidebar.MenuButton>
-  )
+  );
 }
 
 function DemoLeftSidebarContent() {
@@ -206,7 +257,7 @@ function DemoLeftSidebarContent() {
         </AppShell.SidebarFooter>
       </div>
     </>
-  )
+  );
 }
 
 function DemoRightSidebarContent() {
@@ -218,7 +269,12 @@ function DemoRightSidebarContent() {
         <div className="flex items-center justify-between gap-2">
           <span className="text-sm font-medium">Filtros</span>
 
-          <Button size="icon" variant="ghost" className="size-8 shrink-0">
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label="Recolher filtros"
+            className="size-8 shrink-0"
+          >
             <Icon name="ChevronDown" className="size-4 rotate-180" />
           </Button>
         </div>
@@ -227,7 +283,7 @@ function DemoRightSidebarContent() {
         <div className="h-24 rounded-xl bg-sidebar-accent" />
       </div>
     </div>
-  )
+  );
 }
 
 function DemoHeader({
@@ -235,9 +291,9 @@ function DemoHeader({
   leftSidebarTrigger,
   rightSidebarTrigger,
 }: {
-  title?: string
-  leftSidebarTrigger?: React.ReactNode
-  rightSidebarTrigger?: React.ReactNode
+  title?: string;
+  leftSidebarTrigger?: React.ReactNode;
+  rightSidebarTrigger?: React.ReactNode;
 }) {
   return (
     <AppShell.Header
@@ -253,7 +309,7 @@ function DemoHeader({
         </Avatar>
       }
     />
-  )
+  );
 }
 
 function DemoNavbar() {
@@ -263,7 +319,7 @@ function DemoNavbar() {
       <AppShell.NavbarItem icon="Calendar" href="#" />
       <AppShell.NavbarItem icon="Stack2" href="#" />
     </AppShell.Navbar>
-  )
+  );
 }
 
 function DemoContent() {
@@ -276,7 +332,7 @@ function DemoContent() {
       </div>
       <div className="min-h-64 flex-1 rounded-2xl bg-card" />
     </main>
-  )
+  );
 }
 
 /**
@@ -290,40 +346,42 @@ function withoutAnnouncement(Story: React.ComponentType) {
     <div className="contents [--announcement-height:0px]">
       <Story />
     </div>
-  )
+  );
 }
 
-type TriggerMode = 'automático' | 'customizado' | 'oculto'
+type TriggerMode = 'automático' | 'customizado' | 'oculto';
 
 type PlaygroundArgs = {
-  leftSidebar: boolean
-  rightSidebar: boolean
-  header: boolean
-  title: string
-  leftTrigger: TriggerMode
-  rightTrigger: TriggerMode
-  insetTop: boolean
-  insetBottom: boolean
-  tallContent: boolean
-  loading: boolean
-  navbar: boolean
-  announcement: boolean
-}
+  leftSidebar: boolean;
+  rightSidebar: boolean;
+  header: boolean;
+  title: string;
+  leftTrigger: TriggerMode;
+  rightTrigger: TriggerMode;
+  insetTop: boolean;
+  insetBottom: boolean;
+  tallContent: boolean;
+  loading: boolean;
+  navbar: boolean;
+  announcement: boolean;
+};
 
 function resolveTriggerSlot(
   mode: TriggerMode,
   side: 'left' | 'right',
 ): React.ReactNode {
-  if (mode === 'oculto') return null
-  if (mode === 'automático') return undefined
+  if (mode === 'oculto') return null;
+  if (mode === 'automático') return undefined;
 
   const Trigger =
-    side === 'left' ? AppShell.LeftSidebarTrigger : AppShell.RightSidebarTrigger
+    side === 'left'
+      ? AppShell.LeftSidebarTrigger
+      : AppShell.RightSidebarTrigger;
 
   return (
     <Trigger
       label={side === 'left' ? 'Alternar navegação' : 'Alternar painel'}
-      icon={(state) => (
+      icon={state => (
         <Icon
           name={
             side === 'left'
@@ -338,7 +396,7 @@ function resolveTriggerSlot(
         />
       )}
     />
-  )
+  );
 }
 
 /**
@@ -436,6 +494,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     },
   },
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -443,7 +502,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       },
     },
   },
-  render: (args) => (
+  render: args => (
     <>
       {args.announcement && (
         <AnnouncementBanner
@@ -455,10 +514,15 @@ export const Playground: StoryObj<PlaygroundArgs> = {
 
       <div
         className={
-          args.announcement ? 'contents' : 'contents [--announcement-height:0px]'
+          args.announcement
+            ? 'contents'
+            : 'contents [--announcement-height:0px]'
         }
       >
-        <AppShell leftSidebar={args.leftSidebar} rightSidebar={args.rightSidebar}>
+        <AppShell
+          leftSidebar={args.leftSidebar}
+          rightSidebar={args.rightSidebar}
+        >
           {args.leftSidebar && (
             <AppShell.LeftSidebar>
               <DemoLeftSidebarContent />
@@ -475,7 +539,10 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             {args.header && (
               <DemoHeader
                 title={args.title}
-                leftSidebarTrigger={resolveTriggerSlot(args.leftTrigger, 'left')}
+                leftSidebarTrigger={resolveTriggerSlot(
+                  args.leftTrigger,
+                  'left',
+                )}
                 rightSidebarTrigger={resolveTriggerSlot(
                   args.rightTrigger,
                   'right',
@@ -494,7 +561,34 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       </div>
     </>
   ),
-}
+  play: async ({ canvas, canvasElement, userEvent }) => {
+    const sidebar = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="sidebar"][data-side="left"]',
+    );
+
+    await expect(sidebar).not.toBeNull();
+
+    // O estado inicial vem de cookie (persistência entre visitas), então o
+    // teste alterna a partir do estado atual em vez de assumir 'expanded'.
+    const initialState = sidebar!.getAttribute('data-state');
+    const toggledState = initialState === 'expanded' ? 'collapsed' : 'expanded';
+
+    const toggle = await canvas.findByRole('button', {
+      name: 'Alternar sidebar esquerda',
+    });
+
+    await userEvent.click(toggle);
+    await waitFor(() =>
+      expect(sidebar).toHaveAttribute('data-state', toggledState),
+    );
+
+    // Volta ao estado inicial para não vazar o cookie para outras stories.
+    await userEvent.click(toggle);
+    await waitFor(() =>
+      expect(sidebar).toHaveAttribute('data-state', initialState!),
+    );
+  },
+};
 
 /**
  * O cenário clássico de dashboard: só a sidebar esquerda, com navegação,
@@ -503,6 +597,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
 export const LeftSidebarOnly: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement],
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -525,10 +620,10 @@ export const LeftSidebarOnly: StoryObj<typeof meta> = {
     </AppShell>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getAllByText('Visão Geral').length).toBeGreaterThan(0)
-    await expect(canvas.getByText('Pesquisar…')).toBeInTheDocument()
+    await expect(canvas.getAllByText('Visão Geral').length).toBeGreaterThan(0);
+    await expect(canvas.getByText('Pesquisar…')).toBeInTheDocument();
   },
-}
+};
 
 /**
  * Produto sem sidebar esquerda: só o painel de contexto à direita. Nenhum
@@ -559,7 +654,7 @@ export const RightSidebarOnly: StoryObj<typeof meta> = {
       </AppShell.RightSidebar>
     </AppShell>
   ),
-}
+};
 
 /**
  * As duas sidebars juntas, cada uma com estado, atalho e toggle próprios —
@@ -568,6 +663,7 @@ export const RightSidebarOnly: StoryObj<typeof meta> = {
 export const BothSidebars: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement],
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -591,11 +687,11 @@ export const BothSidebars: StoryObj<typeof meta> = {
       </AppShell.RightSidebar>
     </AppShell>
   ),
-}
+};
 
 function DemoTriggersContent() {
-  const toggleLeftSidebar = useLeftSidebarToggle()
-  const toggleRightSidebar = useRightSidebarToggle()
+  const toggleLeftSidebar = useLeftSidebarToggle();
+  const toggleRightSidebar = useRightSidebarToggle();
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4">
@@ -626,10 +722,12 @@ function DemoTriggersContent() {
         <div className="flex items-center gap-2">
           <AppShell.LeftSidebarTrigger
             label="Alternar sidebar esquerda"
-            icon={(state) => (
+            icon={state => (
               <Icon
                 name={
-                  state === 'expanded' ? 'ArrowLeftToLine' : 'ArrowRightFromLine'
+                  state === 'expanded'
+                    ? 'ArrowLeftToLine'
+                    : 'ArrowRightFromLine'
                 }
                 className="size-4"
               />
@@ -637,10 +735,12 @@ function DemoTriggersContent() {
           />
           <AppShell.RightSidebarTrigger
             label="Alternar sidebar direita"
-            icon={(state) => (
+            icon={state => (
               <Icon
                 name={
-                  state === 'expanded' ? 'ArrowRightToLine' : 'ArrowLeftFromLine'
+                  state === 'expanded'
+                    ? 'ArrowRightToLine'
+                    : 'ArrowLeftFromLine'
                 }
                 className="size-4"
               />
@@ -668,7 +768,7 @@ function DemoTriggersContent() {
         </div>
       </section>
     </main>
-  )
+  );
 }
 
 /**
@@ -678,6 +778,7 @@ function DemoTriggersContent() {
 export const SidebarTriggers: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement],
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -702,10 +803,10 @@ export const SidebarTriggers: StoryObj<typeof meta> = {
     </AppShell>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByText('Triggers prontos')).toBeInTheDocument()
-    await expect(canvas.getByText('Alternar esquerda')).toBeInTheDocument()
+    await expect(canvas.getByText('Triggers prontos')).toBeInTheDocument();
+    await expect(canvas.getByText('Alternar esquerda')).toBeInTheDocument();
   },
-}
+};
 
 /**
  * Os slots `leftSidebarTrigger`/`rightSidebarTrigger` do header controlam os
@@ -715,6 +816,7 @@ export const SidebarTriggers: StoryObj<typeof meta> = {
 export const HeaderTriggerSlots: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement],
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -738,7 +840,7 @@ export const HeaderTriggerSlots: StoryObj<typeof meta> = {
           rightSidebarTrigger={
             <AppShell.RightSidebarTrigger
               label="Alternar painel de filtros"
-              icon={(state) => (
+              icon={state => (
                 <Icon
                   name={state === 'expanded' ? 'Eye' : 'Gear'}
                   className="size-4"
@@ -760,7 +862,7 @@ export const HeaderTriggerSlots: StoryObj<typeof meta> = {
       </AppShell.RightSidebar>
     </AppShell>
   ),
-}
+};
 
 function DemoTallContent() {
   return (
@@ -774,7 +876,7 @@ function DemoTallContent() {
         <div key={index} className="h-40 shrink-0 rounded-2xl bg-card" />
       ))}
     </main>
-  )
+  );
 }
 
 function DemoTrialBanner() {
@@ -789,7 +891,7 @@ function DemoTrialBanner() {
         Fazer upgrade
       </Button>
     </div>
-  )
+  );
 }
 
 function DemoAssistantBar() {
@@ -811,7 +913,7 @@ function DemoAssistantBar() {
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -822,6 +924,7 @@ function DemoAssistantBar() {
 export const InsetPinnedTop: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement],
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -841,7 +944,7 @@ export const InsetPinnedTop: StoryObj<typeof meta> = {
       </AppShell.Inset>
     </AppShell>
   ),
-}
+};
 
 /**
  * Slot `bottom` do `AppShell.Inset`: barra fixa abaixo do painel, sobre o
@@ -851,6 +954,7 @@ export const InsetPinnedTop: StoryObj<typeof meta> = {
 export const InsetPinnedBottom: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement],
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -874,7 +978,7 @@ export const InsetPinnedBottom: StoryObj<typeof meta> = {
       </AppShell.RightSidebar>
     </AppShell>
   ),
-}
+};
 
 /**
  * Os dois slots do `AppShell.Inset` juntos: impersonation de suporte no topo
@@ -884,6 +988,7 @@ export const InsetPinnedBottom: StoryObj<typeof meta> = {
 export const InsetPinnedSlots: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement],
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -905,7 +1010,11 @@ export const InsetPinnedSlots: StoryObj<typeof meta> = {
             <strong className="font-medium text-foreground">
               Acme Barbearia
             </strong>
-            <Button size="sm" variant="outline" className="ml-1 h-6 px-2 text-xs">
+            <Button
+              size="sm"
+              variant="outline"
+              className="ml-1 h-6 px-2 text-xs"
+            >
               Sair da visualização
             </Button>
           </div>
@@ -921,7 +1030,7 @@ export const InsetPinnedSlots: StoryObj<typeof meta> = {
       </AppShell.RightSidebar>
     </AppShell>
   ),
-}
+};
 
 /**
  * Sem nenhuma sidebar: o shell vira header + conteúdo + navbar mobile, sem
@@ -947,7 +1056,7 @@ export const WithoutSidebars: StoryObj<typeof meta> = {
       </AppShell.Inset>
     </AppShell>
   ),
-}
+};
 
 /**
  * O `AnnouncementBanner` define `--announcement-height` e o shell inteiro
@@ -955,6 +1064,7 @@ export const WithoutSidebars: StoryObj<typeof meta> = {
  */
 export const WithAnnouncement: StoryObj<typeof meta> = {
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -984,7 +1094,7 @@ export const WithAnnouncement: StoryObj<typeof meta> = {
       </AppShell>
     </>
   ),
-}
+};
 
 /**
  * `loading` no `AppShell.Inset` cobre o conteúdo com um overlay enquanto o
@@ -993,6 +1103,7 @@ export const WithAnnouncement: StoryObj<typeof meta> = {
 export const Loading: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement],
   parameters: {
+    ...componentA11yTodo,
     docs: {
       description: {
         story:
@@ -1012,4 +1123,4 @@ export const Loading: StoryObj<typeof meta> = {
       </AppShell.Inset>
     </AppShell>
   ),
-}
+};

@@ -1,7 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { toast } from 'sonner'
-import { Toaster } from './toast'
-import { Button } from '@/components/ui/button'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, waitFor, within } from 'storybook/test';
+import { toast } from 'sonner';
+
+import { Toaster } from './toast';
+import { Button } from '@/components/ui/button';
 
 const meta: Meta<typeof Toaster> = {
   title: 'UI/Toaster',
@@ -10,17 +12,102 @@ const meta: Meta<typeof Toaster> = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
+  argTypes: {
+    position: {
+      control: 'select',
+      options: [
+        'top-left',
+        'top-center',
+        'top-right',
+        'bottom-left',
+        'bottom-center',
+        'bottom-right',
+      ],
+      description: 'Canto da tela onde os toasts são exibidos.',
+      table: {
+        category: 'Aparência',
+        defaultValue: { summary: "'bottom-right'" },
+      },
+    },
+    richColors: {
+      control: 'boolean',
+      description:
+        'Colore os toasts de sucesso/erro/aviso/info como os Alerts. Passe `false` para toasts neutros no estilo card.',
+      table: { category: 'Aparência', defaultValue: { summary: 'true' } },
+    },
+    theme: {
+      control: 'select',
+      options: ['light', 'dark', 'system'],
+      description:
+        "Tema dos toasts. Também aceita um id de tema do app ('cream', 'onix', …).",
+      table: { category: 'Aparência', defaultValue: { summary: "'system'" } },
+    },
+    invert: {
+      control: 'boolean',
+      description: 'Inverte as cores dos toasts em relação ao tema atual.',
+      table: { category: 'Aparência', defaultValue: { summary: 'false' } },
+    },
+    closeButton: {
+      control: 'boolean',
+      description: 'Exibe um botão de fechar em cada toast.',
+      table: { category: 'Comportamento', defaultValue: { summary: 'false' } },
+    },
+    expand: {
+      control: 'boolean',
+      description:
+        'Mantém os toasts sempre expandidos em vez de empilhados uns sobre os outros.',
+      table: { category: 'Comportamento', defaultValue: { summary: 'false' } },
+    },
+    duration: {
+      control: 'number',
+      description: 'Tempo (ms) que cada toast permanece visível.',
+      table: { category: 'Comportamento', defaultValue: { summary: '4000' } },
+    },
+    visibleToasts: {
+      control: 'number',
+      description: 'Quantidade máxima de toasts visíveis ao mesmo tempo.',
+      table: { category: 'Comportamento', defaultValue: { summary: '3' } },
+    },
+    gap: {
+      control: 'number',
+      description: 'Espaço (px) entre os toasts quando expandidos.',
+      table: { category: 'Aparência', defaultValue: { summary: '14' } },
+    },
+    offset: {
+      control: false,
+      description:
+        'Distância dos toasts em relação às bordas da viewport (número, string ou objeto por lado).',
+      table: { category: 'Aparência' },
+    },
+    toastOptions: {
+      control: false,
+      description:
+        'Opções padrão aplicadas a todos os toasts (classes, duração, estilos, etc.).',
+      table: { category: 'Comportamento' },
+    },
+    className: {
+      control: 'text',
+      description: 'Classes extras aplicadas ao container dos toasts.',
+      table: { category: 'Aparência' },
+    },
+  },
   args: {
     position: 'bottom-center',
+    richColors: true,
+    closeButton: false,
+    expand: false,
+    invert: false,
+    duration: 4000,
+    visibleToasts: 3,
   },
-}
+};
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: (args) => (
+export const Playground: Story = {
+  render: args => (
     <div className="flex min-h-96 items-center justify-center">
       <Toaster {...args} />
       <Button onClick={() => toast('Event has been created')}>
@@ -28,24 +115,54 @@ export const Default: Story = {
       </Button>
     </div>
   ),
-}
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Show Toast' }));
 
-export const Types: StoryObj = {
-  render: (args) => (
+    // O sonner renderiza os toasts em um portal fora do canvas da story.
+    const body = within(document.body);
+    await waitFor(() =>
+      expect(body.getByText('Event has been created')).toBeVisible(),
+    );
+  },
+};
+
+export const Types: Story = {
+  // TODO(a11y): o Button variant="destructive" tem contraste insuficiente
+  // (tokens de cor do componente Button/tema, não desta story).
+  parameters: { a11y: { test: 'todo' } },
+  render: args => (
     <div className="flex min-h-96 items-center justify-center">
       <Toaster {...args} />
       <div className="flex flex-wrap gap-2">
-        <Button onClick={() => toast.success('Changes saved successfully')}>Success</Button>
-        <Button variant="destructive" onClick={() => toast.error('Failed to save changes')}>Error</Button>
-        <Button variant="secondary" onClick={() => toast.info('New update available')}>Info</Button>
-        <Button variant="outline" onClick={() => toast.warning('Your session will expire soon')}>Warning</Button>
+        <Button onClick={() => toast.success('Changes saved successfully')}>
+          Success
+        </Button>
+        <Button
+          variant="destructive"
+          onClick={() => toast.error('Failed to save changes')}
+        >
+          Error
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => toast.info('New update available')}
+        >
+          Info
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => toast.warning('Your session will expire soon')}
+        >
+          Warning
+        </Button>
         <Button
           variant="outline"
           onClick={() =>
-            toast.promise(
-              new Promise((resolve) => setTimeout(resolve, 2000)),
-              { loading: 'Uploading file...', success: 'File uploaded', error: 'Upload failed' },
-            )
+            toast.promise(new Promise(resolve => setTimeout(resolve, 2000)), {
+              loading: 'Uploading file...',
+              success: 'File uploaded',
+              error: 'Upload failed',
+            })
           }
         >
           Promise
@@ -53,10 +170,13 @@ export const Types: StoryObj = {
       </div>
     </div>
   ),
-}
+};
 
-export const WithDescription: StoryObj = {
-  render: (args) => (
+export const WithDescription: Story = {
+  // TODO(a11y): o Button variant="destructive" tem contraste insuficiente
+  // (tokens de cor do componente Button/tema, não desta story).
+  parameters: { a11y: { test: 'todo' } },
+  render: args => (
     <div className="flex min-h-96 items-center justify-center">
       <Toaster {...args} />
       <div className="flex flex-wrap gap-2">
@@ -94,7 +214,8 @@ export const WithDescription: StoryObj = {
           variant="outline"
           onClick={() =>
             toast.warning('Storage almost full', {
-              description: 'You have used 92% of your storage. Upgrade to continue.',
+              description:
+                'You have used 92% of your storage. Upgrade to continue.',
             })
           }
         >
@@ -103,39 +224,52 @@ export const WithDescription: StoryObj = {
       </div>
     </div>
   ),
-}
+};
 
-export const Positions: StoryObj = {
+export const Positions: Story = {
   render: () => (
     <div className="flex min-h-96 items-center justify-center">
       <Toaster richColors position="bottom-center" />
       <div className="flex flex-wrap gap-2">
-        {(['top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'] as const).map(
-          (pos) => (
-            <Button
-              key={pos}
-              variant="outline"
-              onClick={() => toast(`Position: ${pos}`, { position: pos })}
-            >
-              {pos}
-            </Button>
-          ),
-        )}
+        {(
+          [
+            'top-left',
+            'top-center',
+            'top-right',
+            'bottom-left',
+            'bottom-center',
+            'bottom-right',
+          ] as const
+        ).map(pos => (
+          <Button
+            key={pos}
+            variant="outline"
+            onClick={() => toast(`Position: ${pos}`, { position: pos })}
+          >
+            {pos}
+          </Button>
+        ))}
       </div>
     </div>
   ),
-}
+};
 
-export const RichContent: StoryObj = {
-  render: (args) => (
+export const RichContent: Story = {
+  render: args => (
     <div className="flex min-h-96 items-center justify-center">
       <Toaster {...args} />
       <Button
         onClick={() =>
           toast('Friend request', {
             description: 'Jane Cooper wants to add you as a friend.',
-            action: { label: 'Accept', onClick: () => toast.success('Friend request accepted') },
-            cancel: { label: 'Decline', onClick: () => toast('Friend request declined') },
+            action: {
+              label: 'Accept',
+              onClick: () => toast.success('Friend request accepted'),
+            },
+            cancel: {
+              label: 'Decline',
+              onClick: () => toast('Friend request declined'),
+            },
           })
         }
       >
@@ -143,20 +277,25 @@ export const RichContent: StoryObj = {
       </Button>
     </div>
   ),
-}
+};
 
-export const LoadingState: StoryObj = {
-  render: (args) => (
+export const LoadingState: Story = {
+  // TODO(a11y): o Button variant="primary" tem contraste insuficiente
+  // (tokens de cor do componente Button/tema, não desta story).
+  parameters: { a11y: { test: 'todo' } },
+  render: args => (
     <div className="flex min-h-96 items-center justify-center">
       <Toaster {...args} />
       <Button
         variant="primary"
         onClick={() =>
           toast.promise(
-            new Promise<string>((resolve) => setTimeout(() => resolve('Payment completed'), 1500)),
+            new Promise<string>(resolve =>
+              setTimeout(() => resolve('Payment completed'), 1500),
+            ),
             {
               loading: 'Processing payment...',
-              success: (data) => data,
+              success: data => data,
               error: 'Payment failed',
             },
           )
@@ -166,4 +305,4 @@ export const LoadingState: StoryObj = {
       </Button>
     </div>
   ),
-}
+};

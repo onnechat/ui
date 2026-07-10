@@ -4,14 +4,22 @@ import { Safari } from './safari';
 const meta: Meta<typeof Safari> = {
   title: 'Blocks/Devices',
   component: Safari,
-  parameters: { layout: 'fullscreen' },
-  tags: ['ai-generated'],
-};
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
+  parameters: {
+    layout: 'fullscreen',
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    url: {
+      control: 'text',
+      description: 'URL exibida na barra de endereço do navegador.',
+      table: { category: 'Conteúdo' },
+    },
+    children: {
+      control: false,
+      description: 'Conteúdo renderizado dentro da janela do navegador.',
+      table: { category: 'Conteúdo' },
+    },
+  },
   args: {
     url: 'https://example.com',
     children: (
@@ -21,6 +29,12 @@ export const Default: Story = {
     ),
   },
 };
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};
 
 export const LongUrl: Story = {
   args: {

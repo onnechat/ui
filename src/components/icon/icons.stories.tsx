@@ -10,14 +10,55 @@ import type { FillIconName } from './variants';
 
 const iconNames = Object.keys(fillIcons).sort();
 
-const meta: Meta = {
+// As props do Icon são uma união discriminada por `variant` (cada variante
+// aceita um conjunto próprio de nomes), o que colapsa a inferência de args do
+// Storybook para `never`. Tipo plano para os controls.
+type IconStoryArgs = {
+  name: string;
+  variant?: 'fill' | 'duo' | 'brand' | 'social' | 'custom';
+  className?: string;
+};
+
+const meta: Meta<IconStoryArgs> = {
   title: 'UI/Icons',
+  component: Icon as Meta<IconStoryArgs>['component'],
   parameters: {
     layout: 'centered',
+  },
+  argTypes: {
+    name: {
+      control: 'text',
+      description: `Nome do ícone (${iconNames.length} disponíveis na variante fill). Use a story Gallery para pesquisar todos os nomes.`,
+      table: { category: 'Conteúdo' },
+    },
+    variant: {
+      control: 'select',
+      options: ['fill', 'duo', 'brand', 'social', 'custom'],
+      description:
+        'Conjunto de ícones usado. Nem todo nome existe em todas as variantes.',
+      table: {
+        category: 'Aparência',
+        type: { summary: "'fill' | 'duo' | 'brand' | 'social' | 'custom'" },
+        defaultValue: { summary: "'fill'" },
+      },
+    },
+    className: {
+      control: 'text',
+      description: 'Classes extras (tamanho, cor, etc.).',
+      table: { category: 'Aparência' },
+    },
+  },
+  args: {
+    name: 'House',
+    className: 'size-8',
   },
 };
 
 export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};
 
 function IconGallery() {
   const [search, setSearch] = useState('');
@@ -25,7 +66,7 @@ function IconGallery() {
   const filteredIcons = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (!query) return iconNames;
-    return iconNames.filter((name) => name.toLowerCase().includes(query));
+    return iconNames.filter(name => name.toLowerCase().includes(query));
   }, [search]);
 
   return (
@@ -34,7 +75,7 @@ function IconGallery() {
         type="search"
         placeholder={`Search ${iconNames.length} icons…`}
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={e => setSearch(e.target.value)}
       />
 
       {filteredIcons.length === 0 ? (
@@ -42,8 +83,13 @@ function IconGallery() {
           No icons found for “{search}”
         </div>
       ) : (
-        <div className="grid flex-1 auto-rows-min grid-cols-3 gap-2 overflow-y-auto pr-1">
-          {filteredIcons.map((name) => (
+        <div
+          role="region"
+          aria-label="Icons"
+          tabIndex={0}
+          className="grid flex-1 auto-rows-min grid-cols-3 gap-2 overflow-y-auto pr-1"
+        >
+          {filteredIcons.map(name => (
             <div
               key={name}
               className="flex flex-col items-center justify-center gap-4 rounded-xl bg-card p-4"
@@ -64,6 +110,6 @@ function IconGallery() {
   );
 }
 
-export const Gallery: StoryObj = {
+export const Gallery: Story = {
   render: () => <IconGallery />,
 };
