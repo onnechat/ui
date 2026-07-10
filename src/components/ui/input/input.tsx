@@ -5,15 +5,15 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/cn'
 
 const inputVariants = cva(
-  'file:text-foreground placeholder:text-muted-foreground/50 placeholder:pointer-events-none placeholder:select-none bg-input flex w-full min-w-0 rounded-xl border border-transparent transition-all outline-none file:inline-flex file:border-0 file:bg-transparent file:font-medium text-foreground focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:cursor-not-allowed disabled:brightness-75 read-only:pointer-events-none read-only:cursor-not-allowed read-only:brightness-75',
+  'placeholder:text-muted-foreground/50 placeholder:pointer-events-none placeholder:select-none bg-input flex w-full min-w-0 rounded-xl border border-transparent transition-all outline-none text-foreground file:me-3 file:inline-flex file:items-center file:rounded-md file:border file:border-border file:bg-accent file:px-3 file:font-medium file:text-accent-foreground file:cursor-pointer file:transition-colors focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60 read-only:cursor-default read-only:bg-muted read-only:text-muted-foreground',
   {
     variants: {
       // Heights mirror the Button exactly: sm=h-8 (32px), default=h-10 (40px),
       // lg=h-12 (48px). Keep these in sync across all field-like components.
       size: {
         sm: 'h-8 px-3 py-1 text-sm file:h-6',
-        default: 'h-10 px-3 py-2 text-sm file:h-7',
-        lg: 'h-12 px-4 py-2.5 text-base file:h-8',
+        default: 'h-10 px-3 py-2 text-sm file:h-6',
+        lg: 'h-12 px-4 py-2.5 text-base file:h-7',
       },
     },
     defaultVariants: {
