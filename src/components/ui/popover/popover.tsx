@@ -87,9 +87,19 @@ function PopoverContent({
           data-slot="popover-content"
           className={cn(
             'bg-popover text-popover-foreground z-50 w-72 rounded-lg border p-4 shadow-md outline-hidden origin-(--transform-origin)',
-            'transition-[transform,scale,opacity] duration-300 ease-spring motion-reduce:transition-none',
+            // beui-style "morph": a `clip-path: inset()` reveals the popup growing
+            // out of the trigger edge — collapsed to a sliver on the trigger side
+            // (opposite of `data-side`) then expanding to fully open — together with
+            // a subtle scale/opacity and the theme's spring easing. The `round` keeps
+            // the reveal edge following the popup's radius.
+            'transition-[transform,scale,opacity,clip-path] duration-300 ease-spring motion-reduce:transition-none',
+            '[clip-path:inset(0_0_0_0_round_var(--radius-lg))]',
             'data-starting-style:scale-[0.96] data-starting-style:opacity-0',
-            'data-ending-style:scale-[0.96] data-ending-style:opacity-0 data-ending-style:duration-150 data-ending-style:ease-in',
+            'data-ending-style:scale-[0.96] data-ending-style:opacity-0 data-ending-style:duration-200 data-ending-style:ease-in',
+            'data-[side=bottom]:data-starting-style:[clip-path:inset(0_0_100%_0_round_var(--radius-lg))] data-[side=bottom]:data-ending-style:[clip-path:inset(0_0_100%_0_round_var(--radius-lg))]',
+            'data-[side=top]:data-starting-style:[clip-path:inset(100%_0_0_0_round_var(--radius-lg))] data-[side=top]:data-ending-style:[clip-path:inset(100%_0_0_0_round_var(--radius-lg))]',
+            'data-[side=right]:data-starting-style:[clip-path:inset(0_100%_0_0_round_var(--radius-lg))] data-[side=right]:data-ending-style:[clip-path:inset(0_100%_0_0_round_var(--radius-lg))]',
+            'data-[side=left]:data-starting-style:[clip-path:inset(0_0_0_100%_round_var(--radius-lg))] data-[side=left]:data-ending-style:[clip-path:inset(0_0_0_100%_round_var(--radius-lg))]',
             className,
           )}
           {...props}
