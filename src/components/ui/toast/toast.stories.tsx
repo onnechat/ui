@@ -2,12 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, within } from 'storybook/test';
 import { toast } from 'sonner';
 
-import { Toaster } from './toast';
+import { ToastProvider } from './toast';
 import { Button } from '@/components/ui/button';
 
-const meta: Meta<typeof Toaster> = {
-  title: 'UI/Toaster',
-  component: Toaster,
+const meta: Meta<typeof ToastProvider> = {
+  title: 'UI/Toast',
+  component: ToastProvider,
   parameters: {
     layout: 'fullscreen',
   },
@@ -109,7 +109,7 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {
   render: args => (
     <div className="flex min-h-96 items-center justify-center">
-      <Toaster {...args} />
+      <ToastProvider {...args} />
       <Button onClick={() => toast('Event has been created')}>
         Show Toast
       </Button>
@@ -132,7 +132,7 @@ export const Types: Story = {
   parameters: { a11y: { test: 'todo' } },
   render: args => (
     <div className="flex min-h-96 items-center justify-center">
-      <Toaster {...args} />
+      <ToastProvider {...args} />
       <div className="flex flex-wrap gap-2">
         <Button onClick={() => toast.success('Changes saved successfully')}>
           Success
@@ -178,7 +178,7 @@ export const WithDescription: Story = {
   parameters: { a11y: { test: 'todo' } },
   render: args => (
     <div className="flex min-h-96 items-center justify-center">
-      <Toaster {...args} />
+      <ToastProvider {...args} />
       <div className="flex flex-wrap gap-2">
         <Button
           variant="outline"
@@ -229,7 +229,7 @@ export const WithDescription: Story = {
 export const Positions: Story = {
   render: () => (
     <div className="flex min-h-96 items-center justify-center">
-      <Toaster richColors position="bottom-center" />
+      <ToastProvider richColors position="bottom-center" />
       <div className="flex flex-wrap gap-2">
         {(
           [
@@ -257,7 +257,7 @@ export const Positions: Story = {
 export const RichContent: Story = {
   render: args => (
     <div className="flex min-h-96 items-center justify-center">
-      <Toaster {...args} />
+      <ToastProvider {...args} />
       <Button
         onClick={() =>
           toast('Friend request', {
@@ -285,7 +285,7 @@ export const LoadingState: Story = {
   parameters: { a11y: { test: 'todo' } },
   render: args => (
     <div className="flex min-h-96 items-center justify-center">
-      <Toaster {...args} />
+      <ToastProvider {...args} />
       <Button
         variant="primary"
         onClick={() =>

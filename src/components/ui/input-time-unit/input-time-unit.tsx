@@ -59,9 +59,14 @@ const DEFAULT_UNIT_LABELS: Record<TimeUnit, TimeUnitLabel> = {
 };
 
 export interface InputTimeUnitProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'onChange' | 'size'
+  > {
   /** Current value in **minutes**. Drives the input display via unit conversion. */
   value?: number;
+  /** Field height. Mirrors the Button/Input scale: `sm` h-8, `default` h-10, `lg` h-12. */
+  size?: 'sm' | 'default' | 'lg';
   /** Unit selected by default when the user has not manually picked one. */
   defaultUnit?: TimeUnit;
   /** When `true`, the unit Select is disabled — only the numeric input is editable. */
@@ -133,6 +138,7 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
       placeholder,
       defaultUnit = 'minutes',
       align = 'start',
+      size,
       unitSelectAriaLabel = 'Time unit',
       labels,
       ...inputProps
@@ -261,10 +267,14 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
     }, [value, selectedUnitOption.toMinutes]);
 
     return (
-      <div className={cn('flex w-full', containerClassName)}>
+      <div
+        className={cn('flex w-full', containerClassName)}
+        data-size={size ?? 'default'}
+      >
         <Input
           ref={ref}
           type="text"
+          size={size}
           inputMode="decimal"
           disabled={disabled}
           value={inputValue}
@@ -281,6 +291,7 @@ const InputTimeUnit = React.forwardRef<HTMLInputElement, InputTimeUnitProps>(
         >
           <Select.Trigger
             ref={triggerRef}
+            size={size}
             aria-label={unitSelectAriaLabel}
             className={cn(
               'w-fit! rounded-l-none border-l-0 focus:z-10 bg-accent',

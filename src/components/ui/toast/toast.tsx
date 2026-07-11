@@ -8,12 +8,12 @@ import { themeIdToToastTheme } from '@/config/themes'
 
 import { cn } from '@/lib/cn'
 
-type AppToasterProps = Omit<ToasterProps, 'theme'> & {
-  /** App theme id (`cream`, `onix`, …) or Sonner’s own `light` / `dark` / `system` */
+type ToastProviderProps = Omit<ToasterProps, 'theme'> & {
+  /** App theme id (`cream`, `onix`, …) or Sonner's own `light` / `dark` / `system` */
   theme?: ToasterProps['theme'] | string
 }
 
-const toasterCardStyle = {
+const toastCardStyle = {
   '--toast-border-width': '0px',
   '--toast-padding': '1.25rem',
   '--border-radius': '1rem',
@@ -40,7 +40,11 @@ const toasterCardStyle = {
   '--error-text': 'var(--destructive)',
 } as React.CSSProperties
 
-const Toaster = ({
+/**
+ * Mounts the toast viewport (built on Sonner). Render once near the app root;
+ * fire toasts imperatively with `toast()` (re-exported below).
+ */
+const ToastProvider = ({
   theme: themeProp,
   toastOptions,
   style,
@@ -48,7 +52,7 @@ const Toaster = ({
   /** Colored like the Alert variants by default; pass `false` for neutral card toasts. */
   richColors = true,
   ...props
-}: AppToasterProps) => {
+}: ToastProviderProps) => {
   const { theme: themeFromHook } = useTheme()
   const toastTheme = themeIdToToastTheme(themeProp ?? themeFromHook ?? 'system')
 
@@ -57,7 +61,7 @@ const Toaster = ({
       theme={toastTheme}
       richColors={richColors}
       className={cn('toaster group', className)}
-      style={{ ...toasterCardStyle, ...style }}
+      style={{ ...toastCardStyle, ...style }}
       toastOptions={{
         ...toastOptions,
         classNames: {
@@ -70,4 +74,9 @@ const Toaster = ({
   )
 }
 
-export { Toaster }
+/** @deprecated Renamed to `ToastProvider`. Kept for backwards compatibility. */
+const Toaster = ToastProvider
+
+export { ToastProvider, Toaster }
+export type { ToastProviderProps }
+export { toast } from 'sonner'

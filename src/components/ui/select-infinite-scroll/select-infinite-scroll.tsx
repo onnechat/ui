@@ -2,6 +2,8 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
+import { cva } from 'class-variance-authority'
+
 import { Icon } from '@/components/icon'
 
 import { cn } from '@/lib/cn'
@@ -15,8 +17,28 @@ import { Drawer } from '@/components/ui/drawer'
 import { Input } from '@/components/ui/input'
 import { Popover } from '@/components/ui/popover'
 
+// Single-line field (truncated value) → fixed height.
+// Height mirrors the Button/Input field scale: h-8 / h-10 / h-12.
+const selectInfiniteScrollTriggerVariants = cva(
+  'border-transparent text-foreground flex w-full items-center justify-between gap-2 rounded-xl bg-input transition-[color] disabled:cursor-not-allowed disabled:opacity-75 focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer outline-none',
+  {
+    variants: {
+      size: {
+        sm: 'h-8 px-3 py-1 text-sm',
+        default: 'h-10 px-4 py-2 text-sm',
+        lg: 'h-12 px-4 py-2.5 text-base',
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  },
+)
+
 export interface SelectInfiniteScrollProps<T extends object> {
   search?: boolean
+
+  size?: 'sm' | 'default' | 'lg'
 
   value: string
   onValueChange: (value: string) => void
@@ -48,6 +70,7 @@ function SelectInfiniteScroll<T extends object>({
   onSelectedItemChange,
   disabled = false,
   search: searchProp = false,
+  size,
   id,
   className,
   queryKey,
@@ -119,9 +142,7 @@ function SelectInfiniteScroll<T extends object>({
   const isPlaceholder = !selectedItem
 
   const triggerClassName = cn(
-    'border-transparent text-foreground flex h-10 w-full items-center justify-between gap-2 rounded-xl bg-input px-4 py-2 text-sm',
-    'transition-[color] disabled:cursor-not-allowed disabled:opacity-75',
-    'focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px] cursor-pointer outline-none',
+    selectInfiniteScrollTriggerVariants({ size }),
     isPlaceholder && 'text-muted-foreground/50',
     !isPlaceholder && 'pl-2',
     className,
@@ -159,7 +180,7 @@ function SelectInfiniteScroll<T extends object>({
           <Input
             ref={searchInputRef}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
             placeholder={searchPlaceholder}
             className="px-11 h-12 sm:h-10 text-sm"
             autoComplete="off"
@@ -180,7 +201,7 @@ function SelectInfiniteScroll<T extends object>({
       <div
         ref={scrollableRef}
         onScroll={handleScroll}
-        onWheel={(e) => e.stopPropagation()}
+        onWheel={e => e.stopPropagation()}
         className="scroll-fade-y overflow-y-auto max-h-64 p-1"
       >
         {isLoading ? (
@@ -191,7 +212,7 @@ function SelectInfiniteScroll<T extends object>({
           </p>
         ) : (
           <>
-            {data.map((item) => {
+            {data.map(item => {
               const itemValue = getItemValue(item)
               const isSelected = value === itemValue
 
@@ -232,7 +253,7 @@ function SelectInfiniteScroll<T extends object>({
 
     if (selectedItem && getItemValue(selectedItem) === value) return
 
-    const found = data.find((item) => getItemValue(item) === value)
+    const found = data.find(item => getItemValue(item) === value)
     if (found) setSelectedItem(found)
   }, [value, data, selectedItem, getItemValue])
 
@@ -259,6 +280,7 @@ function SelectInfiniteScroll<T extends object>({
           id={id}
           type="button"
           disabled={disabled}
+          data-size={size ?? 'default'}
           onClick={() => !disabled && handleOpenChange(true)}
           className={triggerClassName}
         >
@@ -280,7 +302,12 @@ function SelectInfiniteScroll<T extends object>({
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
       <Popover.Trigger asChild disabled={disabled}>
-        <button id={id} type="button" className={triggerClassName}>
+        <button
+          id={id}
+          type="button"
+          data-size={size ?? 'default'}
+          className={triggerClassName}
+        >
           {TriggerBody}
         </button>
       </Popover.Trigger>
@@ -297,4 +324,4 @@ function SelectInfiniteScroll<T extends object>({
   )
 }
 
-export { SelectInfiniteScroll }
+export { SelectInfiniteScroll, selectInfiniteScrollTriggerVariants }

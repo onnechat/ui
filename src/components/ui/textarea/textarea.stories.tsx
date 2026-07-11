@@ -19,6 +19,17 @@ const meta: Meta<typeof Textarea> = {
       description: 'Texto exibido enquanto o campo está vazio.',
       table: { category: 'Conteúdo' },
     },
+    size: {
+      control: 'inline-radio',
+      options: ['sm', 'default', 'lg'],
+      description:
+        'Tamanho do campo. Escala `min-height`/padding/fonte na mesma escala do Button/Input.',
+      table: {
+        category: 'Aparência',
+        type: { summary: "'sm' | 'default' | 'lg'" },
+        defaultValue: { summary: "'default'" },
+      },
+    },
     defaultValue: {
       control: 'text',
       description: 'Valor inicial no modo não controlado.',
@@ -114,6 +125,28 @@ export const WithLabel: Story = {
     <div className="flex w-80 flex-col gap-1.5">
       <Label htmlFor="bio">Bio</Label>
       <Textarea id="bio" placeholder="Tell us about yourself..." />
+    </div>
+  ),
+};
+
+/**
+ * Paridade de tamanho: em cada size, Button, Input e Textarea compartilham a
+ * mesma escala (h-8 / h-10 / h-12 — o Textarea usa a `min-h` equivalente).
+ */
+export const SizeParity: Story = {
+  render: () => (
+    <div className="flex flex-col gap-6">
+      {(['sm', 'default', 'lg'] as const).map(size => (
+        <div key={size} className="flex items-start gap-3">
+          <Button size={size}>Button</Button>
+          <Input size={size} placeholder={`Input ${size}`} className="w-40" />
+          <Textarea
+            size={size}
+            placeholder={`Textarea ${size}`}
+            className="w-44"
+          />
+        </div>
+      ))}
     </div>
   ),
 };

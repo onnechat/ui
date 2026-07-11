@@ -51,6 +51,17 @@ const meta: Meta<typeof SelectInfiniteScroll<Item>> = {
     ),
   ],
   argTypes: {
+    size: {
+      control: 'inline-radio',
+      options: ['sm', 'default', 'lg'],
+      description:
+        'Tamanho do trigger. As alturas batem com o Button/Input: `sm` (h-8/32px), `default` (h-10/40px) e `lg` (h-12/48px).',
+      table: {
+        category: 'Aparência',
+        type: { summary: "'sm' | 'default' | 'lg'" },
+        defaultValue: { summary: "'default'" },
+      },
+    },
     value: {
       control: false,
       description: 'Valor selecionado (`string`). Componente controlado.',
@@ -151,6 +162,7 @@ const meta: Meta<typeof SelectInfiniteScroll<Item>> = {
     },
   },
   args: {
+    size: 'default',
     value: '',
     onValueChange: fn(),
     queryFn,
@@ -262,4 +274,26 @@ export const Disabled: Story = {
     placeholder: 'Disabled…',
   },
   render: args => <ControlledSelect {...args} />,
+};
+
+/**
+ * `sm` / `default` / `lg` — as alturas do trigger batem com o Button/Input (h-8 / h-10 / h-12).
+ */
+export const Sizes: Story = {
+  // TODO(a11y): enquanto nada está selecionado, o trigger mostra o placeholder
+  // text-muted-foreground/50 (contraste 2.2 — componente, não a story).
+  parameters: { a11y: { test: 'todo' } },
+  render: args => (
+    <div className="flex w-56 flex-col gap-3">
+      {(['sm', 'default', 'lg'] as const).map(size => (
+        <ControlledSelect
+          key={size}
+          {...args}
+          size={size}
+          queryKey={[`sizes-demo-${size}`]}
+          placeholder={`Size ${size}`}
+        />
+      ))}
+    </div>
+  ),
 };

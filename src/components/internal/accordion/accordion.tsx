@@ -57,10 +57,7 @@ function Accordion({
   )
 }
 
-function AccordionItem({
-  className,
-  ...props
-}: AccordionPrimitive.Item.Props) {
+function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
@@ -87,7 +84,10 @@ function AccordionTrigger({
       >
         {children}
 
-        <Icon name="ChevronDown" className="text-muted-foreground pointer-events-none size-4 shrink-0 transition-transform duration-[450ms] ease-spring motion-reduce:transition-none ml-auto" />
+        <Icon
+          name="ChevronDown"
+          className="text-muted-foreground pointer-events-none size-4 shrink-0 transition-transform duration-[450ms] ease-spring motion-reduce:transition-none ml-auto"
+        />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )
@@ -105,8 +105,11 @@ function AccordionContent({
         'h-(--accordion-panel-height) overflow-hidden text-sm',
         'data-starting-style:h-0 data-ending-style:h-0',
         'data-starting-style:opacity-0 data-ending-style:opacity-0',
-        // Abrindo (data-open presente) a altura segue a mola com overshoot;
-        // fechando, cai no ease suave — saídas devem ser mais discretas.
+        /**
+         * Opening (data-open present) the height follows the spring with
+         * overshoot; closing falls back to the soft ease — exits should be
+         * more subtle.
+         */
         'transition-[height,opacity] duration-[350ms] ease-out-soft',
         'data-open:duration-[550ms] data-open:ease-spring',
         'motion-reduce:transition-none',

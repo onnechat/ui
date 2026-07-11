@@ -34,6 +34,7 @@ export * from './ui/loader';
 export * from './ui/logo';
 export * from './blocks/marquee';
 export * from './blocks/network-status';
+export * from './ui/motion-popover';
 export * from './ui/popover';
 export * from './ui/progress';
 export * from './ui/radio-group';

@@ -32,6 +32,17 @@ const meta: Meta<typeof Input> = {
         defaultValue: { summary: "'text'" },
       },
     },
+    size: {
+      control: 'inline-radio',
+      options: ['sm', 'default', 'lg'],
+      description:
+        'Tamanho do campo. As alturas batem com o Button: `sm` (h-8/32px), `default` (h-10/40px) e `lg` (h-12/48px).',
+      table: {
+        category: 'Aparência',
+        type: { summary: "'sm' | 'default' | 'lg'" },
+        defaultValue: { summary: "'default'" },
+      },
+    },
     placeholder: {
       control: 'text',
       description: 'Texto exibido enquanto o campo está vazio.',
@@ -112,6 +123,19 @@ export const Email: Story = {
     type: 'email',
     placeholder: 'email@example.com',
   },
+};
+
+/**
+ * `sm` / `default` / `lg` — as alturas batem com o Button (h-8 / h-10 / h-12).
+ */
+export const Sizes: Story = {
+  render: () => (
+    <div className="flex w-64 flex-col gap-3">
+      <Input size="sm" placeholder="Small (h-8)" />
+      <Input size="default" placeholder="Default (h-10)" />
+      <Input size="lg" placeholder="Large (h-12)" />
+    </div>
+  ),
 };
 
 export const Disabled: Story = {

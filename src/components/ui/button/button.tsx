@@ -7,14 +7,14 @@ import * as React from 'react';
 
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import { useHaptics } from '@/hooks/use-haptics';
+import { cn } from '@/lib/cn';
 
-import { composeRefs } from '@/lib/slot';
+import { useHaptics } from '@/hooks/use-haptics';
 
 import { Loader } from '../loader';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-[transform,opacity,background-color,box-shadow,filter] duration-150 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer active:scale-[0.96] hover:brightness-95 select-none",
+  "relative overflow-hidden inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-[transform,opacity,background-color,box-shadow,filter] duration-150 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer active:scale-[0.96] hover:brightness-95 select-none",
   {
     variants: {
       variant: {
@@ -30,11 +30,20 @@ const buttonVariants = cva(
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
-        sm: 'h-8 gap-1.5 px-3 has-[>svg]:px-2.5! data-[loading=true]:w-8!',
-        default: 'h-10 px-4 py-2 has-[>svg]:px-3! data-[loading=true]:w-10!',
-        lg: 'h-10 px-5 px-6 has-[>svg]:px-4! data-[loading=true]:w-12!',
+        /**
+         * The icon padding tweak looks at the SVG inside the content wrapper
+         * (`[data-slot=button-content]`), never the loader, so the padding
+         * doesn't shift when entering the loading state.
+         *
+         * Heights step by +8px mirroring the icon sizes (size-8 / size-10 /
+         * size-12): h-8 / h-10 / h-12.
+         */
+        sm: 'h-8 gap-1.5 px-3 has-[[data-slot=button-content]>svg]:px-2.5!',
+        default: 'h-10 px-4 py-2 has-[[data-slot=button-content]>svg]:px-3!',
+        lg: 'h-12 px-6 has-[[data-slot=button-content]>svg]:px-5!',
         'icon-sm': 'size-8',
         icon: 'size-10',
+        'icon-lg': 'size-12',
       },
     },
     defaultVariants: {
@@ -50,6 +59,56 @@ type InternalVariantProps = VariantProps<typeof buttonVariants> & {
 };
 
 export type ButtonVariants = InternalVariantProps['variant'];
+
+/**
+ * Button content + loader as a vertical conveyor that slides in and out of the
+ * button (clipped at the edge — the button has `overflow-hidden`).
+ *
+ * The content stays in flow (once, without duplicating the text) with
+ * `self-stretch`, so it spans the button's full height and fixes its
+ * width/height — the button never shrinks. `translate-y` only moves it visually
+ * (transform doesn't affect layout), keeping the size. The loader is
+ * `absolute inset-0`. Both slide the button's FULL height via `translate-y-full`:
+ * - when loading starts, the loader drops in from the top while the content
+ *   drops out the bottom;
+ * - when it ends, the loader rises out the top while the content comes back up
+ *   from the bottom.
+ *
+ * Pure CSS (no animation lib). The real content (with the text) stays in the DOM
+ * once, preserving the accessible name; the loader is decorative (`aria-hidden`).
+ */
+function ButtonContent({
+  isLoading,
+  children,
+}: {
+  isLoading: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <span
+        data-slot="button-content"
+        className={cn(
+          'inline-flex items-center justify-center gap-[inherit] self-stretch transition-transform duration-[400ms] ease-[cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none',
+          isLoading ? 'translate-y-full' : 'translate-y-0',
+        )}
+      >
+        {children}
+      </span>
+
+      <span
+        data-slot="button-loader"
+        aria-hidden
+        className={cn(
+          'pointer-events-none absolute inset-0 flex items-center justify-center transition-transform duration-[400ms] ease-[cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none',
+          isLoading ? 'translate-y-0' : '-translate-y-full',
+        )}
+      >
+        <Loader variant="button" />
+      </span>
+    </>
+  );
+}
 
 const Button = React.forwardRef<
   HTMLButtonElement,
@@ -69,45 +128,9 @@ const Button = React.forwardRef<
 ) {
   const { trigger } = useHaptics();
 
-  const ref = React.useRef<HTMLElement>(null);
-
-  const buttonWidth = React.useRef<number | null>(null);
-  const buttonHeight = React.useRef<number | null>(null);
-
-  React.useEffect(() => {
-    if (ref.current && !isLoading) {
-      const bounds = ref.current.getBoundingClientRect();
-
-      buttonWidth.current = bounds.width;
-      buttonHeight.current = bounds.height;
-    }
-  }, [isLoading]);
-
-  const isFullWidth = className?.includes('w-full');
-
-  const buttonStyle: React.CSSProperties = {
-    ...props.style,
-    ...(isLoading && buttonWidth.current && !isFullWidth
-      ? { minWidth: buttonWidth.current }
-      : {}),
-    ...(isLoading && buttonHeight.current
-      ? { minHeight: buttonHeight.current }
-      : {}),
-  };
-
-  const content = isLoading ? (
-    <>
-      <Loader variant="button" />
-      {/* Keeps the accessible name while the visible label is replaced by the loader. */}
-      <span className="sr-only">{children as React.ReactNode}</span>
-    </>
-  ) : (
-    (children as React.ReactNode)
-  );
-
   return (
     <ButtonPrimitive
-      ref={composeRefs(ref, forwardedRef)}
+      ref={forwardedRef}
       nativeButton={!asChild}
       render={
         asChild && React.isValidElement<Record<string, unknown>>(children)
@@ -118,17 +141,9 @@ const Button = React.forwardRef<
                   buttonProps as React.ComponentPropsWithRef<'button'>,
                   children.props as React.ComponentPropsWithRef<'button'>,
                 ),
-                isLoading ? (
-                  <>
-                    <Loader variant="button" />
-                    {/* Keeps the accessible name while the visible label is replaced by the loader. */}
-                    <span className="sr-only">
-                      {children.props.children as React.ReactNode}
-                    </span>
-                  </>
-                ) : (
-                  (children.props.children as React.ReactNode)
-                ),
+                <ButtonContent isLoading={isLoading}>
+                  {children.props.children as React.ReactNode}
+                </ButtonContent>,
               )
           : undefined
       }
@@ -136,16 +151,18 @@ const Button = React.forwardRef<
       data-size={size}
       data-variant={variant}
       data-loading={isLoading}
+      aria-busy={isLoading || undefined}
       disabled={disabled || isLoading}
       className={buttonVariants({ variant, size, className })}
       {...props}
-      style={buttonStyle}
       onClick={e => {
         trigger('click');
         props.onClick?.(e);
       }}
     >
-      {asChild ? null : content}
+      {asChild ? null : (
+        <ButtonContent isLoading={isLoading}>{children}</ButtonContent>
+      )}
     </ButtonPrimitive>
   );
 });

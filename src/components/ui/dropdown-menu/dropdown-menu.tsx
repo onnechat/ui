@@ -55,8 +55,7 @@ function isRoundableType(type: unknown) {
     type === DropdownMenuRadioItem ||
     type === DropdownMenuSubTrigger ||
     (typeof type === 'function' &&
-      (type as MenuRoundableComponent<unknown>)[MENU_ROUNDABLE_MARKER] ===
-        true)
+      (type as MenuRoundableComponent<unknown>)[MENU_ROUNDABLE_MARKER] === true)
   )
 }
 
@@ -71,7 +70,7 @@ function isContainerType(type: unknown) {
 function countRoundableItems(children: React.ReactNode): number {
   let count = 0
 
-  React.Children.forEach(children, (child) => {
+  React.Children.forEach(children, child => {
     if (!React.isValidElement(child)) return
 
     if (isRoundableType(child.type)) {
@@ -91,7 +90,7 @@ function markEdgeItems(
   total: number,
   indexRef: { current: number },
 ): React.ReactNode {
-  return React.Children.map(children, (child) => {
+  return React.Children.map(children, child => {
     if (!React.isValidElement(child)) return child
 
     if (isRoundableType(child.type)) {
@@ -156,7 +155,13 @@ function DropdownMenuRoot({
 
   return (
     <DropdownMenuContext.Provider
-      value={{ isMobile, open: internalOpen, onOpenChange: handleOpenChange, view, setView }}
+      value={{
+        isMobile,
+        open: internalOpen,
+        onOpenChange: handleOpenChange,
+        view,
+        setView,
+      }}
     >
       <MenuPrimitive.Root
         data-slot="dropdown-menu"
@@ -197,11 +202,11 @@ function DropdownMenuTrigger({
         data-slot="dropdown-menu-trigger"
         nativeButton={true}
         {...props}
-        onClick={(e) => {
+        onClick={e => {
           trigger('click')
           props.onClick?.(e)
         }}
-        render={(triggerProps) => {
+        render={triggerProps => {
           return React.cloneElement(children, {
             ...triggerProps,
             ...children.props,
@@ -217,7 +222,7 @@ function DropdownMenuTrigger({
       data-slot="dropdown-menu-trigger"
       className={cn('cursor-pointer', className)}
       {...props}
-      onClick={(e) => {
+      onClick={e => {
         trigger('click')
         props.onClick?.(e)
       }}
@@ -250,7 +255,11 @@ function DropdownMenuContent({
         direction="bottom"
         onOpenChange={ctx.onOpenChange}
       >
-        <Drawer.Content title={'dropdownMenu.title'} showDivider rounded={rounded}>
+        <Drawer.Content
+          title={'dropdownMenu.title'}
+          showDivider
+          rounded={rounded}
+        >
           <div className="overflow-y-auto overflow-x-hidden p-2 pb-6">
             <AnimatePresence mode="wait">
               {ctx.view ? (
@@ -349,9 +358,17 @@ function DropdownMenuItem({
 
   const itemClassName = cn(
     !resetClassName &&
-    "relative flex items-center gap-2 p-4 lg:px-2 lg:py-2 text-sm font-medium outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:data-highlighted:bg-destructive/5 data-[variant=destructive]:data-highlighted:text-destructive dark:data-[variant=destructive]:data-highlighted:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive! cursor-pointer",
-    !resetClassName && (edgeFirst ? 'rounded-t-xl' : 'rounded-none'),
-    !resetClassName && (edgeLast ? 'rounded-b-xl' : 'rounded-none'),
+      "relative flex items-center gap-2 p-4 lg:px-2 lg:py-2 text-sm font-medium outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:data-highlighted:bg-destructive/5 data-[variant=destructive]:data-highlighted:text-destructive dark:data-[variant=destructive]:data-highlighted:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive! cursor-pointer",
+    /**
+     * Every item has a base radius (`rounded-lg`); the menu's outer edges get
+     * `rounded-t-xl`/`rounded-b-xl` on the outer end (top of the first, bottom
+     * of the last) to match the popup. `rounded-lg` comes BEFORE in cn() so
+     * tailwind-merge keeps the per-edge overrides (an all-corners `rounded-*`
+     * after a per-side one would drop the per-side).
+     */
+    !resetClassName && 'rounded-lg',
+    !resetClassName && edgeFirst && 'rounded-t-xl',
+    !resetClassName && edgeLast && 'rounded-b-xl',
     className,
   )
 
@@ -363,7 +380,7 @@ function DropdownMenuItem({
 
     const mobileItemClassName = cn(
       !resetClassName &&
-      "relative flex items-center gap-2 rounded-sm p-4 lg:px-2 lg:py-2 text-sm font-medium outline-hidden select-none hover:bg-accent hover:text-accent-foreground active:bg-accent active:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:hover:bg-destructive/5 data-[variant=destructive]:hover:text-destructive dark:data-[variant=destructive]:hover:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground cursor-pointer w-full text-left",
+        "relative flex items-center gap-2 rounded-sm p-4 lg:px-2 lg:py-2 text-sm font-medium outline-hidden select-none hover:bg-accent hover:text-accent-foreground active:bg-accent active:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:hover:bg-destructive/5 data-[variant=destructive]:hover:text-destructive dark:data-[variant=destructive]:hover:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground cursor-pointer w-full text-left",
       className,
     )
 
@@ -397,7 +414,7 @@ function DropdownMenuItem({
         data-variant={variant}
         disabled={disabled}
         className={mobileItemClassName}
-        onClick={(e) => {
+        onClick={e => {
           trigger('click')
           onClick?.(e)
           ctx.onOpenChange(false)
@@ -417,12 +434,12 @@ function DropdownMenuItem({
         data-variant={variant}
         nativeButton={isNativeButton}
         {...props}
-        onClick={(e) => {
+        onClick={e => {
           trigger('click')
           props.onClick?.(e)
         }}
         closeOnClick={true}
-        render={(itemProps) => {
+        render={itemProps => {
           return React.cloneElement(children, {
             ...itemProps,
             ...(children.props as { className?: string }),
@@ -445,7 +462,7 @@ function DropdownMenuItem({
       data-variant={variant}
       className={itemClassName}
       {...props}
-      onClick={(e) => {
+      onClick={e => {
         trigger('click')
         props.onClick?.(e)
       }}
@@ -473,8 +490,9 @@ function DropdownMenuCheckboxItem({
       data-slot="dropdown-menu-checkbox-item"
       className={cn(
         "relative flex cursor-default items-center gap-2 py-1.5 pr-2 pl-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        edgeFirst ? 'rounded-t-xl' : 'rounded-none',
-        edgeLast ? 'rounded-b-xl' : 'rounded-none',
+        'rounded-lg',
+        edgeFirst && 'rounded-t-xl',
+        edgeLast && 'rounded-b-xl',
         className,
       )}
       checked={checked}
@@ -517,8 +535,9 @@ function DropdownMenuRadioItem({
       data-slot="dropdown-menu-radio-item"
       className={cn(
         "relative flex cursor-default items-center gap-2 p-4 lg:py-2 lg:pr-2 lg:pl-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        edgeFirst ? 'rounded-t-xl' : 'rounded-none',
-        edgeLast ? 'rounded-b-xl' : 'rounded-none',
+        'rounded-lg',
+        edgeFirst && 'rounded-t-xl',
+        edgeLast && 'rounded-b-xl',
         className,
       )}
       {...props}
@@ -619,8 +638,9 @@ function DropdownMenuSubTrigger({
 
   const triggerClassName = cn(
     'flex items-center gap-3 w-full relative z-10 group/menu-button hover:bg-accent! data-[active=true]:bg-transparent p-2 text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] outline-none cursor-pointer ring-0!',
-    edgeFirst ? 'rounded-t-xl' : 'rounded-none',
-    edgeLast ? 'rounded-b-xl' : 'rounded-none',
+    'rounded-lg',
+    edgeFirst && 'rounded-t-xl',
+    edgeLast && 'rounded-b-xl',
     className,
   )
 
@@ -645,7 +665,7 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       className={triggerClassName}
       {...props}
-      onClick={(e) => {
+      onClick={e => {
         trigger('click')
         props.onClick?.(e)
       }}

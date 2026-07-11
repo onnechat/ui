@@ -22,20 +22,39 @@ function InputGroupRoot({ className, ...props }: InputGroupProps) {
   )
 }
 
-type InputGroupInputProps = React.ComponentProps<'input'>
+const inputGroupInputVariants = cva(
+  cn(
+    'placeholder:text-muted-foreground/50 placeholder:pointer-events-none placeholder:select-none bg-input flex w-full min-w-0 rounded-xl border border-transparent transition-all outline-none text-foreground',
+    'file:me-3 file:inline-flex file:items-center file:rounded-md file:border file:border-border file:bg-accent file:px-3 file:font-medium file:text-accent-foreground file:cursor-pointer file:transition-colors',
+    'focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px]',
+    'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
+    'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60',
+    'read-only:cursor-default read-only:bg-muted read-only:text-muted-foreground',
+  ),
+  {
+    variants: {
+      // Height mirrors the Button/Input field scale: h-8 / h-10 / h-12.
+      size: {
+        sm: 'h-8 px-3 py-1 text-sm file:h-6',
+        default: 'h-10 px-3 py-2 text-sm file:h-6',
+        lg: 'h-12 px-4 py-2.5 text-base file:h-7',
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  },
+)
 
-function InputGroupInput({ className, ...props }: InputGroupInputProps) {
+type InputGroupInputProps = Omit<React.ComponentProps<'input'>, 'size'> &
+  VariantProps<typeof inputGroupInputVariants>
+
+function InputGroupInput({ className, size, ...props }: InputGroupInputProps) {
   return (
     <input
       data-slot="input-group-control"
-      className={cn(
-        'file:text-foreground placeholder:text-muted-foreground/50 placeholder:pointer-events-none placeholder:select-none bg-input flex h-10 w-full min-w-0 rounded-xl border border-transparent px-3 py-2 text-sm transition-all outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium text-foreground',
-        'focus-visible:border-transparent focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-        'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
-        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:brightness-75',
-        'read-only:pointer-events-none read-only:cursor-not-allowed read-only:brightness-75',
-        className,
-      )}
+      data-size={size ?? 'default'}
+      className={cn(inputGroupInputVariants({ size }), className)}
       {...props}
     />
   )
@@ -100,5 +119,9 @@ function InputGroupText({ className, ...props }: InputGroupTextProps) {
 }
 InputGroupText.displayName = 'InputGroupText'
 
-const InputGroup = Object.assign(InputGroupRoot, { Input: InputGroupInput, Addon: InputGroupAddon, Text: InputGroupText })
-export { InputGroup }
+const InputGroup = Object.assign(InputGroupRoot, {
+  Input: InputGroupInput,
+  Addon: InputGroupAddon,
+  Text: InputGroupText,
+})
+export { InputGroup, inputGroupInputVariants }

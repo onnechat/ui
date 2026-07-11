@@ -1,3 +1,4 @@
+import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn } from 'storybook/test';
 
@@ -36,12 +37,14 @@ const meta: Meta<typeof Button> = {
     },
     size: {
       control: 'select',
-      options: ['sm', 'default', 'lg', 'icon-sm', 'icon'],
+      options: ['sm', 'default', 'lg', 'icon-sm', 'icon', 'icon-lg'],
       description:
-        'Tamanho do botão. As opções `icon-sm` e `icon` produzem botões quadrados para uso somente com ícone.',
+        'Tamanho do botão. As opções `icon-sm`, `icon` e `icon-lg` produzem botões quadrados para uso somente com ícone.',
       table: {
         category: 'Aparência',
-        type: { summary: "'sm' | 'default' | 'lg' | 'icon-sm' | 'icon'" },
+        type: {
+          summary: "'sm' | 'default' | 'lg' | 'icon-sm' | 'icon' | 'icon-lg'",
+        },
         defaultValue: { summary: "'default'" },
       },
     },
@@ -148,6 +151,9 @@ export const IconSizes: Story = {
       <Button size="icon" aria-label="Dark theme">
         <Icon name="Moon" />
       </Button>
+      <Button size="icon-lg" aria-label="System theme">
+        <Icon name="Monitor" />
+      </Button>
     </div>
   ),
 };
@@ -171,25 +177,172 @@ export const WithIcon: Story = {
   ),
 };
 
+/**
+ * Todas as variantes em loading, num grid de largura uniforme para comparar o
+ * loader sem a distração de larguras diferentes.
+ */
 export const Loading: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-2">
-      <Button isLoading>Default</Button>
-      <Button isLoading variant="destructive">
+    <div className="grid w-[26rem] grid-cols-2 gap-3">
+      <Button className="w-full" isLoading>
+        Default
+      </Button>
+      <Button className="w-full" variant="destructive" isLoading>
         Destructive
       </Button>
-      <Button isLoading variant="outline">
+      <Button className="w-full" variant="outline" isLoading>
         Outline
       </Button>
-      <Button isLoading variant="primary">
+      <Button className="w-full" variant="primary" isLoading>
         Primary
       </Button>
-      <Button isLoading variant="secondary">
+      <Button className="w-full" variant="secondary" isLoading>
         Secondary
       </Button>
-      <Button isLoading variant="ghost">
+      <Button className="w-full" variant="ghost" isLoading>
         Ghost
       </Button>
+    </div>
+  ),
+};
+
+/**
+ * O loading preserva o tamanho do botão: cada par (repouso / carregando) tem a
+ * mesma largura, então o loader só substitui o conteúdo — nada encolhe. Os
+ * botões de ícone usam os três tamanhos; os de texto ficam num grid uniforme.
+ */
+export const LoadingKeepsSize: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-3">
+        <Button size="icon-sm" aria-label="Atualizar">
+          <Icon name="Refresh" />
+        </Button>
+        <Button size="icon-sm" aria-label="Atualizando" isLoading>
+          <Icon name="Refresh" />
+        </Button>
+        <Button size="icon" aria-label="Atualizar">
+          <Icon name="Refresh" />
+        </Button>
+        <Button size="icon" aria-label="Atualizando" isLoading>
+          <Icon name="Refresh" />
+        </Button>
+        <Button size="icon-lg" aria-label="Atualizar">
+          <Icon name="Refresh" />
+        </Button>
+        <Button size="icon-lg" aria-label="Atualizando" isLoading>
+          <Icon name="Refresh" />
+        </Button>
+      </div>
+
+      <div className="grid w-[26rem] grid-cols-2 gap-3">
+        <Button className="w-full">
+          <Icon name="Check" />
+          Salvar alterações
+        </Button>
+        <Button className="w-full" isLoading>
+          <Icon name="Check" />
+          Salvar alterações
+        </Button>
+        <Button className="w-full" variant="secondary">
+          Publicar
+        </Button>
+        <Button className="w-full" variant="secondary" isLoading>
+          Publicar
+        </Button>
+      </div>
+    </div>
+  ),
+};
+
+/**
+ * Botão que entra em loading ao ser clicado e volta sozinho após `resetAfter`
+ * ms — usado para testar a transição de ida e volta. Fica desabilitado durante
+ * o loading, então não há como reclicar antes de terminar.
+ */
+function AutoLoadingButton({
+  resetAfter = 2000,
+  onClick,
+  ...props
+}: React.ComponentProps<typeof Button> & { resetAfter?: number }) {
+  const [loading, setLoading] = React.useState(false);
+  const timerRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+
+  React.useEffect(() => () => clearTimeout(timerRef.current), []);
+
+  return (
+    <Button
+      {...props}
+      isLoading={loading}
+      onClick={e => {
+        onClick?.(e);
+        setLoading(true);
+        timerRef.current = setTimeout(() => setLoading(false), resetAfter);
+      }}
+    />
+  );
+}
+
+/**
+ * Cada botão tem seu próprio loading: clique para iniciar e ele volta sozinho
+ * depois de 1–3s. A transição é uma esteira vertical — ao carregar o loader
+ * desce (entra por cima) e o conteúdo desce (sai por baixo); ao terminar o
+ * loader sobe (sai por cima) e o conteúdo volta de baixo para o lugar.
+ */
+export const LoadingToggle: Story = {
+  name: 'Loading (auto-reset)',
+  render: () => (
+    <div className="flex flex-col items-center gap-3">
+      <div className="grid w-[26rem] grid-cols-2 gap-3">
+        <AutoLoadingButton className="w-full" resetAfter={1000}>
+          <Icon name="Rocket" />
+          Enviar (1s)
+        </AutoLoadingButton>
+        <AutoLoadingButton
+          className="w-full"
+          variant="secondary"
+          resetAfter={2000}
+        >
+          Processar (2s)
+        </AutoLoadingButton>
+        <AutoLoadingButton
+          className="w-full"
+          variant="outline"
+          resetAfter={3000}
+        >
+          Salvar (3s)
+        </AutoLoadingButton>
+        <AutoLoadingButton
+          className="w-full"
+          variant="ghost"
+          resetAfter={2000}
+        >
+          <Icon name="Refresh" />
+          Sincronizar (2s)
+        </AutoLoadingButton>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <AutoLoadingButton
+          size="icon-sm"
+          aria-label="Atualizar"
+          resetAfter={1000}
+        >
+          <Icon name="Refresh" />
+        </AutoLoadingButton>
+        <AutoLoadingButton size="icon" aria-label="Atualizar" resetAfter={2000}>
+          <Icon name="Refresh" />
+        </AutoLoadingButton>
+        <AutoLoadingButton
+          size="icon-lg"
+          aria-label="Atualizar"
+          resetAfter={3000}
+        >
+          <Icon name="Refresh" />
+        </AutoLoadingButton>
+      </div>
     </div>
   ),
 };

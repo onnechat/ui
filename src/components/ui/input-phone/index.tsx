@@ -13,8 +13,12 @@ import { FlagIcon } from '@/components/icon/flag';
 import { Select } from '@/components/ui/select';
 
 export interface PhoneInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'onChange' | 'size'
+  > {
   value?: string;
+  size?: 'sm' | 'default' | 'lg';
   onChange?: (value: string) => void;
   onCountryChange?: (country: Country) => void;
   disableCountrySelect?: boolean;
@@ -27,6 +31,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   (props, ref) => {
     const {
       value,
+      size,
       onChange,
       onCountryChange,
       locale,
@@ -65,6 +70,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
         >
           <Select.Trigger
             ref={triggerRef}
+            size={size}
             aria-label={countrySelectAriaLabel}
             className={cn(
               'w-fit! rounded-r-none border-r-0 focus:z-10 bg-accent select-none',
@@ -111,6 +117,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
         <Input
           ref={ref}
           type="tel"
+          size={size}
           value={formattedPhoneNumber}
           onChange={handlePhoneNumberChange}
           placeholder={placeholder || dynamicPlaceholder}

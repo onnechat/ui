@@ -27,6 +27,17 @@ const meta: Meta<typeof SelectMulti<Item>> = {
   },
   tags: ['autodocs'],
   argTypes: {
+    size: {
+      control: 'inline-radio',
+      options: ['sm', 'default', 'lg'],
+      description:
+        'Tamanho do trigger. As alturas mínimas acompanham a escala do Button/Input: `sm` (min-h-8), `default` (min-h-10) e `lg` (min-h-12).',
+      table: {
+        category: 'Aparência',
+        type: { summary: "'sm' | 'default' | 'lg'" },
+        defaultValue: { summary: "'default'" },
+      },
+    },
     values: {
       control: false,
       description: 'Valores selecionados (`string[]`). Componente controlado.',
@@ -112,6 +123,7 @@ const meta: Meta<typeof SelectMulti<Item>> = {
     },
   },
   args: {
+    size: 'default',
     values: [],
     onValuesChange: fn(),
     options: OPTIONS,
@@ -233,4 +245,26 @@ export const Disabled: Story = {
     placeholder: 'Disabled…',
   },
   render: args => <ControlledSelectMulti {...args} />,
+};
+
+/**
+ * `sm` / `default` / `lg` — as alturas mínimas acompanham a escala do Button/Input
+ * (o trigger cresce conforme os badges quebram em linhas).
+ */
+export const Sizes: Story = {
+  // TODO(a11y): placeholder usa text-muted-foreground/50 sobre bg-input
+  // (contraste 2.2 — estilo do componente, não da story).
+  parameters: { a11y: { test: 'todo' } },
+  render: args => (
+    <div className="flex w-56 flex-col gap-3">
+      {(['sm', 'default', 'lg'] as const).map(size => (
+        <ControlledSelectMulti
+          key={size}
+          {...args}
+          size={size}
+          placeholder={`Size ${size}`}
+        />
+      ))}
+    </div>
+  ),
 };

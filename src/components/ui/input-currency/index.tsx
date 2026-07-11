@@ -12,8 +12,12 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 
 export interface CurrencyInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'onChange' | 'size'
+  > {
   value?: number;
+  size?: 'sm' | 'default' | 'lg';
   locale?: string;
   allowZero?: boolean;
   defaultCurrency?: string;
@@ -30,6 +34,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
   (props, ref) => {
     const {
       value,
+      size,
       onChange,
       onCurrencyChange,
       locale,
@@ -77,6 +82,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
         >
           <Select.Trigger
             ref={triggerRef}
+            size={size}
             aria-label={currencySelectAriaLabel}
             className={cn(
               'w-fit! rounded-r-none border-r-0 focus:z-10 bg-accent',
@@ -115,6 +121,7 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
                 node;
           }}
           type="text"
+          size={size}
           inputMode="decimal"
           onBlur={handleBlur}
           disabled={disabled}
