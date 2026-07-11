@@ -1,18 +1,26 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MotionPopover } from './motion-popover';
+import { GooeyPopover } from './gooey-popover';
 import { Button } from '@/components/ui/button';
 
-type MotionPopoverArgs = React.ComponentProps<typeof MotionPopover>;
+type GooeyPopoverArgs = React.ComponentProps<typeof GooeyPopover>;
 
-const meta: Meta<MotionPopoverArgs> = {
-  title: 'UI/MotionPopover',
-  component: MotionPopover,
+const meta: Meta<GooeyPopoverArgs> = {
+  title: 'UI/GooeyPopover',
+  component: GooeyPopover,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs', 'new'],
+  // O painel é `absolute`; dá altura ao preview para o conteúdo aberto caber.
+  decorators: [
+    Story => (
+      <div className="flex min-h-72 items-center justify-center">
+        <Story />
+      </div>
+    ),
+  ],
   argTypes: {
     trigger: {
       control: 'inline-radio',
@@ -61,10 +69,15 @@ const meta: Meta<MotionPopoverArgs> = {
         'Intensidade do blur que alimenta o filtro goo — maior derrete mais.',
       table: { category: 'Aparência', defaultValue: { summary: '8' } },
     },
+    defaultOpen: {
+      control: 'boolean',
+      description: 'Abre o popover na montagem (modo não controlado).',
+      table: { category: 'Estado', defaultValue: { summary: 'false' } },
+    },
     children: {
       control: false,
       description:
-        'Composição de `MotionPopover.Trigger` e `MotionPopover.Content`.',
+        'Composição de `GooeyPopover.Trigger` e `GooeyPopover.Content`.',
       table: { category: 'Conteúdo' },
     },
   },
@@ -75,6 +88,9 @@ const meta: Meta<MotionPopoverArgs> = {
     sideOffset: 14,
     panelRadius: 16,
     gooStrength: 8,
+    // Aberto por padrão para que o preview do autodocs mostre o conteúdo (o
+    // painel é `absolute`, então precisa estar aberto para aparecer).
+    defaultOpen: true,
   },
 };
 
@@ -84,11 +100,11 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   render: args => (
-    <MotionPopover {...args}>
-      <MotionPopover.Trigger>
+    <GooeyPopover {...args}>
+      <GooeyPopover.Trigger>
         <Button variant="outline">Open Popover</Button>
-      </MotionPopover.Trigger>
-      <MotionPopover.Content>
+      </GooeyPopover.Trigger>
+      <GooeyPopover.Content aria-label="Gooey Popover">
         <div className="grid gap-2">
           <h4 className="font-medium">Gooey Popover</h4>
           <p className="text-sm text-muted-foreground">
@@ -96,35 +112,35 @@ export const Playground: Story = {
             clip-path que interpola do trigger até o painel.
           </p>
         </div>
-      </MotionPopover.Content>
-    </MotionPopover>
+      </GooeyPopover.Content>
+    </GooeyPopover>
   ),
 };
 
 export const OnHover: Story = {
   args: { trigger: 'hover' },
   render: args => (
-    <MotionPopover {...args}>
-      <MotionPopover.Trigger>
+    <GooeyPopover {...args}>
+      <GooeyPopover.Trigger>
         <Button variant="outline">Hover me</Button>
-      </MotionPopover.Trigger>
-      <MotionPopover.Content>
+      </GooeyPopover.Trigger>
+      <GooeyPopover.Content aria-label="Gooey Popover">
         <p className="text-sm">Abre no hover/focus, fecha ao sair.</p>
-      </MotionPopover.Content>
-    </MotionPopover>
+      </GooeyPopover.Content>
+    </GooeyPopover>
   ),
 };
 
 export const Above: Story = {
   args: { side: 'top' },
   render: args => (
-    <MotionPopover {...args}>
-      <MotionPopover.Trigger>
+    <GooeyPopover {...args}>
+      <GooeyPopover.Trigger>
         <Button variant="outline">Opens upward</Button>
-      </MotionPopover.Trigger>
-      <MotionPopover.Content>
+      </GooeyPopover.Trigger>
+      <GooeyPopover.Content aria-label="Gooey Popover">
         <p className="text-sm">Escorre para cima a partir do trigger.</p>
-      </MotionPopover.Content>
-    </MotionPopover>
+      </GooeyPopover.Content>
+    </GooeyPopover>
   ),
 };
