@@ -113,7 +113,7 @@ function insetForProgress(geo: Geo, p: number): string {
   return insetFor(rect, geo.layerW, geo.layerH)
 }
 
-interface MotionPopoverContextValue {
+interface GooeyPopoverContextValue {
   open: boolean
   setOpen: (open: boolean) => void
   toggle: () => void
@@ -132,17 +132,15 @@ interface MotionPopoverContextValue {
   triggerRef: React.MutableRefObject<HTMLElement | null>
 }
 
-const MotionPopoverContext = createContext<MotionPopoverContextValue | null>(
-  null,
-)
+const GooeyPopoverContext = createContext<GooeyPopoverContextValue | null>(null)
 
-function useMotionPopoverContext(component: string) {
-  const ctx = useContext(MotionPopoverContext)
-  if (!ctx) throw new Error(`${component} must be used within <MotionPopover>`)
+function useGooeyPopoverContext(component: string) {
+  const ctx = useContext(GooeyPopoverContext)
+  if (!ctx) throw new Error(`${component} must be used within <GooeyPopover>`)
   return ctx
 }
 
-export interface MotionPopoverProps {
+export interface GooeyPopoverProps {
   children: ReactNode
   /** Controlled open state. */
   open?: boolean
@@ -164,7 +162,7 @@ export interface MotionPopoverProps {
   className?: string
 }
 
-function MotionPopoverRoot({
+function GooeyPopoverRoot({
   children,
   open: controlledOpen,
   defaultOpen = false,
@@ -176,7 +174,7 @@ function MotionPopoverRoot({
   panelRadius = 16,
   gooStrength = 8,
   className,
-}: MotionPopoverProps) {
+}: GooeyPopoverProps) {
   const reduce = useReducedMotion() ?? false
   const gooId = useId().replace(/:/g, '')
   const contentId = useId()
@@ -243,7 +241,7 @@ function MotionPopoverRoot({
     }
   }, [open, setOpen, trigger])
 
-  const ctx = useMemo<MotionPopoverContextValue>(
+  const ctx = useMemo<GooeyPopoverContextValue>(
     () => ({
       open,
       setOpen,
@@ -287,16 +285,16 @@ function MotionPopoverRoot({
       : {}
 
   return (
-    <MotionPopoverContext.Provider value={ctx}>
+    <GooeyPopoverContext.Provider value={ctx}>
       <div
         ref={rootRef}
-        data-slot="motion-popover"
+        data-slot="gooey-popover"
         className={cn('relative inline-flex isolate', className)}
         {...hoverHandlers}
       >
         {children}
       </div>
-    </MotionPopoverContext.Provider>
+    </GooeyPopoverContext.Provider>
   )
 }
 
@@ -310,13 +308,13 @@ function mergeRefs<T>(...refs: Array<Ref<T> | undefined>) {
   }
 }
 
-export interface MotionPopoverTriggerProps {
+export interface GooeyPopoverTriggerProps {
   /** A single focusable element (e.g. a Button) that opens the popover. */
   children: ReactElement
 }
 
-function MotionPopoverTrigger({ children }: MotionPopoverTriggerProps) {
-  const ctx = useMotionPopoverContext('MotionPopover.Trigger')
+function GooeyPopoverTrigger({ children }: GooeyPopoverTriggerProps) {
+  const ctx = useGooeyPopoverContext('GooeyPopover.Trigger')
 
   if (!isValidElement(children)) return children
 
@@ -360,16 +358,17 @@ const ALIGN_ORIGIN: Record<Align, string> = {
   end: 'right',
 }
 
-export interface MotionPopoverContentProps {
+export interface GooeyPopoverContentProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   children: ReactNode
-  className?: string
 }
 
-function MotionPopoverContent({
+function GooeyPopoverContent({
   children,
   className,
-}: MotionPopoverContentProps) {
-  const ctx = useMotionPopoverContext('MotionPopover.Content')
+  ...rest
+}: GooeyPopoverContentProps) {
+  const ctx = useGooeyPopoverContext('GooeyPopover.Content')
   const {
     side,
     align,
@@ -536,7 +535,8 @@ function MotionPopoverContent({
             ref={measureRef}
             id={contentId}
             role="dialog"
-            data-slot="motion-popover-content"
+            data-slot="gooey-popover-content"
+            {...rest}
             {...hoverHandlers}
             style={{
               position: 'absolute',
@@ -557,9 +557,9 @@ function MotionPopoverContent({
   )
 }
 
-const MotionPopover = Object.assign(MotionPopoverRoot, {
-  Trigger: MotionPopoverTrigger,
-  Content: MotionPopoverContent,
+const GooeyPopover = Object.assign(GooeyPopoverRoot, {
+  Trigger: GooeyPopoverTrigger,
+  Content: GooeyPopoverContent,
 })
 
-export { MotionPopover }
+export { GooeyPopover }

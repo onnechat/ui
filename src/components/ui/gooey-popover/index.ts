@@ -1,1 +1,1 @@
-export * from './motion-popover';
+export * from './gooey-popover';
