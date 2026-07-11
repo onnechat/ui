@@ -1,9 +1,13 @@
+import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, within } from 'storybook/test';
 
 import { Select } from './select';
 
-const meta: Meta<typeof Select> = {
+type SelectPlaygroundArgs = React.ComponentProps<typeof Select> &
+  Pick<React.ComponentProps<typeof Select.Trigger>, 'size'>;
+
+const meta: Meta<SelectPlaygroundArgs> = {
   title: 'UI/Select',
   component: Select,
   subcomponents: {
@@ -20,6 +24,17 @@ const meta: Meta<typeof Select> = {
   },
   tags: ['autodocs', 'new'],
   argTypes: {
+    size: {
+      control: 'inline-radio',
+      options: ['sm', 'default', 'lg'],
+      description:
+        'Tamanho do trigger. As alturas batem com o Button/Input: `sm` (h-8/32px), `default` (h-10/40px) e `lg` (h-12/48px).',
+      table: {
+        category: 'Aparência',
+        type: { summary: "'sm' | 'default' | 'lg'" },
+        defaultValue: { summary: "'default'" },
+      },
+    },
     disabled: {
       control: 'boolean',
       description: 'Desabilita o trigger e impede a abertura do popup.',
@@ -60,6 +75,7 @@ const meta: Meta<typeof Select> = {
     },
   },
   args: {
+    size: 'default',
     disabled: false,
   },
 };
@@ -69,9 +85,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  render: args => (
+  render: ({ size, ...args }) => (
     <Select {...args}>
-      <Select.Trigger aria-label="Fruit" className="w-48">
+      <Select.Trigger size={size} aria-label="Fruit" className="w-48">
         <Select.Value placeholder="Select an option" />
       </Select.Trigger>
       <Select.Content>
@@ -102,9 +118,9 @@ export const WithGroups: Story = {
   // TODO(a11y): placeholder usa text-muted-foreground/50 sobre bg-input
   // (contraste 2.2 — estilo do componente, não da story).
   parameters: { a11y: { test: 'todo' } },
-  render: args => (
+  render: ({ size, ...args }) => (
     <Select {...args}>
-      <Select.Trigger aria-label="Food" className="w-48">
+      <Select.Trigger size={size} aria-label="Food" className="w-48">
         <Select.Value placeholder="Select food" />
       </Select.Trigger>
       <Select.Content>
@@ -127,9 +143,9 @@ export const Disabled: Story = {
   // TODO(a11y): placeholder usa text-muted-foreground/50 sobre bg-input
   // (contraste 2.2 — estilo do componente, não da story).
   parameters: { a11y: { test: 'todo' } },
-  render: args => (
+  render: ({ size, ...args }) => (
     <Select {...args}>
-      <Select.Trigger aria-label="Option" className="w-48">
+      <Select.Trigger size={size} aria-label="Option" className="w-48">
         <Select.Value placeholder="Disabled select" />
       </Select.Trigger>
       <Select.Content>
@@ -147,9 +163,9 @@ export const DefaultValue: Story = {
   args: {
     defaultValue: 'banana',
   },
-  render: args => (
+  render: ({ size, ...args }) => (
     <Select {...args}>
-      <Select.Trigger aria-label="Fruit" className="w-48">
+      <Select.Trigger size={size} aria-label="Fruit" className="w-48">
         <Select.Value placeholder="Select an option" />
       </Select.Trigger>
       <Select.Content>
@@ -158,5 +174,30 @@ export const DefaultValue: Story = {
         <Select.Item value="orange">Orange</Select.Item>
       </Select.Content>
     </Select>
+  ),
+};
+
+/**
+ * `sm` / `default` / `lg` — as alturas do trigger batem com o Button/Input (h-8 / h-10 / h-12).
+ */
+export const Sizes: Story = {
+  // TODO(a11y): placeholder usa text-muted-foreground/50 sobre bg-input
+  // (contraste 2.2 — estilo do componente, não da story).
+  parameters: { a11y: { test: 'todo' } },
+  render: () => (
+    <div className="flex w-48 flex-col gap-3">
+      {(['sm', 'default', 'lg'] as const).map(size => (
+        <Select key={size}>
+          <Select.Trigger size={size} aria-label={`Fruit ${size}`}>
+            <Select.Value placeholder={`Size ${size}`} />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Item value="apple">Apple</Select.Item>
+            <Select.Item value="banana">Banana</Select.Item>
+            <Select.Item value="orange">Orange</Select.Item>
+          </Select.Content>
+        </Select>
+      ))}
+    </div>
   ),
 };
