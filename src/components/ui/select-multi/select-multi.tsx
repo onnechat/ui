@@ -138,7 +138,7 @@ function SelectMulti<T extends object>({
               return (
                 <span
                   key={itemValue}
-                  className="inline-flex max-w-full min-w-0 items-start gap-1 rounded-md bg-muted px-2 py-1 text-sm font-medium text-foreground"
+                  className="inline-flex max-w-full min-w-0 items-start gap-1 rounded-md bg-accent px-2 py-1 text-sm font-medium text-accent-foreground"
                 >
                   <span className="min-w-0 flex-1 text-left leading-snug wrap-break-word">
                     {label}
@@ -166,7 +166,7 @@ function SelectMulti<T extends object>({
             })}
 
             {selectedItems.length > MAX_BADGES && (
-              <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-medium text-muted-foreground">
+              <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md bg-accent text-xs font-medium text-accent-foreground">
                 +{selectedItems.length - MAX_BADGES}
               </span>
             )}
@@ -248,19 +248,14 @@ function SelectMulti<T extends object>({
               >
                 <span
                   className={cn(
-                    'mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-sm border-2 transition-colors',
+                    'mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-[4px] border-2 transition-colors',
                     isSelected
-                      ? 'border-primary bg-primary'
-                      : 'border-muted-foreground/40',
+                      ? 'border-primary bg-primary text-primary-foreground'
+                      : 'border-input',
                   )}
                   aria-hidden
                 >
-                  {isSelected && (
-                    <Icon
-                      name="Check"
-                      className="size-2.5 text-primary-foreground"
-                    />
-                  )}
+                  {isSelected && <Icon name="Check" className="size-3.5" />}
                 </span>
                 <span className="min-w-0 flex-1 text-left wrap-break-word">
                   {renderItem(item, isSelected)}
