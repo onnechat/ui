@@ -54,6 +54,18 @@ const meta: Meta<typeof AppShell> = {
   } as Meta<typeof AppShell>['subcomponents'],
   parameters: {
     layout: 'fullscreen',
+    // The shell only shows its sidebars above the `lg` breakpoint (below it the
+    // layout is mobile). Storybook's preview iframe is often narrower than that
+    // once the nav + addons panels take their space, so force a desktop-width
+    // viewport by default — otherwise every story renders as mobile.
+    viewport: {
+      options: {
+        desktop: {
+          name: 'Desktop',
+          styles: { width: '1440px', height: '900px' },
+        },
+      },
+    },
     docs: {
       // Fullscreen shell layouts rendered inline on the docs page stretch to
       // their content's full height (no scroll). An iframe with a fixed
@@ -122,6 +134,9 @@ const meta: Meta<typeof AppShell> = {
       table: { category: 'Aparência' },
     },
   },
+  globals: {
+    viewport: { value: 'desktop', isRotated: false },
+  },
   tags: ['autodocs'],
 };
 
@@ -183,10 +198,20 @@ function DemoLeftSidebarContent() {
           href="#"
           className="outline-none focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-2 active:scale-[99.35%] active:grayscale transition-[scale,filter] rounded-md p-2"
         >
-          <OnnebookLogo />
+          {/* Full wordmark when expanded; icon-only once collapsed to the rail. */}
+          <OnnebookLogo className="group-data-[collapsible=icon]:hidden" />
+          <OnnebookLogo
+            variant="icon"
+            className="hidden group-data-[collapsible=icon]:block"
+          />
         </a>
 
-        <Button size="icon-sm" variant="ghost" aria-label="Notificações">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          aria-label="Notificações"
+          className="group-data-[collapsible=icon]:hidden"
+        >
           <Icon name="Bell" className="size-4 text-muted-foreground" />
         </Button>
       </AppShell.SidebarHeader>
