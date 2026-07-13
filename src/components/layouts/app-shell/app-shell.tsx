@@ -1214,7 +1214,7 @@ function AppShellSidebarItem({
     >
       {useSplitDropdownLayout ? (
         <div
-          className="relative z-10 flex w-full min-w-0 gap-1"
+          className="relative z-10 flex w-full min-w-0 gap-1 group-data-[collapsible=icon]:justify-center"
           style={itemStyle}
         >
           <Sidebar.MenuButton
@@ -1226,7 +1226,13 @@ function AppShellSidebarItem({
             data-level={level}
             data-disabled={isDisabled}
             disabled={isDisabled}
-            className={cn(buttonClassName, 'min-w-0 flex-1')}
+            className={cn(
+              buttonClassName,
+              // `flex-1` sets flex-basis:0 which would override `size-9!` and
+              // stretch the item; `flex-none` restores the 36px icon size in
+              // the rail so split-dropdown items match the plain ones.
+              'min-w-0 flex-1 group-data-[collapsible=icon]:flex-none',
+            )}
           >
             <a
               href={item.href && !isDisabled ? item.href : '#'}
@@ -1349,28 +1355,49 @@ function AppShellCommandButton({
   children,
   ...props
 }: React.ComponentProps<'button'>) {
-  return (
+  const { collapsed, iconRail } = useSidebarCollapsed();
+
+  const button = (
     <button
       type="button"
       data-slot="app-shell-command-button"
-      title="Pesquisar"
+      aria-label="Pesquisar"
       className={cn(
-        'flex h-12 w-full min-w-0 cursor-pointer items-center rounded-xl border-2 border-sidebar-accent bg-transparent p-2.5 text-left text-sm text-muted-foreground outline-none transition-all hover:bg-sidebar-accent/30 focus-visible:border-transparent focus-visible:ring-[3px] focus-visible:ring-ring/50 group-data-[collapsible=icon]:justify-center',
+        'flex h-12 w-full min-w-0 cursor-pointer items-center rounded-xl border-2 border-sidebar-accent bg-transparent p-2.5 text-left text-sm text-muted-foreground outline-none transition-all hover:bg-sidebar-accent/30 focus-visible:border-transparent focus-visible:ring-[3px] focus-visible:ring-ring/50',
+        // Collapsed: shed the input chrome and become a plain 36px icon button,
+        // sized and centered exactly like the nav items in the rail.
+        'group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-9! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:hover:bg-sidebar-accent',
         className,
       )}
       {...props}
     >
-      <span className="pointer-events-none flex w-full items-center gap-2 opacity-50 group-data-[collapsible=icon]:w-auto">
+      <span className="pointer-events-none flex w-full items-center gap-2 opacity-50 group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:opacity-100">
         {/* Search glyph only stands in for the label once collapsed to the rail. */}
         <Icon
           name="Magnifier"
-          className="hidden size-4 shrink-0 group-data-[collapsible=icon]:block"
+          className="hidden size-4 shrink-0 text-muted-foreground group-data-[collapsible=icon]:block"
         />
         <span className="truncate group-data-[collapsible=icon]:hidden">
           {children}
         </span>
       </span>
     </button>
+  );
+
+  // Match the nav items: the lib Tooltip (not a native title) labels the icon
+  // once collapsed. Only icon-rail sidebars wrap — `iconRail` never toggles, so
+  // the button stays mounted.
+  if (!iconRail) {
+    return button;
+  }
+
+  return (
+    <Tooltip>
+      <Tooltip.Trigger asChild>{button}</Tooltip.Trigger>
+      {collapsed ? (
+        <Tooltip.Content side="right">Pesquisar</Tooltip.Content>
+      ) : null}
+    </Tooltip>
   );
 }
 

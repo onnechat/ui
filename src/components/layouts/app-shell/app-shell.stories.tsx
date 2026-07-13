@@ -148,13 +148,13 @@ function DemoWorkspaceSwitcher() {
       <Sidebar.MenuItem>
         <Sidebar.MenuButton
           size="lg"
-          className="[&>svg]:size-5 cursor-pointer h-12"
+          className="[&>svg]:size-5 cursor-pointer h-12 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-9! group-data-[collapsible=icon]:justify-center"
         >
           <Avatar className="relative flex shrink-0 overflow-hidden size-8 rounded-lg border">
             <Avatar.Fallback name="Acme Barbearia" />
           </Avatar>
 
-          <div className="grid flex-1 min-w-0 text-left leading-tight">
+          <div className="grid flex-1 min-w-0 text-left leading-tight group-data-[collapsible=icon]:hidden">
             <span className="text-sm truncate font-medium">Acme Barbearia</span>
 
             <span className="truncate text-xs text-muted-foreground -mt-0.5">
@@ -164,7 +164,7 @@ function DemoWorkspaceSwitcher() {
 
           <Icon
             name="CaretExpandY"
-            className="ml-auto shrink-0 size-5 text-muted-foreground"
+            className="ml-auto shrink-0 size-5 text-muted-foreground group-data-[collapsible=icon]:hidden"
           />
         </Sidebar.MenuButton>
       </Sidebar.MenuItem>
@@ -174,12 +174,15 @@ function DemoWorkspaceSwitcher() {
 
 function DemoUser() {
   return (
-    <Sidebar.MenuButton size="lg" className="cursor-pointer h-12">
+    <Sidebar.MenuButton
+      size="lg"
+      className="cursor-pointer h-12 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-9! group-data-[collapsible=icon]:justify-center"
+    >
       <Avatar className="relative flex shrink-0 overflow-hidden lg:min-w-8 lg:min-h-8 aspect-square border">
         <Avatar.Fallback name="User Example" />
       </Avatar>
 
-      <div className="hidden lg:grid flex-1 min-w-0 text-left leading-tight">
+      <div className="hidden lg:grid flex-1 min-w-0 text-left leading-tight group-data-[collapsible=icon]:!hidden">
         <span className="text-sm truncate font-medium">User Example</span>
 
         <span className="truncate text-xs text-muted-foreground -mt-0.5">
