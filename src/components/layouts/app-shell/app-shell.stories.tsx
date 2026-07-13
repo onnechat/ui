@@ -95,7 +95,7 @@ const meta: Meta<typeof AppShell> = {
           '',
           '## Inset',
           '',
-          'O `AppShell.Inset` é o painel arredondado do conteúdo. Os slots `top` e `bottom` fixam faixas acima/abaixo do painel, sobre o fundo do shell (estilo Linear). O scroll continua sendo o da página: as faixas ficam fixas na tela enquanto o painel central desliza entre elas, e o header gruda logo abaixo da faixa de cima. Combinados com as duas sidebars, dão posicionamento nos quatro lados da página.',
+          'O `AppShell.Inset` é o painel arredondado do conteúdo. Os slots `top`, `bottom`, `left` e `right` fixam faixas/colunas ao redor do painel, sobre o fundo do shell (estilo Linear), emoldurando os quatro lados da página. No desktop o painel rola o próprio conteúdo entre esses encaixes — os cantos arredondados ficam sempre visíveis (nada de faixa cortando quadrado no scroll); no mobile as faixas viram sticky e o scroll é o da página (full-bleed, sem cantos). Os slots `left`/`right` são o análogo horizontal de `top`/`bottom`: colunas fixas de altura cheia para uma segunda coluna que não é sidebar (lista de conversas, filtros, detalhes) — ver a story `ChatLayout`.',
           '',
           '## Mobile',
           '',
