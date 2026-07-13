@@ -54,6 +54,18 @@ const meta: Meta<typeof AppShell> = {
   } as Meta<typeof AppShell>['subcomponents'],
   parameters: {
     layout: 'fullscreen',
+    // The shell only shows its sidebars above the `lg` breakpoint (below it the
+    // layout is mobile). Storybook's preview iframe is often narrower than that
+    // once the nav + addons panels take their space, so force a desktop-width
+    // viewport by default — otherwise every story renders as mobile.
+    viewport: {
+      options: {
+        desktop: {
+          name: 'Desktop',
+          styles: { width: '1440px', height: '900px' },
+        },
+      },
+    },
     docs: {
       // Fullscreen shell layouts rendered inline on the docs page stretch to
       // their content's full height (no scroll). An iframe with a fixed
@@ -122,6 +134,9 @@ const meta: Meta<typeof AppShell> = {
       table: { category: 'Aparência' },
     },
   },
+  globals: {
+    viewport: { value: 'desktop', isRotated: false },
+  },
   tags: ['autodocs'],
 };
 
@@ -133,13 +148,13 @@ function DemoWorkspaceSwitcher() {
       <Sidebar.MenuItem>
         <Sidebar.MenuButton
           size="lg"
-          className="[&>svg]:size-5 cursor-pointer h-12"
+          className="[&>svg]:size-5 cursor-pointer h-12 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-9! group-data-[collapsible=icon]:justify-center"
         >
           <Avatar className="relative flex shrink-0 overflow-hidden size-8 rounded-lg border">
             <Avatar.Fallback name="Acme Barbearia" />
           </Avatar>
 
-          <div className="grid flex-1 min-w-0 text-left leading-tight">
+          <div className="grid flex-1 min-w-0 text-left leading-tight group-data-[collapsible=icon]:hidden">
             <span className="text-sm truncate font-medium">Acme Barbearia</span>
 
             <span className="truncate text-xs text-muted-foreground -mt-0.5">
@@ -149,7 +164,7 @@ function DemoWorkspaceSwitcher() {
 
           <Icon
             name="CaretExpandY"
-            className="ml-auto shrink-0 size-5 text-muted-foreground"
+            className="ml-auto shrink-0 size-5 text-muted-foreground group-data-[collapsible=icon]:hidden"
           />
         </Sidebar.MenuButton>
       </Sidebar.MenuItem>
@@ -159,12 +174,15 @@ function DemoWorkspaceSwitcher() {
 
 function DemoUser() {
   return (
-    <Sidebar.MenuButton size="lg" className="cursor-pointer h-12">
+    <Sidebar.MenuButton
+      size="lg"
+      className="cursor-pointer h-12 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-9! group-data-[collapsible=icon]:justify-center"
+    >
       <Avatar className="relative flex shrink-0 overflow-hidden lg:min-w-8 lg:min-h-8 aspect-square border">
         <Avatar.Fallback name="User Example" />
       </Avatar>
 
-      <div className="hidden lg:grid flex-1 min-w-0 text-left leading-tight">
+      <div className="hidden lg:grid flex-1 min-w-0 text-left leading-tight group-data-[collapsible=icon]:!hidden">
         <span className="text-sm truncate font-medium">User Example</span>
 
         <span className="truncate text-xs text-muted-foreground -mt-0.5">
@@ -183,10 +201,20 @@ function DemoLeftSidebarContent() {
           href="#"
           className="outline-none focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-2 active:scale-[99.35%] active:grayscale transition-[scale,filter] rounded-md p-2"
         >
-          <OnnebookLogo />
+          {/* Full wordmark when expanded; icon-only once collapsed to the rail. */}
+          <OnnebookLogo className="group-data-[collapsible=icon]:hidden" />
+          <OnnebookLogo
+            variant="icon"
+            className="hidden group-data-[collapsible=icon]:block"
+          />
         </a>
 
-        <Button size="icon-sm" variant="ghost" aria-label="Notificações">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          aria-label="Notificações"
+          className="group-data-[collapsible=icon]:hidden"
+        >
           <Icon name="Bell" className="size-4 text-muted-foreground" />
         </Button>
       </AppShell.SidebarHeader>
@@ -622,6 +650,39 @@ export const LeftSidebarOnly: StoryObj<typeof meta> = {
     await expect(canvas.getAllByText('Visão Geral').length).toBeGreaterThan(0);
     await expect(canvas.getByText('Pesquisar…')).toBeInTheDocument();
   },
+};
+
+/**
+ * Modo **icon-rail**: em vez de sumir, a sidebar colapsa para uma coluna
+ * estreita só de ícones (os labels viram `title` nativo no hover). Ative com
+ * `leftSidebar={{ collapsible: 'icon' }}`. Aqui começa colapsada — use o toggle
+ * do header (ou a tecla `[`) para expandir.
+ */
+export const IconRail: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
+  parameters: {
+    ...componentA11yTodo,
+    docs: {
+      description: {
+        story:
+          'Sidebar que colapsa para um rail de ícones (`collapsible: "icon"`) em vez de off-canvas. O rail mantém ícones + tooltips; expandir traz os labels de volta.',
+      },
+    },
+  },
+  render: () => (
+    <AppShell leftSidebar={{ collapsible: 'icon', defaultOpen: false }}>
+      <AppShell.LeftSidebar>
+        <DemoLeftSidebarContent />
+      </AppShell.LeftSidebar>
+
+      <DemoNavbar />
+
+      <AppShell.Inset>
+        <DemoHeader />
+        <DemoContent />
+      </AppShell.Inset>
+    </AppShell>
+  ),
 };
 
 /**

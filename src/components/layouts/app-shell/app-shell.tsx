@@ -13,6 +13,7 @@ import { ANIMATION } from '@/constants/animations';
 import { Icon, type IconType } from '@/components/icon';
 
 import { Button } from '@/components/ui/button';
+import { DropdownMenu } from '@/components/ui/dropdown-menu';
 import { Loader } from '@/components/ui/loader';
 import { Sidebar, SIDEBAR_WIDTH } from '@/components/ui/sidebar';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -167,6 +168,7 @@ type AppShellSidebarContextValue = {
   sidebarWidth: string;
   setSidebarWidth: (width: string) => void;
   maxWidth?: number;
+  collapsible: AppShellSidebarCollapsible;
 };
 
 const AppShellLeftSidebarContext =
@@ -174,6 +176,28 @@ const AppShellLeftSidebarContext =
 
 const AppShellRightSidebarContext =
   React.createContext<AppShellSidebarContextValue | null>(null);
+
+/**
+ * True only when the sidebar this subtree lives in is collapsed to its icon
+ * rail — set by `SidebarSidePanel` so items/sections react to the CORRECT side
+ * (both side contexts are ancestors, so presence alone can't tell them apart).
+ */
+type SidebarCollapsedState = {
+  /** True only when this sidebar is an icon rail AND currently collapsed. */
+  collapsed: boolean;
+  /** True whenever this sidebar's collapse mode is the icon rail (constant per
+   * side — never toggles), so wrappers can mount once and stay stable. */
+  iconRail: boolean;
+};
+
+const SidebarCollapsedContext = React.createContext<SidebarCollapsedState>({
+  collapsed: false,
+  iconRail: false,
+});
+
+function useSidebarCollapsed() {
+  return React.useContext(SidebarCollapsedContext);
+}
 
 function useAppShellLeftSidebar() {
   const context = React.useContext(AppShellLeftSidebarContext);
@@ -211,11 +235,13 @@ function SidebarSideProvider({
   side,
   defaultOpen = true,
   maxWidth,
+  collapsible = 'offcanvas',
   children,
 }: {
   side: AppShellSidebarSide;
   defaultOpen?: boolean;
   maxWidth?: number;
+  collapsible?: AppShellSidebarCollapsible;
   children: React.ReactNode;
 }) {
   const config = SIDEBAR_SIDE_CONFIG[side];
@@ -279,8 +305,18 @@ function SidebarSideProvider({
       sidebarWidth,
       setSidebarWidth,
       maxWidth,
+      collapsible,
     }),
-    [side, state, open, setOpen, toggleSidebar, sidebarWidth, maxWidth],
+    [
+      side,
+      state,
+      open,
+      setOpen,
+      toggleSidebar,
+      sidebarWidth,
+      maxWidth,
+      collapsible,
+    ],
   );
 
   const Context =
@@ -308,9 +344,20 @@ function SidebarSideProvider({
   );
 }
 
+type AppShellSidebarCollapsible = 'offcanvas' | 'icon';
+
 type AppShellSidebarProp =
   | boolean
-  | { defaultOpen?: boolean; maxWidth?: number };
+  | {
+      defaultOpen?: boolean;
+      maxWidth?: number;
+      /**
+       * How the sidebar looks when collapsed. `offcanvas` (default) slides it
+       * away entirely; `icon` keeps a slim rail of icons (labels hidden, shown
+       * as tooltips on hover).
+       */
+      collapsible?: AppShellSidebarCollapsible;
+    };
 
 /**
  * Mounts a side's state when the matching root prop enables it. Skips when an
@@ -337,6 +384,7 @@ function OptionalSidebarProvider({
       side={side}
       defaultOpen={typeof config === 'object' ? config.defaultOpen : undefined}
       maxWidth={typeof config === 'object' ? config.maxWidth : undefined}
+      collapsible={typeof config === 'object' ? config.collapsible : undefined}
     >
       {children}
     </SidebarSideProvider>
@@ -389,6 +437,7 @@ function SidebarSidePanel({
     setOpen,
     setSidebarWidth,
     maxWidth: maxSidebarWidth,
+    collapsible,
   } = context;
 
   // Dragging toward the shell center collapses; away from it expands.
@@ -602,7 +651,7 @@ function SidebarSidePanel({
       data-slot="sidebar"
       data-variant="inset"
       data-state={state}
-      data-collapsible={state === 'collapsed' ? 'offcanvas' : ''}
+      data-collapsible={state === 'collapsed' ? collapsible : ''}
       className="group peer hidden text-sidebar-foreground lg:block"
       {...props}
     >
@@ -616,7 +665,10 @@ function SidebarSidePanel({
             ? side === 'left'
               ? 'w-(--left-sidebar-width)'
               : 'w-(--right-sidebar-width)'
-            : 'w-0',
+            : // Icon rail keeps a slim column; offcanvas collapses to nothing.
+              collapsible === 'icon'
+              ? 'w-14'
+              : 'w-0',
         )}
       />
 
@@ -631,8 +683,8 @@ function SidebarSidePanel({
           'fixed z-10 hidden overflow-clip bg-sidebar transition-[width] lg:flex',
           SIDEBAR_ANIMATION_DURATION,
           side === 'left'
-            ? 'left-0 w-(--left-sidebar-width) group-data-[collapsible=offcanvas]:w-0 justify-end'
-            : 'right-0 w-(--right-sidebar-width) group-data-[collapsible=offcanvas]:w-0',
+            ? 'left-0 w-(--left-sidebar-width) group-data-[collapsible=offcanvas]:w-0 group-data-[collapsible=icon]:w-14 justify-end'
+            : 'right-0 w-(--right-sidebar-width) group-data-[collapsible=offcanvas]:w-0 group-data-[collapsible=icon]:w-14',
         )}
         style={{
           top: 'var(--announcement-height, 0px)',
@@ -647,10 +699,18 @@ function SidebarSidePanel({
             side === 'left'
               ? 'w-(--left-sidebar-width)'
               : 'w-(--right-sidebar-width)',
+            'group-data-[collapsible=icon]:w-14',
             className,
           )}
         >
-          {children}
+          <SidebarCollapsedContext.Provider
+            value={{
+              collapsed: state === 'collapsed' && collapsible === 'icon',
+              iconRail: collapsible === 'icon',
+            }}
+          >
+            {children}
+          </SidebarCollapsedContext.Provider>
         </div>
       </div>
 
@@ -671,8 +731,8 @@ function SidebarSidePanel({
           'hover:after:translate-x-0 hover:after:bg-sidebar-border',
           'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring bg-transparent!',
           side === 'left'
-            ? 'left-(--left-sidebar-width) group-data-[collapsible=offcanvas]:left-0 -translate-x-1/2 after:left-1/2 after:-translate-x-1/2 transition-[left,transform]'
-            : 'right-(--right-sidebar-width) group-data-[collapsible=offcanvas]:right-0 translate-x-1/2 after:right-1/2 after:translate-x-1/2 transition-[right,transform]',
+            ? 'left-(--left-sidebar-width) group-data-[collapsible=offcanvas]:left-0 group-data-[collapsible=icon]:left-14 -translate-x-1/2 after:left-1/2 after:-translate-x-1/2 transition-[left,transform]'
+            : 'right-(--right-sidebar-width) group-data-[collapsible=offcanvas]:right-0 group-data-[collapsible=icon]:right-14 translate-x-1/2 after:right-1/2 after:translate-x-1/2 transition-[right,transform]',
           SIDEBAR_ANIMATION_DURATION,
           isDragging && 'after:translate-x-0 after:bg-sidebar-border',
         )}
@@ -850,7 +910,7 @@ function AppShellSidebarHeader({
     <Sidebar.Header
       data-slot="app-shell-sidebar-header"
       className={cn(
-        'flex flex-row items-center justify-between border-none p-4 pb-2 -mt-0.5',
+        'flex flex-row items-center justify-between border-none p-4 pb-2 -mt-0.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0',
         className,
       )}
       {...props}
@@ -868,7 +928,10 @@ function AppShellSidebarSection({
   return (
     <div
       data-slot="app-shell-sidebar-section"
-      className={cn('shrink-0 px-4 py-2 empty:hidden', className)}
+      className={cn(
+        'shrink-0 px-4 py-2 empty:hidden group-data-[collapsible=icon]:px-0',
+        className,
+      )}
       {...props}
     >
       {children}
@@ -888,7 +951,7 @@ function AppShellSidebarContent({
     <Sidebar.Content
       data-slot="app-shell-sidebar-content"
       className={cn(
-        'flex-1 gap-4 overflow-x-hidden overflow-y-auto scroll-fade-y px-4 py-2',
+        'flex-1 gap-4 overflow-x-hidden overflow-y-auto scroll-fade-y px-4 py-2 group-data-[collapsible=icon]:px-0',
         className,
       )}
       {...props}
@@ -913,7 +976,7 @@ function AppShellSidebarGroup({
       {...props}
     >
       {title && (
-        <span className="text-xs text-muted-foreground/50 font-medium uppercase p-2">
+        <span className="text-xs text-muted-foreground/50 font-medium uppercase p-2 group-data-[collapsible=icon]:hidden">
           {title}
         </span>
       )}
@@ -962,6 +1025,40 @@ function itemAnimation({
 const DROPDOWN_CHILD_STAGGER_DELAY = 0.035;
 const MAX_DROPDOWN_CHILD_STAGGER_DELAY = 0.14;
 
+/**
+ * A sidebar item label that slides + fades out as the rail collapses and back in
+ * as it expands — so expanding animates the items moving, not a hard swap. In
+ * offcanvas mode `collapsed` is always false, so the label just stays visible.
+ */
+function SidebarItemLabel({
+  active,
+  className,
+  children,
+}: {
+  active?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const { collapsed } = useSidebarCollapsed();
+
+  return (
+    <AnimatePresence initial={false}>
+      {!collapsed && (
+        <motion.span
+          data-active={active}
+          initial={{ opacity: 0, width: 0 }}
+          animate={{ opacity: 1, width: 'auto' }}
+          exit={{ opacity: 0, width: 0 }}
+          transition={{ duration: ANIMATION.DURATION_FLOAT }}
+          className={className}
+        >
+          {children}
+        </motion.span>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export type AppShellSidebarItemData = {
   title: string;
   icon?: IconType | React.ReactNode;
@@ -992,6 +1089,17 @@ function AppShellSidebarItem({
 }: AppShellSidebarItemProps) {
   const [open, setOpen] = React.useState(false);
 
+  const { collapsed, iconRail } = useSidebarCollapsed();
+
+  // The lib's `Sidebar.MenuButton` wraps itself in a `Tooltip` when given this
+  // prop (ref-safe — it triggers on its own DOM element, not a wrapper), so we
+  // reuse it instead of the native HTML `title`. Only icon-rail sidebars get it
+  // (and `iconRail` never toggles → the button subtree stays mounted, letting
+  // the label animation play), and the tooltip only shows while collapsed.
+  const sidebarTooltip = iconRail
+    ? { children: item.title, hidden: !collapsed }
+    : undefined;
+
   const hasItems = !!item.items && item.items.length > 0;
   const hasHref = !!item.href;
   const hasLinkedChildren = hasItems && hasHref && !item.onClick;
@@ -1007,7 +1115,7 @@ function AppShellSidebarItem({
   const isActive = !isDisabled && !isLoading && !!item.active;
 
   const buttonClassName =
-    'relative z-10 group/menu-button hover:bg-sidebar-accent! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 h-auto! p-2.5! text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] cursor-pointer';
+    'relative z-10 group/menu-button hover:bg-sidebar-accent! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 h-auto! p-2.5! text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] cursor-pointer group-data-[collapsible=icon]:size-9! group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:justify-center';
 
   const itemStyle = {
     marginLeft: `${level * 16}px`,
@@ -1069,7 +1177,7 @@ function AppShellSidebarItem({
           key="trailing"
           {...itemAnimation({ direction: 'right', reverse: true })}
           className={cn(
-            'flex items-center gap-2',
+            'flex items-center gap-2 group-data-[collapsible=icon]:hidden',
             !hasLinkedChildren && 'ml-auto',
           )}
         >
@@ -1094,6 +1202,67 @@ function AppShellSidebarItem({
 
   const isPlainLink = !hasItems && !item.onClick;
 
+  // In the icon rail there's no room to expand a submenu inline (and the split
+  // toggle is hidden), so a dropdown item opens its children as a flyout menu
+  // on click — the standard collapsed-sidebar pattern. Gated on `collapsed`
+  // (not `iconRail`) so the expanded rail keeps the animated inline submenu.
+  if (collapsed && hasItems) {
+    return (
+      <motion.li
+        {...itemAnimation({ direction: 'left', delay: dropdownChildDelay })}
+        suppressHydrationWarning
+        data-disabled={isDisabled}
+        className="relative flex list-none flex-col items-center group/menu-item data-[disabled=true]:opacity-50 data-[disabled=true]:pointer-events-none"
+      >
+        <DropdownMenu>
+          <DropdownMenu.Trigger
+            type="button"
+            disabled={isDisabled}
+            data-active={isActive}
+            aria-label={item.title}
+            className={cn(
+              buttonClassName,
+              // `buttonClassName`'s `justify-center` relies on flex, which the
+              // MenuButton got from its own variant — the raw trigger needs it.
+              'flex items-center justify-center rounded-lg',
+            )}
+          >
+            {icon}
+          </DropdownMenu.Trigger>
+
+          <DropdownMenu.Content side="right" align="start" sideOffset={8}>
+            {item.items?.map((child, childIndex) => (
+              <DropdownMenu.Item
+                key={`${child.title}-${childIndex}`}
+                asChild
+                disabled={child.disabled || child.soon}
+              >
+                <a
+                  href={
+                    child.href && !child.disabled && !child.soon
+                      ? child.href
+                      : '#'
+                  }
+                  target={child.external ? '_blank' : undefined}
+                  rel={child.external ? 'noopener noreferrer' : undefined}
+                  onClick={child.onClick}
+                >
+                  {typeof child.icon === 'string' ? (
+                    <Icon name={child.icon as IconType} />
+                  ) : (
+                    child.icon
+                  )}
+
+                  <span className="truncate">{child.title}</span>
+                </a>
+              </DropdownMenu.Item>
+            ))}
+          </DropdownMenu.Content>
+        </DropdownMenu>
+      </motion.li>
+    );
+  }
+
   // A real `<li>` — items live inside the group's `Sidebar.Menu`/submenu
   // `<ul>`s, and the axe `list` rule requires their direct children to be
   // list items.
@@ -1103,22 +1272,29 @@ function AppShellSidebarItem({
       suppressHydrationWarning
       data-open={open}
       data-disabled={isDisabled}
-      className="relative flex list-none flex-col group/menu-item data-[disabled=true]:opacity-50 data-[disabled=true]:pointer-events-none"
+      className="relative flex list-none flex-col group/menu-item data-[disabled=true]:opacity-50 data-[disabled=true]:pointer-events-none group-data-[collapsible=icon]:items-center"
     >
       {useSplitDropdownLayout ? (
         <div
-          className="relative z-10 flex w-full min-w-0 gap-1"
+          className="relative z-10 flex w-full min-w-0 gap-1 group-data-[collapsible=icon]:justify-center"
           style={itemStyle}
         >
           <Sidebar.MenuButton
             asChild
+            tooltip={sidebarTooltip}
             data-open={open}
             data-active={isActive}
             data-index={index}
             data-level={level}
             data-disabled={isDisabled}
             disabled={isDisabled}
-            className={cn(buttonClassName, 'min-w-0 flex-1')}
+            className={cn(
+              buttonClassName,
+              // `flex-1` sets flex-basis:0 which would override `size-9!` and
+              // stretch the item; `flex-none` restores the 36px icon size in
+              // the rail so split-dropdown items match the plain ones.
+              'min-w-0 flex-1 group-data-[collapsible=icon]:flex-none',
+            )}
           >
             <a
               href={item.href && !isDisabled ? item.href : '#'}
@@ -1126,13 +1302,13 @@ function AppShellSidebarItem({
               rel={isExternal ? 'noopener noreferrer' : undefined}
               onClick={handleNavigateClick}
               suppressHydrationWarning
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center"
             >
               {icon}
 
-              <span data-active={isActive} className="truncate text-sm">
+              <SidebarItemLabel active={isActive} className="truncate text-sm">
                 {item.title}
-              </span>
+              </SidebarItemLabel>
             </a>
           </Sidebar.MenuButton>
 
@@ -1149,7 +1325,7 @@ function AppShellSidebarItem({
             onClick={handleToggleItems}
             className={cn(
               buttonClassName,
-              'w-10 shrink-0 justify-center p-2.5!',
+              'w-10 shrink-0 justify-center p-2.5! group-data-[collapsible=icon]:hidden',
             )}
           >
             {trailing}
@@ -1158,6 +1334,7 @@ function AppShellSidebarItem({
       ) : (
         <Sidebar.MenuButton
           asChild={isPlainLink}
+          tooltip={sidebarTooltip}
           data-open={open}
           data-active={isActive}
           data-index={index}
@@ -1175,13 +1352,16 @@ function AppShellSidebarItem({
               rel={isExternal ? 'noopener noreferrer' : undefined}
               onClick={handleNavigateClick}
               suppressHydrationWarning
-              className="flex w-full min-w-0 items-center gap-2"
+              className="flex w-full min-w-0 items-center gap-2 group-data-[collapsible=icon]:justify-center"
             >
               {icon}
 
-              <span data-active={isActive} className="text-sm min-w-0 truncate">
+              <SidebarItemLabel
+                active={isActive}
+                className="text-sm min-w-0 truncate"
+              >
                 {item.title}
-              </span>
+              </SidebarItemLabel>
 
               {trailing}
             </a>
@@ -1189,9 +1369,9 @@ function AppShellSidebarItem({
             <>
               {icon}
 
-              <span data-active={isActive} className="text-sm">
+              <SidebarItemLabel active={isActive} className="text-sm">
                 {item.title}
-              </span>
+              </SidebarItemLabel>
 
               {trailing}
             </>
@@ -1237,20 +1417,49 @@ function AppShellCommandButton({
   children,
   ...props
 }: React.ComponentProps<'button'>) {
-  return (
+  const { collapsed, iconRail } = useSidebarCollapsed();
+
+  const button = (
     <button
       type="button"
       data-slot="app-shell-command-button"
+      aria-label="Pesquisar"
       className={cn(
         'flex h-12 w-full min-w-0 cursor-pointer items-center rounded-xl border-2 border-sidebar-accent bg-transparent p-2.5 text-left text-sm text-muted-foreground outline-none transition-all hover:bg-sidebar-accent/30 focus-visible:border-transparent focus-visible:ring-[3px] focus-visible:ring-ring/50',
+        // Collapsed: shed the input chrome and become a plain 36px icon button,
+        // sized and centered exactly like the nav items in the rail.
+        'group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-9! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:hover:bg-sidebar-accent',
         className,
       )}
       {...props}
     >
-      <span className="pointer-events-none flex w-full items-center gap-2 opacity-50 truncate">
-        {children}
+      <span className="pointer-events-none flex w-full items-center gap-2 opacity-50 group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:opacity-100">
+        {/* Search glyph only stands in for the label once collapsed to the rail. */}
+        <Icon
+          name="Magnifier"
+          className="hidden size-4 shrink-0 text-muted-foreground group-data-[collapsible=icon]:block"
+        />
+        <span className="truncate group-data-[collapsible=icon]:hidden">
+          {children}
+        </span>
       </span>
     </button>
+  );
+
+  // Match the nav items: the lib Tooltip (not a native title) labels the icon
+  // once collapsed. Only icon-rail sidebars wrap — `iconRail` never toggles, so
+  // the button stays mounted.
+  if (!iconRail) {
+    return button;
+  }
+
+  return (
+    <Tooltip>
+      <Tooltip.Trigger asChild>{button}</Tooltip.Trigger>
+      {collapsed ? (
+        <Tooltip.Content side="right">Pesquisar</Tooltip.Content>
+      ) : null}
+    </Tooltip>
   );
 }
 
@@ -1262,7 +1471,10 @@ function AppShellSidebarFooter({
   return (
     <Sidebar.Footer
       data-slot="app-shell-sidebar-footer"
-      className={cn('p-4', className)}
+      className={cn(
+        'p-4 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0',
+        className,
+      )}
       {...props}
     >
       {children}
@@ -1279,7 +1491,10 @@ function AppShellCopyright({
     <span
       suppressHydrationWarning
       data-slot="app-shell-copyright"
-      className={cn('text-xs text-muted-foreground/50 p-2', className)}
+      className={cn(
+        'text-xs text-muted-foreground/50 p-2 group-data-[collapsible=icon]:hidden',
+        className,
+      )}
       {...props}
     >
       {children}
