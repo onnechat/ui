@@ -398,6 +398,8 @@ type PlaygroundArgs = {
   rightTrigger: TriggerMode;
   insetTop: boolean;
   insetBottom: boolean;
+  insetLeft: boolean;
+  insetRight: boolean;
   tallContent: boolean;
   loading: boolean;
   navbar: boolean;
@@ -453,6 +455,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     rightTrigger: 'automático',
     insetTop: false,
     insetBottom: false,
+    insetLeft: false,
+    insetRight: false,
     tallContent: false,
     loading: false,
     navbar: true,
@@ -507,6 +511,18 @@ export const Playground: StoryObj<PlaygroundArgs> = {
         'Slot `bottom` do inset — barra da assistente fixa abaixo do painel (no mobile cede ao navbar).',
       table: { category: 'Inset' },
     },
+    insetLeft: {
+      control: 'boolean',
+      description:
+        'Slot `left` do inset — coluna fixa ladeando o painel à esquerda (ex.: lista/segmentos). Só desktop.',
+      table: { category: 'Inset' },
+    },
+    insetRight: {
+      control: 'boolean',
+      description:
+        'Slot `right` do inset — coluna fixa ladeando o painel à direita (ex.: resumo/detalhes). Só desktop.',
+      table: { category: 'Inset' },
+    },
     tallContent: {
       control: 'boolean',
       description:
@@ -536,7 +552,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     docs: {
       description: {
         story:
-          'Playground interativo com todos os recursos do shell: sidebars por lado, header com slots de trigger (automático/customizado/oculto), faixas fixas `top`/`bottom` do inset, conteúdo longo para sentir o scroll, navbar mobile, loading e announcement — tudo combinável pelos controls.',
+          'Playground interativo com todos os recursos do shell: sidebars por lado, header com slots de trigger (automático/customizado/oculto), encaixes fixos do inset nos quatro lados (`top`/`bottom`/`left`/`right`), conteúdo longo para sentir o scroll, navbar mobile, loading e announcement — tudo combinável pelos controls.',
       },
     },
   },
@@ -573,6 +589,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             loading={args.loading}
             top={args.insetTop ? <DemoTrialBanner /> : undefined}
             bottom={args.insetBottom ? <DemoAssistantBar /> : undefined}
+            left={args.insetLeft ? <DemoInsetLeft /> : undefined}
+            right={args.insetRight ? <DemoInsetRight /> : undefined}
           >
             {args.header && (
               <DemoHeader
@@ -983,6 +1001,45 @@ function DemoAssistantBar() {
           <Icon name="Message" className="size-4" />
         </Button>
       </div>
+    </div>
+  );
+}
+
+function DemoInsetLeft() {
+  return (
+    <div className="flex h-full w-60 flex-col gap-1 overflow-y-auto p-3">
+      <span className="px-2 pb-1 text-xs font-medium uppercase text-muted-foreground/60">
+        Segmentos
+      </span>
+      {['Todos os clientes', 'Novos este mês', 'Recorrentes', 'Inativos'].map(
+        (label, i) => (
+          <button
+            key={label}
+            type="button"
+            data-active={i === 0}
+            className="flex items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent data-[active=true]:bg-sidebar-accent data-[active=true]:text-foreground"
+          >
+            <Icon name="Users" className="size-4 shrink-0" />
+            <span className="truncate">{label}</span>
+          </button>
+        ),
+      )}
+    </div>
+  );
+}
+
+function DemoInsetRight() {
+  return (
+    <div className="flex h-full w-72 flex-col gap-3 overflow-y-auto p-4">
+      <span className="text-xs font-medium uppercase text-muted-foreground/60">
+        Resumo
+      </span>
+      {['Total', 'Ativos', 'Ticket médio'].map(label => (
+        <div key={label} className="flex flex-col gap-1 rounded-xl bg-card p-3">
+          <span className="text-xs text-muted-foreground">{label}</span>
+          <span className="text-lg font-semibold">—</span>
+        </div>
+      ))}
     </div>
   );
 }
