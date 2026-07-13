@@ -158,6 +158,55 @@
 }
 
 /*
+ * scrollbar-thin — a slim, unobtrusive scrollbar (Linear-style) for internal
+ * scroll containers, so a scrolling region reads like the page scroll instead
+ * of a boxed one. Firefox uses `scrollbar-width`/`-color`; WebKit gets an
+ * overlay-like thumb (transparent track, pill thumb inset by a transparent
+ * border via background-clip, `--scrollbar-min-size` floor). The colours track
+ * `--muted-foreground`, so every theme adapts; override `--scrollbar-color`
+ * to retint.
+ */
+@utility scrollbar-thin {
+  --scrollbar-color: color-mix(
+    in oklab,
+    var(--muted-foreground) 35%,
+    transparent
+  );
+  --scrollbar-color-hover: color-mix(
+    in oklab,
+    var(--muted-foreground) 55%,
+    transparent
+  );
+  --scrollbar-min-size: 32px;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-color) transparent;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    min-height: var(--scrollbar-min-size);
+    min-width: var(--scrollbar-min-size);
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: var(--scrollbar-color);
+  }
+  &:hover::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-color-hover);
+  }
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+/*
  * shimmer — a moving highlight sweeping across text, for live status like
  * "Pensando…" / "Gerando resposta…". Muted base with a brighter band passing
  * through. Respects reduced motion.

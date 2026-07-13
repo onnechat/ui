@@ -1,4 +1,4 @@
-import type * as React from 'react';
+import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor } from 'storybook/test';
@@ -6,9 +6,14 @@ import { expect, waitFor } from 'storybook/test';
 import { Icon } from '@/components/icon';
 
 import { Avatar } from '@/components/ui/avatar';
+import { Bubble } from '@/components/ui/bubble';
 import { Button } from '@/components/ui/button';
+import { Chat } from '@/components/blocks/chat';
 import { Kbd } from '@/components/ui/kbd';
 import { OnnebookLogo } from '@/components/ui/logo';
+import { Marker } from '@/components/ui/marker';
+import { Message } from '@/components/ui/message';
+import { MessageScroller } from '@/components/ui/message-scroller';
 import { Sidebar } from '@/components/ui/sidebar';
 
 import { AnnouncementBanner } from './announcement-banner';
@@ -90,7 +95,7 @@ const meta: Meta<typeof AppShell> = {
           '',
           '## Inset',
           '',
-          'O `AppShell.Inset` é o painel arredondado do conteúdo. Os slots `top` e `bottom` fixam faixas acima/abaixo do painel, sobre o fundo do shell (estilo Linear). O scroll continua sendo o da página: as faixas ficam fixas na tela enquanto o painel central desliza entre elas, e o header gruda logo abaixo da faixa de cima. Combinados com as duas sidebars, dão posicionamento nos quatro lados da página.',
+          'O `AppShell.Inset` é o painel arredondado do conteúdo. Os slots `top`, `bottom`, `left` e `right` fixam faixas/colunas ao redor do painel, sobre o fundo do shell (estilo Linear), emoldurando os quatro lados da página. No desktop o painel rola o próprio conteúdo entre esses encaixes — os cantos arredondados ficam sempre visíveis (nada de faixa cortando quadrado no scroll); no mobile as faixas viram sticky e o scroll é o da página (full-bleed, sem cantos). Os slots `left`/`right` são o análogo horizontal de `top`/`bottom`: colunas fixas de altura cheia para uma segunda coluna que não é sidebar (lista de conversas, filtros, detalhes) — ver a story `ChatLayout`.',
           '',
           '## Mobile',
           '',
@@ -137,7 +142,13 @@ const meta: Meta<typeof AppShell> = {
   globals: {
     viewport: { value: 'desktop', isRotated: false },
   },
-  tags: ['autodocs'],
+  // The `viewport` above forces the CANVAS preview to 1440px, so every story
+  // renders desktop there. The autodocs page, however, embeds each story in a
+  // ~1000px docs column that the viewport can't widen — below the `lg`
+  // breakpoint, so the shell would always render as mobile on the docs page.
+  // Opt this component out of autodocs (it's globally on in preview.ts) so
+  // clicking it lands on the full-width canvas instead of the misleading docs.
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -376,6 +387,23 @@ function withoutAnnouncement(Story: React.ComponentType) {
   );
 }
 
+/**
+ * The left sidebar's open/collapsed state persists in a cookie SHARED by every
+ * AppShell story, so expanding it in another story would leak in and hide this
+ * one's icon rail. Clear it during render — before the shell reads it in its
+ * layout effect — so `defaultOpen: false` (the icon rail) always wins on open.
+ */
+function withLeftSidebarReset(Story: React.ComponentType) {
+  React.useState(() => {
+    if (typeof document !== 'undefined') {
+      document.cookie = 'left-sidebar-state=; path=/; max-age=0';
+    }
+    return null;
+  });
+
+  return <Story />;
+}
+
 type TriggerMode = 'automático' | 'customizado' | 'oculto';
 
 type PlaygroundArgs = {
@@ -387,6 +415,8 @@ type PlaygroundArgs = {
   rightTrigger: TriggerMode;
   insetTop: boolean;
   insetBottom: boolean;
+  insetLeft: boolean;
+  insetRight: boolean;
   tallContent: boolean;
   loading: boolean;
   navbar: boolean;
@@ -442,6 +472,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     rightTrigger: 'automático',
     insetTop: false,
     insetBottom: false,
+    insetLeft: false,
+    insetRight: false,
     tallContent: false,
     loading: false,
     navbar: true,
@@ -496,6 +528,18 @@ export const Playground: StoryObj<PlaygroundArgs> = {
         'Slot `bottom` do inset — barra da assistente fixa abaixo do painel (no mobile cede ao navbar).',
       table: { category: 'Inset' },
     },
+    insetLeft: {
+      control: 'boolean',
+      description:
+        'Slot `left` do inset — coluna fixa ladeando o painel à esquerda (ex.: lista/segmentos). Só desktop.',
+      table: { category: 'Inset' },
+    },
+    insetRight: {
+      control: 'boolean',
+      description:
+        'Slot `right` do inset — coluna fixa ladeando o painel à direita (ex.: resumo/detalhes). Só desktop.',
+      table: { category: 'Inset' },
+    },
     tallContent: {
       control: 'boolean',
       description:
@@ -525,7 +569,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     docs: {
       description: {
         story:
-          'Playground interativo com todos os recursos do shell: sidebars por lado, header com slots de trigger (automático/customizado/oculto), faixas fixas `top`/`bottom` do inset, conteúdo longo para sentir o scroll, navbar mobile, loading e announcement — tudo combinável pelos controls.',
+          'Playground interativo com todos os recursos do shell: sidebars por lado, header com slots de trigger (automático/customizado/oculto), encaixes fixos do inset nos quatro lados (`top`/`bottom`/`left`/`right`), conteúdo longo para sentir o scroll, navbar mobile, loading e announcement — tudo combinável pelos controls.',
       },
     },
   },
@@ -562,6 +606,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             loading={args.loading}
             top={args.insetTop ? <DemoTrialBanner /> : undefined}
             bottom={args.insetBottom ? <DemoAssistantBar /> : undefined}
+            left={args.insetLeft ? <DemoInsetLeft /> : undefined}
+            right={args.insetRight ? <DemoInsetRight /> : undefined}
           >
             {args.header && (
               <DemoHeader
@@ -976,6 +1022,45 @@ function DemoAssistantBar() {
   );
 }
 
+function DemoInsetLeft() {
+  return (
+    <div className="flex h-full w-60 flex-col gap-1 overflow-y-auto p-3">
+      <span className="px-2 pb-1 text-xs font-medium uppercase text-muted-foreground/60">
+        Segmentos
+      </span>
+      {['Todos os clientes', 'Novos este mês', 'Recorrentes', 'Inativos'].map(
+        (label, i) => (
+          <button
+            key={label}
+            type="button"
+            data-active={i === 0}
+            className="flex items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent data-[active=true]:bg-sidebar-accent data-[active=true]:text-foreground"
+          >
+            <Icon name="Users" className="size-4 shrink-0" />
+            <span className="truncate">{label}</span>
+          </button>
+        ),
+      )}
+    </div>
+  );
+}
+
+function DemoInsetRight() {
+  return (
+    <div className="flex h-full w-72 flex-col gap-3 overflow-y-auto p-4">
+      <span className="text-xs font-medium uppercase text-muted-foreground/60">
+        Resumo
+      </span>
+      {['Total', 'Ativos', 'Ticket médio'].map(label => (
+        <div key={label} className="flex flex-col gap-1 rounded-xl bg-card p-3">
+          <span className="text-xs text-muted-foreground">{label}</span>
+          <span className="text-lg font-semibold">—</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /**
  * Slot `top` do `AppShell.Inset`: faixa fixa acima do painel, sobre o fundo
  * do shell — aqui um aviso de fim de período de teste, o caso clássico de
@@ -1090,6 +1175,431 @@ export const InsetPinnedSlots: StoryObj<typeof meta> = {
       </AppShell.RightSidebar>
     </AppShell>
   ),
+};
+
+/**
+ * `left` e `right` são o análogo horizontal de `top`/`bottom`: colunas
+ * fixas de altura cheia que ladeiam o painel, sobre o fundo do shell. Servem
+ * para uma segunda coluna que NÃO é uma sidebar (uma lista, um painel de
+ * filtros, detalhes) sem precisar aninhar outra sidebar. O painel continua
+ * rolando o próprio conteúdo entre elas, com os cantos sempre arredondados.
+ */
+export const LateralInsets: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
+  parameters: {
+    ...componentA11yTodo,
+    docs: {
+      description: {
+        story:
+          'Encaixes `left`/`right`: colunas fixas ladeando o painel. Aqui a esquerda lista segmentos e a direita mostra um resumo — o painel central rola sozinho entre elas.',
+      },
+    },
+  },
+  render: () => (
+    <AppShell leftSidebar>
+      <AppShell.LeftSidebar>
+        <DemoLeftSidebarContent />
+      </AppShell.LeftSidebar>
+
+      <AppShell.Inset
+        left={
+          <div className="flex h-full w-64 flex-col gap-1 overflow-y-auto p-3">
+            <span className="px-2 pb-1 text-xs font-medium uppercase text-muted-foreground/60">
+              Segmentos
+            </span>
+            {[
+              'Todos os clientes',
+              'Novos este mês',
+              'Recorrentes',
+              'Inativos',
+              'Aniversariantes',
+            ].map((label, i) => (
+              <button
+                key={label}
+                type="button"
+                data-active={i === 0}
+                className="flex items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent data-[active=true]:bg-sidebar-accent data-[active=true]:text-foreground"
+              >
+                <Icon name="Users" className="size-4 shrink-0" />
+                <span className="truncate">{label}</span>
+              </button>
+            ))}
+          </div>
+        }
+        right={
+          <div className="flex h-full w-72 flex-col gap-3 overflow-y-auto p-4">
+            <span className="text-xs font-medium uppercase text-muted-foreground/60">
+              Resumo
+            </span>
+            {['Total', 'Ativos', 'Ticket médio'].map(label => (
+              <div
+                key={label}
+                className="flex flex-col gap-1 rounded-xl bg-card p-3"
+              >
+                <span className="text-xs text-muted-foreground">{label}</span>
+                <span className="text-lg font-semibold">—</span>
+              </div>
+            ))}
+          </div>
+        }
+      >
+        <DemoHeader title="Clientes" />
+        <DemoTallContent />
+      </AppShell.Inset>
+    </AppShell>
+  ),
+};
+
+/* ---------------------------------------------------------------------------
+ * ChatLayout — um exemplo real de composição: uma tela de mensagens montada
+ * SÓ com componentes da lib. O `left` inset é a lista de conversas (uma
+ * segunda coluna que não é sidebar), o painel é o bloco `Chat` (thread) e a
+ * sidebar direita são os detalhes do contato.
+ * ------------------------------------------------------------------------- */
+
+type DemoConversation = {
+  id: string;
+  name: string;
+  initials: string;
+  preview: string;
+  time: string;
+  unread?: number;
+};
+
+const DEMO_CONVERSATIONS: DemoConversation[] = [
+  {
+    id: 'marina',
+    name: 'Marina Lopes',
+    initials: 'ML',
+    preview: 'Perfeito. Qualquer ajuste é só falar.',
+    time: '09:32',
+  },
+  {
+    id: 'diego',
+    name: 'Diego Ramos',
+    initials: 'DR',
+    preview: 'Você: mando o orçamento ainda hoje 👍',
+    time: '09:04',
+  },
+  {
+    id: 'equipe',
+    name: 'Equipe Atendimento',
+    initials: 'EA',
+    preview: 'Bruno: alguém consegue cobrir o balcão?',
+    time: 'Ontem',
+    unread: 3,
+  },
+  {
+    id: 'clara',
+    name: 'Clara Nunes',
+    initials: 'CN',
+    preview: 'Obrigada pelo atendimento de hoje!',
+    time: 'Ontem',
+  },
+  {
+    id: 'fornecedor',
+    name: 'Distribuidora Sul',
+    initials: 'DS',
+    preview: 'Pedido #4821 saiu para entrega.',
+    time: 'Ter',
+  },
+];
+
+function DemoConversationList({ activeId }: { activeId: string }) {
+  return (
+    <div className="flex h-full w-80 flex-col overflow-hidden">
+      <div className="flex shrink-0 items-center justify-between gap-2 px-4 pt-4 pb-2">
+        <span className="text-base font-semibold">Conversas</span>
+        <Button variant="ghost" size="icon-sm" aria-label="Nova conversa">
+          <Icon name="PenNib" className="size-4" />
+        </Button>
+      </div>
+
+      <div className="shrink-0 px-4 pb-2">
+        <div className="flex h-9 items-center gap-2 rounded-lg bg-muted px-2.5 text-sm text-muted-foreground">
+          <Icon name="Magnifier" className="size-4 shrink-0" />
+          <span className="truncate">Pesquisar…</span>
+        </div>
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-2 pb-3">
+        {DEMO_CONVERSATIONS.map(conversation => (
+          <button
+            key={conversation.id}
+            type="button"
+            data-active={conversation.id === activeId}
+            className="flex items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-sidebar-accent data-[active=true]:bg-sidebar-accent"
+          >
+            <Avatar className="size-10 shrink-0">
+              <Avatar.Fallback className="bg-card text-card-foreground text-sm">
+                {conversation.initials}
+              </Avatar.Fallback>
+            </Avatar>
+
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="truncate text-sm font-medium">
+                  {conversation.name}
+                </span>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {conversation.time}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="truncate text-xs text-muted-foreground">
+                  {conversation.preview}
+                </span>
+                {conversation.unread ? (
+                  <span className="flex size-4.5 shrink-0 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
+                    {conversation.unread}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DemoContactDetails() {
+  return (
+    <div className="flex h-full w-full flex-col gap-5 overflow-y-auto p-5">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <Avatar className="size-20">
+          <Avatar.Fallback className="bg-card text-card-foreground text-xl">
+            ML
+          </Avatar.Fallback>
+        </Avatar>
+        <div className="flex flex-col">
+          <span className="text-base font-semibold">Marina Lopes</span>
+          <span className="text-xs text-muted-foreground">online</span>
+        </div>
+        <div className="mt-1 flex gap-1.5">
+          <Button variant="outline" size="icon-sm" aria-label="Ligar">
+            <Icon name="Phone" className="size-4" />
+          </Button>
+          <Button variant="outline" size="icon-sm" aria-label="Vídeo">
+            <Icon name="Video" className="size-4" />
+          </Button>
+          <Button variant="outline" size="icon-sm" aria-label="Silenciar">
+            <Icon name="BellSlash" className="size-4" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <span className="px-1 text-xs font-medium uppercase text-muted-foreground/60">
+          Informações
+        </span>
+        {[
+          { icon: 'Envelope' as const, label: 'marina@exemplo.com' },
+          { icon: 'Phone' as const, label: '+55 11 90000-0000' },
+          { icon: 'MapPin' as const, label: 'São Paulo, SP' },
+        ].map(row => (
+          <div
+            key={row.label}
+            className="flex items-center gap-3 rounded-lg px-1 py-2 text-sm"
+          >
+            <Icon
+              name={row.icon}
+              className="size-4 shrink-0 text-muted-foreground"
+            />
+            <span className="truncate">{row.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="px-1 text-xs font-medium uppercase text-muted-foreground/60">
+          Arquivos
+        </span>
+        <div className="grid grid-cols-3 gap-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="aspect-square rounded-lg bg-muted" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type DemoChatMsg = { id: string; role: 'me' | 'them'; text: string };
+
+type DemoChatGroup = {
+  id: string;
+  role: 'me' | 'them';
+  messages: DemoChatMsg[];
+};
+
+function groupChatMessages(messages: DemoChatMsg[]): DemoChatGroup[] {
+  const groups: DemoChatGroup[] = [];
+  for (const message of messages) {
+    const last = groups[groups.length - 1];
+    if (last && last.role === message.role) last.messages.push(message);
+    else
+      groups.push({ id: message.id, role: message.role, messages: [message] });
+  }
+  return groups;
+}
+
+const DEMO_CHAT_REPLIES = [
+  'Boa, faz sentido! Vou ajustar por aqui.',
+  'Perfeito, obrigada! 🙌',
+  'Fechou! Qualquer coisa a gente se fala.',
+];
+
+/**
+ * Exemplo de composição real: uma tela de mensagens montada só com componentes
+ * da lib. O `left` inset lista as conversas, o painel é o bloco `Chat` (a
+ * thread ativa) e a sidebar direita traz os detalhes do contato — a sidebar
+ * esquerda vira um icon rail (navegação principal). É a resposta ao "faça uma
+ * listagem de chats do jeito certo": nada de recriar tela à mão.
+ */
+export const ChatLayout: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement, withLeftSidebarReset],
+  parameters: {
+    ...componentA11yTodo,
+    docs: {
+      description: {
+        story:
+          'Um app de mensagens montado com o AppShell: icon rail (nav) + `left` inset (lista de conversas) + painel (bloco `Chat`) + sidebar direita (detalhes do contato). O painel rola só a thread; a lista e os detalhes ficam fixos.',
+      },
+    },
+  },
+  render: function ChatLayoutRender() {
+    const [messages, setMessages] = React.useState<DemoChatMsg[]>([
+      { id: 'd0', role: 'them', text: 'Oi! Conseguiu ver a proposta?' },
+      { id: 'd1', role: 'me', text: 'Consegui sim, tô revisando agora.' },
+      { id: 'd2', role: 'them', text: 'Perfeito. Qualquer ajuste é só falar.' },
+    ]);
+    const [typing, setTyping] = React.useState(false);
+    const idRef = React.useRef(3);
+    const replyRef = React.useRef(0);
+
+    const send = (text: string) => {
+      setMessages(prev => [
+        ...prev,
+        { id: `m${idRef.current++}`, role: 'me', text },
+      ]);
+      setTyping(true);
+      window.setTimeout(() => {
+        const reply =
+          DEMO_CHAT_REPLIES[replyRef.current % DEMO_CHAT_REPLIES.length];
+        replyRef.current += 1;
+        setTyping(false);
+        setMessages(prev => [
+          ...prev,
+          { id: `t${idRef.current++}`, role: 'them', text: reply },
+        ]);
+      }, 1600);
+    };
+
+    const groups = groupChatMessages(messages);
+    const themAvatar = (
+      <Avatar className="size-7">
+        <Avatar.Fallback className="bg-card text-card-foreground text-xs">
+          ML
+        </Avatar.Fallback>
+      </Avatar>
+    );
+
+    return (
+      <AppShell
+        leftSidebar={{ collapsible: 'icon', defaultOpen: false }}
+        rightSidebar={{ defaultOpen: true }}
+      >
+        <AppShell.LeftSidebar>
+          <DemoLeftSidebarContent />
+        </AppShell.LeftSidebar>
+
+        <AppShell.Inset left={<DemoConversationList activeId="marina" />}>
+          <Chat
+            autoScroll
+            className="h-full max-w-none rounded-none border-0 bg-transparent shadow-none"
+          >
+            <Chat.Header>
+              <Chat.Identity
+                title="Marina Lopes"
+                subtitle="online"
+                avatar={
+                  <Avatar>
+                    <Avatar.Fallback className="bg-card text-card-foreground">
+                      ML
+                    </Avatar.Fallback>
+                  </Avatar>
+                }
+              />
+              <Chat.HeaderActions>
+                <AppShell.RightSidebarTrigger
+                  icon="SidebarToggle"
+                  className="scale-x-[-1]"
+                />
+              </Chat.HeaderActions>
+            </Chat.Header>
+
+            <Chat.Body>
+              <Marker>
+                <Marker.Icon>
+                  <Icon name="ShieldCheck" />
+                </Marker.Icon>
+                <Marker.Content>
+                  As mensagens desta conversa são protegidas
+                </Marker.Content>
+              </Marker>
+
+              <Marker variant="separator">
+                <Marker.Content>Hoje</Marker.Content>
+              </Marker>
+
+              {groups.map(group => {
+                const isMe = group.role === 'me';
+                return (
+                  <MessageScroller.Item
+                    key={group.id}
+                    messageId={group.id}
+                    scrollAnchor={isMe}
+                  >
+                    <Message align={isMe ? 'end' : 'start'}>
+                      {!isMe && <Message.Avatar>{themAvatar}</Message.Avatar>}
+                      <Message.Content>
+                        <Message.Group>
+                          {group.messages.map(message => (
+                            <Bubble
+                              key={message.id}
+                              variant={isMe ? 'outgoing' : 'incoming'}
+                            >
+                              <Bubble.Content>{message.text}</Bubble.Content>
+                            </Bubble>
+                          ))}
+                        </Message.Group>
+                      </Message.Content>
+                    </Message>
+                  </MessageScroller.Item>
+                );
+              })}
+            </Chat.Body>
+
+            {typing && <Chat.Typing>Marina está digitando</Chat.Typing>}
+
+            <Chat.Composer
+              onSend={send}
+              actions={
+                <Button variant="ghost" size="icon-sm" aria-label="Anexar">
+                  <Icon name="Plus" />
+                </Button>
+              }
+            />
+          </Chat>
+        </AppShell.Inset>
+
+        <AppShell.RightSidebar>
+          <DemoContactDetails />
+        </AppShell.RightSidebar>
+      </AppShell>
+    );
+  },
 };
 
 /**
