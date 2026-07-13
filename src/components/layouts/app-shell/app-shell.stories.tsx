@@ -142,7 +142,13 @@ const meta: Meta<typeof AppShell> = {
   globals: {
     viewport: { value: 'desktop', isRotated: false },
   },
-  tags: ['autodocs'],
+  // The `viewport` above forces the CANVAS preview to 1440px, so every story
+  // renders desktop there. The autodocs page, however, embeds each story in a
+  // ~1000px docs column that the viewport can't widen — below the `lg`
+  // breakpoint, so the shell would always render as mobile on the docs page.
+  // Opt this component out of autodocs (it's globally on in preview.ts) so
+  // clicking it lands on the full-width canvas instead of the misleading docs.
+  tags: ['!autodocs'],
 };
 
 export default meta;
