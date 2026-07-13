@@ -80,10 +80,39 @@
 
   /* Mola subamortecida (ζ=0.65, overshoot ≈7%) aproximada com linear(). */
   --ease-spring: linear(
-    0, 0.0511, 0.174, 0.331, 0.4949, 0.6475, 0.7785, 0.8831, 0.9611, 1.0145,
-    1.0473, 1.0637, 1.0681, 1.0644, 1.056, 1.0452, 1.0341, 1.0237, 1.0149,
-    1.0078, 1.0025, 0.9989, 0.9967, 0.9956, 0.9954, 0.9956, 0.9962, 0.9969,
-    0.9977, 0.9984, 0.999, 0.9995, 1
+    0,
+    0.0511,
+    0.174,
+    0.331,
+    0.4949,
+    0.6475,
+    0.7785,
+    0.8831,
+    0.9611,
+    1.0145,
+    1.0473,
+    1.0637,
+    1.0681,
+    1.0644,
+    1.056,
+    1.0452,
+    1.0341,
+    1.0237,
+    1.0149,
+    1.0078,
+    1.0025,
+    0.9989,
+    0.9967,
+    0.9956,
+    0.9954,
+    0.9956,
+    0.9962,
+    0.9969,
+    0.9977,
+    0.9984,
+    0.999,
+    0.9995,
+    1
   );
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -113,6 +142,14 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Slim, page-like scrollbar (Linear-style) for the document scroll. The
+     AppShell scrolls the page (not an inner panel), so this IS the shell's
+     scrollbar — at the viewport edge, full height. Components with their own
+     scroll chrome (ScrollArea, `scroll-fade-*`) opt out on their own elements. */
+  html {
+    @apply scrollbar-thin;
   }
 
   #nprogress .bar {
