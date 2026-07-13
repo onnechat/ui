@@ -13,6 +13,7 @@ import { ANIMATION } from '@/constants/animations';
 import { Icon, type IconType } from '@/components/icon';
 
 import { Button } from '@/components/ui/button';
+import { DropdownMenu } from '@/components/ui/dropdown-menu';
 import { Loader } from '@/components/ui/loader';
 import { Sidebar, SIDEBAR_WIDTH } from '@/components/ui/sidebar';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -1200,6 +1201,67 @@ function AppShellSidebarItem({
   );
 
   const isPlainLink = !hasItems && !item.onClick;
+
+  // In the icon rail there's no room to expand a submenu inline (and the split
+  // toggle is hidden), so a dropdown item opens its children as a flyout menu
+  // on click — the standard collapsed-sidebar pattern. Gated on `collapsed`
+  // (not `iconRail`) so the expanded rail keeps the animated inline submenu.
+  if (collapsed && hasItems) {
+    return (
+      <motion.li
+        {...itemAnimation({ direction: 'left', delay: dropdownChildDelay })}
+        suppressHydrationWarning
+        data-disabled={isDisabled}
+        className="relative flex list-none flex-col items-center group/menu-item data-[disabled=true]:opacity-50 data-[disabled=true]:pointer-events-none"
+      >
+        <DropdownMenu>
+          <DropdownMenu.Trigger
+            type="button"
+            disabled={isDisabled}
+            data-active={isActive}
+            aria-label={item.title}
+            className={cn(
+              buttonClassName,
+              // `buttonClassName`'s `justify-center` relies on flex, which the
+              // MenuButton got from its own variant — the raw trigger needs it.
+              'flex items-center justify-center rounded-lg',
+            )}
+          >
+            {icon}
+          </DropdownMenu.Trigger>
+
+          <DropdownMenu.Content side="right" align="start" sideOffset={8}>
+            {item.items?.map((child, childIndex) => (
+              <DropdownMenu.Item
+                key={`${child.title}-${childIndex}`}
+                asChild
+                disabled={child.disabled || child.soon}
+              >
+                <a
+                  href={
+                    child.href && !child.disabled && !child.soon
+                      ? child.href
+                      : '#'
+                  }
+                  target={child.external ? '_blank' : undefined}
+                  rel={child.external ? 'noopener noreferrer' : undefined}
+                  onClick={child.onClick}
+                >
+                  {typeof child.icon === 'string' ? (
+                    <Icon name={child.icon as IconType} />
+                  ) : (
+                    child.icon
+                  )}
+
+                  <span className="truncate">{child.title}</span>
+                </a>
+              </DropdownMenu.Item>
+            ))}
+          </DropdownMenu.Content>
+        </DropdownMenu>
+      </motion.li>
+    );
+  }
 
   // A real `<li>` — items live inside the group's `Sidebar.Menu`/submenu
   // `<ul>`s, and the axe `list` rule requires their direct children to be
