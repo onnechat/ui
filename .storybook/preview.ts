@@ -47,6 +47,10 @@ const preview: Preview = {
       themes: {
         Light: 'light',
         Dark: 'dark',
+        Cream: 'cream',
+        Claude: 'claude',
+        Midnight: 'midnight',
+        Matrix: 'matrix',
       },
       defaultTheme: 'Light',
       parentSelector: 'html',

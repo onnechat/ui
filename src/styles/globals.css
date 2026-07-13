@@ -11,7 +11,9 @@
 
 @plugin 'tailwindcss-animate';
 
-@custom-variant dark (&:is(.dark *));
+/* The `dark:` variant fires under `.dark` and under the dark custom themes, so
+   a single class (e.g. `.midnight`) is enough — no need to also add `.dark`. */
+@custom-variant dark (&:is(.dark *, .midnight *, .matrix *));
 
 @theme {
   --color-background: var(--background);
