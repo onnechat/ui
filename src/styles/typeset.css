@@ -1,0 +1,154 @@
+/*
+ * typeset — typographic system for rendered HTML / markdown (docs, chat, blog).
+ * Add `typeset` to a container to activate it, plus a preset (`typeset-chat`,
+ * `typeset-docs`) to tune the rhythm. Everything reads from the lib's color
+ * tokens, so it inherits light/dark automatically. Inspired by shadcn's typeset.
+ */
+.typeset {
+  --typeset-size: 0.9375rem; /* 15px */
+  --typeset-leading: 1.7;
+  --typeset-flow: 1.25em;
+  --typeset-font-body: inherit;
+  --typeset-font-heading: inherit;
+  --typeset-font-mono: var(--font-mono, ui-monospace, 'SF Mono', monospace);
+
+  font-family: var(--typeset-font-body);
+  font-size: var(--typeset-size);
+  line-height: var(--typeset-leading);
+  color: var(--foreground);
+  text-wrap: pretty;
+}
+
+/* Vertical rhythm: space between consecutive blocks. */
+.typeset > * + * {
+  margin-top: var(--typeset-flow);
+}
+
+.typeset h1,
+.typeset h2,
+.typeset h3,
+.typeset h4,
+.typeset h5,
+.typeset h6 {
+  font-family: var(--typeset-font-heading);
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.typeset :is(h1, h2, h3, h4, h5, h6) + * {
+  margin-top: 0.6em;
+}
+
+.typeset h1 {
+  font-size: 1.75em;
+  letter-spacing: -0.02em;
+}
+.typeset h2 {
+  font-size: 1.4em;
+  letter-spacing: -0.015em;
+}
+.typeset h3 {
+  font-size: 1.2em;
+}
+.typeset h4 {
+  font-size: 1.05em;
+}
+
+.typeset a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.typeset strong {
+  font-weight: 600;
+}
+
+.typeset ul,
+.typeset ol {
+  padding-inline-start: 1.5em;
+}
+.typeset ul {
+  list-style: disc;
+}
+.typeset ol {
+  list-style: decimal;
+}
+.typeset li + li {
+  margin-top: 0.35em;
+}
+.typeset li > ul,
+.typeset li > ol {
+  margin-top: 0.35em;
+}
+
+.typeset blockquote {
+  border-inline-start: 3px solid var(--border);
+  padding-inline-start: 1em;
+  color: var(--muted-foreground);
+}
+
+.typeset code {
+  font-family: var(--typeset-font-mono);
+  font-size: 0.875em;
+  background: var(--muted);
+  padding: 0.15em 0.35em;
+  border-radius: 0.375rem;
+}
+
+.typeset pre {
+  font-family: var(--typeset-font-mono);
+  font-size: 0.875em;
+  line-height: 1.6;
+  background: var(--muted);
+  padding: 0.85em 1em;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}
+.typeset pre code {
+  background: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+.typeset hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.typeset table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+.typeset :is(th, td) {
+  border: 1px solid var(--border);
+  padding: 0.5em 0.75em;
+  text-align: start;
+}
+.typeset th {
+  background: var(--muted);
+  font-weight: 600;
+}
+
+.typeset img {
+  border-radius: 0.75rem;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Chat preset — tighter rhythm and size for message bubbles. */
+.typeset-chat {
+  --typeset-size: 0.875rem; /* 14px */
+  --typeset-leading: 1.6;
+  --typeset-flow: 0.75em;
+}
+
+/* Docs preset — comfortable reading measure for long-form content. */
+.typeset-docs {
+  --typeset-size: 1rem; /* 16px */
+  --typeset-leading: 1.75;
+  --typeset-flow: 1.4em;
+}

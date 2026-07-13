@@ -38,8 +38,12 @@ const buttonVariants = cva(
          * Heights step by +8px mirroring the icon sizes (size-8 / size-10 /
          * size-12): h-8 / h-10 / h-12.
          */
+        // No vertical padding: the height is fixed by `h-*`, and the loading
+        // content wrapper uses `self-stretch` + `translate-y-full` to slide the
+        // FULL height out of view — any `py` would shrink the content box and
+        // leave a sliver of the content visible during loading.
         sm: 'h-8 gap-1.5 px-3 has-[[data-slot=button-content]>svg]:px-2.5!',
-        default: 'h-10 px-4 py-2 has-[[data-slot=button-content]>svg]:px-3!',
+        default: 'h-10 px-4 has-[[data-slot=button-content]>svg]:px-3!',
         lg: 'h-12 px-6 has-[[data-slot=button-content]>svg]:px-5!',
         'icon-sm': 'size-8',
         icon: 'size-10',
