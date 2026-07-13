@@ -167,6 +167,7 @@ type AppShellSidebarContextValue = {
   sidebarWidth: string;
   setSidebarWidth: (width: string) => void;
   maxWidth?: number;
+  collapsible: AppShellSidebarCollapsible;
 };
 
 const AppShellLeftSidebarContext =
@@ -211,11 +212,13 @@ function SidebarSideProvider({
   side,
   defaultOpen = true,
   maxWidth,
+  collapsible = 'offcanvas',
   children,
 }: {
   side: AppShellSidebarSide;
   defaultOpen?: boolean;
   maxWidth?: number;
+  collapsible?: AppShellSidebarCollapsible;
   children: React.ReactNode;
 }) {
   const config = SIDEBAR_SIDE_CONFIG[side];
@@ -279,8 +282,18 @@ function SidebarSideProvider({
       sidebarWidth,
       setSidebarWidth,
       maxWidth,
+      collapsible,
     }),
-    [side, state, open, setOpen, toggleSidebar, sidebarWidth, maxWidth],
+    [
+      side,
+      state,
+      open,
+      setOpen,
+      toggleSidebar,
+      sidebarWidth,
+      maxWidth,
+      collapsible,
+    ],
   );
 
   const Context =
@@ -308,9 +321,20 @@ function SidebarSideProvider({
   );
 }
 
+type AppShellSidebarCollapsible = 'offcanvas' | 'icon';
+
 type AppShellSidebarProp =
   | boolean
-  | { defaultOpen?: boolean; maxWidth?: number };
+  | {
+      defaultOpen?: boolean;
+      maxWidth?: number;
+      /**
+       * How the sidebar looks when collapsed. `offcanvas` (default) slides it
+       * away entirely; `icon` keeps a slim rail of icons (labels hidden, shown
+       * as tooltips on hover).
+       */
+      collapsible?: AppShellSidebarCollapsible;
+    };
 
 /**
  * Mounts a side's state when the matching root prop enables it. Skips when an
@@ -337,6 +361,7 @@ function OptionalSidebarProvider({
       side={side}
       defaultOpen={typeof config === 'object' ? config.defaultOpen : undefined}
       maxWidth={typeof config === 'object' ? config.maxWidth : undefined}
+      collapsible={typeof config === 'object' ? config.collapsible : undefined}
     >
       {children}
     </SidebarSideProvider>
@@ -389,6 +414,7 @@ function SidebarSidePanel({
     setOpen,
     setSidebarWidth,
     maxWidth: maxSidebarWidth,
+    collapsible,
   } = context;
 
   // Dragging toward the shell center collapses; away from it expands.
@@ -602,7 +628,7 @@ function SidebarSidePanel({
       data-slot="sidebar"
       data-variant="inset"
       data-state={state}
-      data-collapsible={state === 'collapsed' ? 'offcanvas' : ''}
+      data-collapsible={state === 'collapsed' ? collapsible : ''}
       className="group peer hidden text-sidebar-foreground lg:block"
       {...props}
     >
@@ -616,7 +642,10 @@ function SidebarSidePanel({
             ? side === 'left'
               ? 'w-(--left-sidebar-width)'
               : 'w-(--right-sidebar-width)'
-            : 'w-0',
+            : // Icon rail keeps a slim column; offcanvas collapses to nothing.
+              collapsible === 'icon'
+              ? 'w-14'
+              : 'w-0',
         )}
       />
 
@@ -631,8 +660,8 @@ function SidebarSidePanel({
           'fixed z-10 hidden overflow-clip bg-sidebar transition-[width] lg:flex',
           SIDEBAR_ANIMATION_DURATION,
           side === 'left'
-            ? 'left-0 w-(--left-sidebar-width) group-data-[collapsible=offcanvas]:w-0 justify-end'
-            : 'right-0 w-(--right-sidebar-width) group-data-[collapsible=offcanvas]:w-0',
+            ? 'left-0 w-(--left-sidebar-width) group-data-[collapsible=offcanvas]:w-0 group-data-[collapsible=icon]:w-14 justify-end'
+            : 'right-0 w-(--right-sidebar-width) group-data-[collapsible=offcanvas]:w-0 group-data-[collapsible=icon]:w-14',
         )}
         style={{
           top: 'var(--announcement-height, 0px)',
@@ -647,6 +676,7 @@ function SidebarSidePanel({
             side === 'left'
               ? 'w-(--left-sidebar-width)'
               : 'w-(--right-sidebar-width)',
+            'group-data-[collapsible=icon]:w-14',
             className,
           )}
         >
@@ -671,8 +701,8 @@ function SidebarSidePanel({
           'hover:after:translate-x-0 hover:after:bg-sidebar-border',
           'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring bg-transparent!',
           side === 'left'
-            ? 'left-(--left-sidebar-width) group-data-[collapsible=offcanvas]:left-0 -translate-x-1/2 after:left-1/2 after:-translate-x-1/2 transition-[left,transform]'
-            : 'right-(--right-sidebar-width) group-data-[collapsible=offcanvas]:right-0 translate-x-1/2 after:right-1/2 after:translate-x-1/2 transition-[right,transform]',
+            ? 'left-(--left-sidebar-width) group-data-[collapsible=offcanvas]:left-0 group-data-[collapsible=icon]:left-14 -translate-x-1/2 after:left-1/2 after:-translate-x-1/2 transition-[left,transform]'
+            : 'right-(--right-sidebar-width) group-data-[collapsible=offcanvas]:right-0 group-data-[collapsible=icon]:right-14 translate-x-1/2 after:right-1/2 after:translate-x-1/2 transition-[right,transform]',
           SIDEBAR_ANIMATION_DURATION,
           isDragging && 'after:translate-x-0 after:bg-sidebar-border',
         )}
@@ -913,7 +943,7 @@ function AppShellSidebarGroup({
       {...props}
     >
       {title && (
-        <span className="text-xs text-muted-foreground/50 font-medium uppercase p-2">
+        <span className="text-xs text-muted-foreground/50 font-medium uppercase p-2 group-data-[collapsible=icon]:hidden">
           {title}
         </span>
       )}
@@ -1007,7 +1037,7 @@ function AppShellSidebarItem({
   const isActive = !isDisabled && !isLoading && !!item.active;
 
   const buttonClassName =
-    'relative z-10 group/menu-button hover:bg-sidebar-accent! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 h-auto! p-2.5! text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] cursor-pointer';
+    'relative z-10 group/menu-button hover:bg-sidebar-accent! data-[active=true]:bg-transparent data-[active=false]:hover:text-foreground/75 h-auto! p-2.5! text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2.5 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 transition-[transform,opacity] duration-200 active:scale-[99.35%] cursor-pointer group-data-[collapsible=icon]:justify-center';
 
   const itemStyle = {
     marginLeft: `${level * 16}px`,
@@ -1069,7 +1099,7 @@ function AppShellSidebarItem({
           key="trailing"
           {...itemAnimation({ direction: 'right', reverse: true })}
           className={cn(
-            'flex items-center gap-2',
+            'flex items-center gap-2 group-data-[collapsible=icon]:hidden',
             !hasLinkedChildren && 'ml-auto',
           )}
         >
@@ -1126,11 +1156,15 @@ function AppShellSidebarItem({
               rel={isExternal ? 'noopener noreferrer' : undefined}
               onClick={handleNavigateClick}
               suppressHydrationWarning
-              className="flex items-center gap-2"
+              title={item.title}
+              className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center"
             >
               {icon}
 
-              <span data-active={isActive} className="truncate text-sm">
+              <span
+                data-active={isActive}
+                className="truncate text-sm group-data-[collapsible=icon]:hidden"
+              >
                 {item.title}
               </span>
             </a>
@@ -1149,7 +1183,7 @@ function AppShellSidebarItem({
             onClick={handleToggleItems}
             className={cn(
               buttonClassName,
-              'w-10 shrink-0 justify-center p-2.5!',
+              'w-10 shrink-0 justify-center p-2.5! group-data-[collapsible=icon]:hidden',
             )}
           >
             {trailing}
@@ -1165,6 +1199,7 @@ function AppShellSidebarItem({
           data-disabled={isDisabled}
           disabled={isDisabled}
           onClick={hasItems || item.onClick ? handleClick : undefined}
+          title={item.title}
           className={buttonClassName}
           style={itemStyle}
         >
@@ -1175,11 +1210,15 @@ function AppShellSidebarItem({
               rel={isExternal ? 'noopener noreferrer' : undefined}
               onClick={handleNavigateClick}
               suppressHydrationWarning
-              className="flex w-full min-w-0 items-center gap-2"
+              title={item.title}
+              className="flex w-full min-w-0 items-center gap-2 group-data-[collapsible=icon]:justify-center"
             >
               {icon}
 
-              <span data-active={isActive} className="text-sm min-w-0 truncate">
+              <span
+                data-active={isActive}
+                className="text-sm min-w-0 truncate group-data-[collapsible=icon]:hidden"
+              >
                 {item.title}
               </span>
 
@@ -1189,7 +1228,10 @@ function AppShellSidebarItem({
             <>
               {icon}
 
-              <span data-active={isActive} className="text-sm">
+              <span
+                data-active={isActive}
+                className="text-sm group-data-[collapsible=icon]:hidden"
+              >
                 {item.title}
               </span>
 
@@ -1241,14 +1283,22 @@ function AppShellCommandButton({
     <button
       type="button"
       data-slot="app-shell-command-button"
+      title="Pesquisar"
       className={cn(
-        'flex h-12 w-full min-w-0 cursor-pointer items-center rounded-xl border-2 border-sidebar-accent bg-transparent p-2.5 text-left text-sm text-muted-foreground outline-none transition-all hover:bg-sidebar-accent/30 focus-visible:border-transparent focus-visible:ring-[3px] focus-visible:ring-ring/50',
+        'flex h-12 w-full min-w-0 cursor-pointer items-center rounded-xl border-2 border-sidebar-accent bg-transparent p-2.5 text-left text-sm text-muted-foreground outline-none transition-all hover:bg-sidebar-accent/30 focus-visible:border-transparent focus-visible:ring-[3px] focus-visible:ring-ring/50 group-data-[collapsible=icon]:justify-center',
         className,
       )}
       {...props}
     >
-      <span className="pointer-events-none flex w-full items-center gap-2 opacity-50 truncate">
-        {children}
+      <span className="pointer-events-none flex w-full items-center gap-2 opacity-50 group-data-[collapsible=icon]:w-auto">
+        {/* Search glyph only stands in for the label once collapsed to the rail. */}
+        <Icon
+          name="Magnifier"
+          className="hidden size-4 shrink-0 group-data-[collapsible=icon]:block"
+        />
+        <span className="truncate group-data-[collapsible=icon]:hidden">
+          {children}
+        </span>
       </span>
     </button>
   );
@@ -1279,7 +1329,10 @@ function AppShellCopyright({
     <span
       suppressHydrationWarning
       data-slot="app-shell-copyright"
-      className={cn('text-xs text-muted-foreground/50 p-2', className)}
+      className={cn(
+        'text-xs text-muted-foreground/50 p-2 group-data-[collapsible=icon]:hidden',
+        className,
+      )}
       {...props}
     >
       {children}

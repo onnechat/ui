@@ -625,6 +625,39 @@ export const LeftSidebarOnly: StoryObj<typeof meta> = {
 };
 
 /**
+ * Modo **icon-rail**: em vez de sumir, a sidebar colapsa para uma coluna
+ * estreita só de ícones (os labels viram `title` nativo no hover). Ative com
+ * `leftSidebar={{ collapsible: 'icon' }}`. Aqui começa colapsada — use o toggle
+ * do header (ou a tecla `[`) para expandir.
+ */
+export const IconRail: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
+  parameters: {
+    ...componentA11yTodo,
+    docs: {
+      description: {
+        story:
+          'Sidebar que colapsa para um rail de ícones (`collapsible: "icon"`) em vez de off-canvas. O rail mantém ícones + tooltips; expandir traz os labels de volta.',
+      },
+    },
+  },
+  render: () => (
+    <AppShell leftSidebar={{ collapsible: 'icon', defaultOpen: false }}>
+      <AppShell.LeftSidebar>
+        <DemoLeftSidebarContent />
+      </AppShell.LeftSidebar>
+
+      <DemoNavbar />
+
+      <AppShell.Inset>
+        <DemoHeader />
+        <DemoContent />
+      </AppShell.Inset>
+    </AppShell>
+  ),
+};
+
+/**
  * Produto sem sidebar esquerda: só o painel de contexto à direita. Nenhum
  * toggle esquerdo aparece e o chrome do shell (margens, cantos do inset)
  * reage apenas ao painel direito.
