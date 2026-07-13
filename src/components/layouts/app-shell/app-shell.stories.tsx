@@ -387,6 +387,23 @@ function withoutAnnouncement(Story: React.ComponentType) {
   );
 }
 
+/**
+ * The left sidebar's open/collapsed state persists in a cookie SHARED by every
+ * AppShell story, so expanding it in another story would leak in and hide this
+ * one's icon rail. Clear it during render — before the shell reads it in its
+ * layout effect — so `defaultOpen: false` (the icon rail) always wins on open.
+ */
+function withLeftSidebarReset(Story: React.ComponentType) {
+  React.useState(() => {
+    if (typeof document !== 'undefined') {
+      document.cookie = 'left-sidebar-state=; path=/; max-age=0';
+    }
+    return null;
+  });
+
+  return <Story />;
+}
+
 type TriggerMode = 'automático' | 'customizado' | 'oculto';
 
 type PlaygroundArgs = {
@@ -1441,7 +1458,7 @@ const DEMO_CHAT_REPLIES = [
  * listagem de chats do jeito certo": nada de recriar tela à mão.
  */
 export const ChatLayout: StoryObj<typeof meta> = {
-  decorators: [withoutAnnouncement],
+  decorators: [withoutAnnouncement, withLeftSidebarReset],
   parameters: {
     ...componentA11yTodo,
     docs: {
