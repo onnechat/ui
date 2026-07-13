@@ -87,3 +87,150 @@
       calc(100% - var(--scroll-fade-reveal)) 100%;
   }
 }
+
+/*
+ * scroll-fade-x — horizontal counterpart of scroll-fade-y, for snapping rows
+ * (e.g. Attachment.Group). Fades the left/right edges as you scroll sideways.
+ */
+@property --scroll-fade-l {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --scroll-fade-r {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@keyframes scroll-fade-reveal-left {
+  from {
+    --scroll-fade-l: 0px;
+  }
+  to {
+    --scroll-fade-l: var(--scroll-fade-size);
+  }
+}
+
+@keyframes scroll-fade-reveal-right {
+  from {
+    --scroll-fade-r: var(--scroll-fade-size);
+  }
+  to {
+    --scroll-fade-r: 0px;
+  }
+}
+
+@utility scroll-fade-x {
+  --scroll-fade-size: 1.5rem;
+  --scroll-fade-reveal: 2.5rem;
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--scroll-fade-l),
+    black calc(100% - var(--scroll-fade-r)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--scroll-fade-l),
+    black calc(100% - var(--scroll-fade-r)),
+    transparent 100%
+  );
+
+  @supports (animation-timeline: scroll()) {
+    animation-name: scroll-fade-reveal-left, scroll-fade-reveal-right;
+    animation-fill-mode: both, both;
+    animation-timing-function: linear, linear;
+    animation-timeline: scroll(self inline), scroll(self inline);
+    animation-range:
+      0 var(--scroll-fade-reveal),
+      calc(100% - var(--scroll-fade-reveal)) 100%;
+  }
+}
+
+/*
+ * shimmer — a moving highlight sweeping across text, for live status like
+ * "Pensando…" / "Gerando resposta…". Muted base with a brighter band passing
+ * through. Respects reduced motion.
+ */
+@keyframes text-shimmer {
+  from {
+    background-position: 200% center;
+  }
+  to {
+    background-position: -200% center;
+  }
+}
+
+@utility shimmer {
+  background-image: linear-gradient(
+    100deg,
+    var(--muted-foreground) 0%,
+    var(--muted-foreground) 35%,
+    var(--foreground) 50%,
+    var(--muted-foreground) 65%,
+    var(--muted-foreground) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: text-shimmer 2.4s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    color: var(--muted-foreground);
+    -webkit-text-fill-color: var(--muted-foreground);
+  }
+}
+
+/* Indeterminate sweep for progress bars with no known percentage (e.g. an
+   Attachment in the `processing` state). */
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(340%);
+  }
+}
+
+/* Upward "streaming" motion for the Attachment `uploading` overlay — reads as
+   data being pushed up, distinct from the `processing` spinner. */
+@keyframes attachment-upload {
+  0% {
+    transform: translateY(4px);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+}
+
+/* Typing indicator dots — a gentle bounce; stagger the three dots with
+   animation-delay. Used near a chat composer ("X está digitando…"). */
+@keyframes typing-bounce {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  35% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}

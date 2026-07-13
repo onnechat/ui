@@ -252,3 +252,171 @@
   /* Others */
   --inverted: white;
 }
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────
+ * Custom themes — reusable "surface/mood" layers for any product on onne/ui.
+ *
+ * Each theme only re-skins the NEUTRAL surfaces (background, sidebar, card,
+ * borders, text). It deliberately does NOT touch `--primary`, which stays
+ * `var(--brand-red)` — so a product rebrands EVERY theme at once just by
+ * overriding `--brand-red` (or `--primary`) at its own root. That keeps the
+ * themes brand-neutral and portable.
+ *
+ * A single class is enough — light or dark:  <html class="cream">
+ *                                             <html class="midnight">
+ * (the `dark:` variant is extended in globals.css to fire under `.midnight`
+ *  and `.matrix`). For pixel-perfect product semantics/charts/events on a dark
+ *  theme you may also add `.dark` (e.g. `class="dark midnight"`) so it inherits
+ *  the full dark baseline; for the surfaces it isn't required.
+ * ─────────────────────────────────────────────────────────────────────────
+ */
+
+/* Cream — warm, paper-like light theme. */
+.cream {
+  --background: oklch(97% 0.015 80);
+  --foreground: oklch(18% 0.01 80);
+
+  --dashboard-background: oklch(96% 0.013 80);
+  --dashboard-foreground: oklch(18% 0.01 80);
+
+  --sidebar: oklch(92% 0.013 80);
+  --sidebar-foreground: oklch(18% 0.01 80);
+  --sidebar-accent: oklch(88% 0.012 80);
+  --sidebar-accent-foreground: oklch(18% 0.01 80);
+  --sidebar-border: oklch(84% 0.012 80);
+  --sidebar-ring: oklch(68% 0.008 80);
+
+  --card: oklch(92% 0.012 80);
+  --card-foreground: oklch(18% 0.01 80);
+
+  --popover: oklch(91% 0.012 80);
+  --popover-foreground: oklch(18% 0.01 80);
+
+  --secondary: oklch(90% 0.012 80);
+  --secondary-foreground: oklch(25% 0.01 80);
+
+  --muted: oklch(95% 0.012 80);
+  --muted-foreground: oklch(43% 0.008 80);
+
+  --accent: oklch(88% 0.012 80);
+  --accent-foreground: oklch(18% 0.01 80);
+
+  --border: oklch(79% 0.012 80);
+  --input: var(--card);
+  --ring: oklch(68% 0.008 80);
+}
+
+/* Claude — warm beige "study" light theme. */
+.claude {
+  --background: #f5f2ed;
+  --foreground: #171717;
+
+  --dashboard-background: #f2eee8;
+  --dashboard-foreground: #171717;
+
+  --sidebar: #e5e0d8;
+  --sidebar-foreground: #171717;
+  --sidebar-accent: #dad4ca;
+  --sidebar-accent-foreground: #171717;
+  --sidebar-border: #d2cbbd;
+  --sidebar-ring: #b8af9e;
+
+  --card: #e5e0d8;
+  --card-foreground: #171717;
+
+  --popover: #f5f2ed;
+  --popover-foreground: #171717;
+
+  --secondary: #dad4ca;
+  --secondary-foreground: #171717;
+
+  --muted: #f2eee8;
+  --muted-foreground: #6b6359;
+
+  --accent: #dad4ca;
+  --accent-foreground: #171717;
+
+  --border: #d2cbbd;
+  --input: #ffffff;
+  --ring: #b8af9e;
+}
+
+/* Midnight — deep, slightly blue-black dark theme. Layer with `.dark`. */
+.midnight {
+  --background: #0f0f10;
+  --foreground: #f7f7f8;
+
+  --dashboard-background: var(--background);
+  --dashboard-foreground: var(--foreground);
+
+  --sidebar: #131315;
+  --sidebar-foreground: #f7f7f8;
+  --sidebar-accent: #19191b;
+  --sidebar-accent-foreground: #f7f7f8;
+  --sidebar-border: #1f1f22;
+  --sidebar-ring: #2e2e32;
+
+  --card: #161618;
+  --card-foreground: #f7f7f8;
+
+  --popover: #161618;
+  --popover-foreground: #f7f7f8;
+
+  --secondary: #19191b;
+  --secondary-foreground: #f7f7f8;
+
+  --muted: #121214;
+  --muted-foreground: #8a8a98;
+
+  --accent: #232326;
+  --accent-foreground: #f7f7f8;
+
+  --border: #1f1f22;
+  --input: #19191b;
+  --ring: #2e2e32;
+
+  --link: #5e6ad2;
+  --link-foreground: #f7f7f8;
+
+  --inverted: white;
+}
+
+/* Matrix — pure-black, high-contrast dark theme. Layer with `.dark`. To make
+   it the classic green terminal, a product can set `--brand-red` (its brand
+   var) to a green under `.matrix`. */
+.matrix {
+  --background: #000000;
+  --foreground: oklch(98.5% 0 0);
+
+  --dashboard-background: #000000;
+  --dashboard-foreground: oklch(98.5% 0 0);
+
+  --sidebar: #000000;
+  --sidebar-foreground: oklch(98.5% 0 0);
+  --sidebar-accent: oklch(15% 0 0);
+  --sidebar-accent-foreground: oklch(98.5% 0 0);
+  --sidebar-border: oklch(20% 0 0);
+  --sidebar-ring: oklch(30% 0 0);
+
+  --card: #000000;
+  --card-foreground: oklch(98.5% 0 0);
+
+  --popover: #000000;
+  --popover-foreground: oklch(98.5% 0 0);
+
+  --secondary: oklch(15% 0 0);
+  --secondary-foreground: oklch(98.5% 0 0);
+
+  --muted: oklch(12% 0 0);
+  --muted-foreground: oklch(60% 0 0);
+
+  --accent: oklch(15% 0 0);
+  --accent-foreground: oklch(98.5% 0 0);
+
+  --border: oklch(15% 0 0);
+  --input: oklch(12% 0 0);
+  --ring: oklch(30% 0 0);
+
+  --inverted: white;
+}
