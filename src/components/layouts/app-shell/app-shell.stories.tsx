@@ -1093,6 +1093,79 @@ export const InsetPinnedSlots: StoryObj<typeof meta> = {
 };
 
 /**
+ * `left` e `right` são o análogo horizontal de `top`/`bottom`: colunas
+ * fixas de altura cheia que ladeiam o painel, sobre o fundo do shell. Servem
+ * para uma segunda coluna que NÃO é uma sidebar (uma lista, um painel de
+ * filtros, detalhes) sem precisar aninhar outra sidebar. O painel continua
+ * rolando o próprio conteúdo entre elas, com os cantos sempre arredondados.
+ */
+export const LateralInsets: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
+  parameters: {
+    ...componentA11yTodo,
+    docs: {
+      description: {
+        story:
+          'Encaixes `left`/`right`: colunas fixas ladeando o painel. Aqui a esquerda lista segmentos e a direita mostra um resumo — o painel central rola sozinho entre elas.',
+      },
+    },
+  },
+  render: () => (
+    <AppShell leftSidebar>
+      <AppShell.LeftSidebar>
+        <DemoLeftSidebarContent />
+      </AppShell.LeftSidebar>
+
+      <AppShell.Inset
+        left={
+          <div className="flex h-full w-64 flex-col gap-1 overflow-y-auto p-3">
+            <span className="px-2 pb-1 text-xs font-medium uppercase text-muted-foreground/60">
+              Segmentos
+            </span>
+            {[
+              'Todos os clientes',
+              'Novos este mês',
+              'Recorrentes',
+              'Inativos',
+              'Aniversariantes',
+            ].map((label, i) => (
+              <button
+                key={label}
+                type="button"
+                data-active={i === 0}
+                className="flex items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent data-[active=true]:bg-sidebar-accent data-[active=true]:text-foreground"
+              >
+                <Icon name="Users" className="size-4 shrink-0" />
+                <span className="truncate">{label}</span>
+              </button>
+            ))}
+          </div>
+        }
+        right={
+          <div className="flex h-full w-72 flex-col gap-3 overflow-y-auto p-4">
+            <span className="text-xs font-medium uppercase text-muted-foreground/60">
+              Resumo
+            </span>
+            {['Total', 'Ativos', 'Ticket médio'].map(label => (
+              <div
+                key={label}
+                className="flex flex-col gap-1 rounded-xl bg-card p-3"
+              >
+                <span className="text-xs text-muted-foreground">{label}</span>
+                <span className="text-lg font-semibold">—</span>
+              </div>
+            ))}
+          </div>
+        }
+      >
+        <DemoHeader title="Clientes" />
+        <DemoTallContent />
+      </AppShell.Inset>
+    </AppShell>
+  ),
+};
+
+/**
  * Sem nenhuma sidebar: o shell vira header + conteúdo + navbar mobile, sem
  * margens nem cantos arredondados no inset.
  */

@@ -1708,6 +1708,8 @@ function AppShellInset({
   spacing = 24,
   top,
   bottom,
+  left,
+  right,
   ...props
 }: React.ComponentProps<'div'> & {
   /**
@@ -1732,6 +1734,20 @@ function AppShellInset({
    * `AppShell.Navbar` is mounted (the floating navbar owns that space).
    */
   bottom?: React.ReactNode;
+  /**
+   * Pinned full-height region flanking the panel on its left, on the shell
+   * background — the horizontal analogue of `top`/`bottom`. Meant for a
+   * secondary column that isn't a sidebar (a chat/conversation list, a page
+   * filter panel, …), so you don't need to nest a second sidebar. The consumer
+   * owns its width and internal scroll. Desktop only — hidden below `lg`, like
+   * the sidebars.
+   */
+  left?: React.ReactNode;
+  /**
+   * Pinned full-height region flanking the panel on its right (contact details,
+   * a properties panel, …). Mirror of `left`. Desktop only.
+   */
+  right?: React.ReactNode;
 }) {
   const leftSidebar = React.useContext(AppShellLeftSidebarContext);
   const rightSidebar = React.useContext(AppShellRightSidebarContext);
@@ -1829,50 +1845,83 @@ function AppShellInset({
       ) : null}
 
       <div
-        data-slot="app-shell-inset"
-        style={
-          {
-            '--sidebar-spacing': spacing,
-            ...style,
-          } as React.CSSProperties
-        }
-        className={cn(
-          // No `w-full` here: the column's cross-axis stretch sizes the panel
-          // to its width MINUS the side margins below — `w-full` + `mr-2`
-          // would overflow the column by the margin, gluing the panel to the
-          // viewport edge (and clipping its rounded corner) whenever the
-          // right sidebar is collapsed.
-          'relative flex flex-1 flex-col transition-[margin]',
-          SIDEBAR_ANIMATION_DURATION,
-          // The inset chrome (margins + rounding) only exists when at least one
-          // sidebar provider frames the page; each margin collapses against the
-          // side whose sidebar is expanded.
-          hasSidebar && 'lg:m-2 lg:rounded-2xl',
-          leftSidebar?.state === 'expanded' && 'lg:ml-0',
-          rightSidebar?.state === 'expanded' && 'lg:mr-0',
-          loading && 'min-h-0 overflow-hidden',
-          'max-lg:bg-dashboard-background! bg-dashboard-background',
-          '[--calculated-spacing:--spacing(var(--sidebar-spacing))]',
-          // `isolate` keeps composited children (e.g. the glass header's
-          // backdrop-filter) inside the rounded overflow clip on all engines.
-          // On desktop the panel scrolls its own content (`overflow-y-auto`);
-          // the `rounded-2xl` still clips that scrolled content, so the corners
-          // mask cleanly and stay visible between the pinned rows. `min-h-0`
-          // lets the flex child shrink below its content so it can scroll.
-          'min-w-0 isolate lg:min-h-0 lg:overflow-x-clip lg:overflow-y-auto',
-          'max-lg:pb-(--calculated-spacing)',
-          className,
-        )}
-        {...props}
+        data-slot="app-shell-inset-main"
+        className="flex min-w-0 flex-1 lg:min-h-0"
       >
-        {loading && <AppShellLoading />}
+        {left ? (
+          <div
+            data-slot="app-shell-inset-left"
+            className={cn(
+              // Desktop-only pinned column flanking the panel, on the shell
+              // background — the horizontal mirror of the top/bottom rows.
+              // Its own content owns width + internal scroll.
+              'hidden shrink-0 min-h-0 overflow-hidden lg:flex lg:flex-col',
+              pinnedRowBackground,
+            )}
+          >
+            {left}
+          </div>
+        ) : null}
 
         <div
-          aria-hidden={loading || undefined}
-          className={cn(loading ? 'hidden' : 'contents')}
+          data-slot="app-shell-inset"
+          style={
+            {
+              '--sidebar-spacing': spacing,
+              ...style,
+            } as React.CSSProperties
+          }
+          className={cn(
+            // No `w-full` here: the column's cross-axis stretch sizes the panel
+            // to its width MINUS the side margins below — `w-full` + `mr-2`
+            // would overflow the column by the margin, gluing the panel to the
+            // viewport edge (and clipping its rounded corner) whenever the
+            // right sidebar is collapsed.
+            'relative flex flex-1 flex-col transition-[margin]',
+            SIDEBAR_ANIMATION_DURATION,
+            // The inset chrome (margins + rounding) exists whenever the panel is
+            // framed — by a sidebar OR a side inset. Each margin collapses
+            // against an expanded sidebar so there's a single gap, but NOT when
+            // a side inset sits there: the panel keeps its gap from the inset.
+            (hasSidebar || left || right) && 'lg:m-2 lg:rounded-2xl',
+            leftSidebar?.state === 'expanded' && !left && 'lg:ml-0',
+            rightSidebar?.state === 'expanded' && !right && 'lg:mr-0',
+            loading && 'min-h-0 overflow-hidden',
+            'max-lg:bg-dashboard-background! bg-dashboard-background',
+            '[--calculated-spacing:--spacing(var(--sidebar-spacing))]',
+            // `isolate` keeps composited children (e.g. the glass header's
+            // backdrop-filter) inside the rounded overflow clip on all engines.
+            // On desktop the panel scrolls its own content (`overflow-y-auto`);
+            // the `rounded-2xl` still clips that scrolled content, so the corners
+            // mask cleanly and stay visible between the pinned rows. `min-h-0`
+            // lets the flex child shrink below its content so it can scroll.
+            'min-w-0 isolate lg:min-h-0 lg:overflow-x-clip lg:overflow-y-auto',
+            'max-lg:pb-(--calculated-spacing)',
+            className,
+          )}
+          {...props}
         >
-          {children}
+          {loading && <AppShellLoading />}
+
+          <div
+            aria-hidden={loading || undefined}
+            className={cn(loading ? 'hidden' : 'contents')}
+          >
+            {children}
+          </div>
         </div>
+
+        {right ? (
+          <div
+            data-slot="app-shell-inset-right"
+            className={cn(
+              'hidden shrink-0 min-h-0 overflow-hidden lg:flex lg:flex-col',
+              pinnedRowBackground,
+            )}
+          >
+            {right}
+          </div>
+        ) : null}
       </div>
 
       {bottom ? (
