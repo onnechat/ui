@@ -1591,7 +1591,7 @@ function AppShellHeader({
         {user}
       </div>
 
-      <div className="max-lg:hidden sticky top-[calc(var(--announcement-height,0px)_+_var(--inset-top-height,0px))] z-50 w-full flex min-w-0 items-center gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 border-b glass-dashboard-header border-border/70 transition-colors lg:rounded-t-2xl">
+      <div className="max-lg:hidden sticky top-0 z-50 w-full flex min-w-0 items-center gap-2 md:gap-4 p-4 min-h-16 h-full max-h-16 border-b glass-dashboard-header border-border/70 transition-colors lg:rounded-t-2xl">
         {resolvedLeftTrigger}
 
         <div className="flex min-h-7 min-w-0 flex-1 items-center overflow-hidden">
@@ -1797,7 +1797,15 @@ function AppShellInset({
     <div
       ref={columnRef}
       data-slot="app-shell-inset-column"
-      className="relative flex w-full min-w-0 min-h-full flex-1 flex-col"
+      className={cn(
+        'relative flex w-full min-w-0 min-h-full flex-1 flex-col',
+        // On desktop the column is bounded to the viewport and the PANEL below
+        // scrolls itself — so the rounded panel stays a self-contained card and
+        // the pinned rows/side insets are plain flex siblings that never paint
+        // over its corners. Mobile keeps the normal document scroll (full-bleed,
+        // no rounding), so it's untouched.
+        'lg:h-[calc(100dvh-var(--announcement-height,0px))] lg:overflow-hidden',
+      )}
     >
       {/* Ternary (not `&&`) so falsy-numeric slot values like 0 render
           nothing instead of a stray "0" text node. */}
@@ -1806,7 +1814,9 @@ function AppShellInset({
           ref={topRef}
           data-slot="app-shell-inset-top"
           className={cn(
-            'sticky top-(--announcement-height,0px) z-40 shrink-0',
+            // Desktop: a plain flex sibling above the internally-scrolling
+            // panel. Mobile: sticky (document scroll), docking under the banner.
+            'z-40 shrink-0 max-lg:sticky max-lg:top-(--announcement-height,0px)',
             // On mobile the row and the panel share the same background —
             // without a divider, scrolling content is chopped at an
             // invisible line. Desktop gets a tonal boundary from bg-sidebar.
@@ -1845,7 +1855,11 @@ function AppShellInset({
           '[--calculated-spacing:--spacing(var(--sidebar-spacing))]',
           // `isolate` keeps composited children (e.g. the glass header's
           // backdrop-filter) inside the rounded overflow clip on all engines.
-          'min-w-0 isolate lg:overflow-clip',
+          // On desktop the panel scrolls its own content (`overflow-y-auto`);
+          // the `rounded-2xl` still clips that scrolled content, so the corners
+          // mask cleanly and stay visible between the pinned rows. `min-h-0`
+          // lets the flex child shrink below its content so it can scroll.
+          'min-w-0 isolate lg:min-h-0 lg:overflow-x-clip lg:overflow-y-auto',
           'max-lg:pb-(--calculated-spacing)',
           className,
         )}
@@ -1865,7 +1879,9 @@ function AppShellInset({
         <div
           data-slot="app-shell-inset-bottom"
           className={cn(
-            'sticky bottom-0 z-40 shrink-0',
+            // Desktop: a plain flex sibling below the internally-scrolling
+            // panel. Mobile: sticky at the viewport bottom (document scroll).
+            'z-40 shrink-0 max-lg:sticky max-lg:bottom-0',
             // Divider against the same-background panel on mobile (mirrors
             // the mobile Header's border-b).
             'max-lg:border-t max-lg:border-border/70',
