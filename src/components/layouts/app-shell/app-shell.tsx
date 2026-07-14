@@ -1700,6 +1700,50 @@ function AppShellNavbarItem({
  * Inset / loading
  * ---------------------------------------------------------------------- */
 
+/**
+ * Publishes a pinned inset row's live height as a CSS var on the column, so
+ * sticky siblings (the Header, the rounded-bottom cap) can offset against it.
+ * `getBoundingClientRect` over `offsetHeight`: the row's real height can be
+ * fractional (zoom, non-16px root), and rounding would open a hairline gap.
+ */
+function useMeasuredRowHeight(
+  columnRef: React.RefObject<HTMLDivElement | null>,
+  rowRef: React.RefObject<HTMLDivElement | null>,
+  varName: string,
+  enabled: boolean,
+) {
+  React.useLayoutEffect(() => {
+    const column = columnRef.current;
+    if (!column) return;
+
+    const el = rowRef.current;
+
+    if (!enabled || !el) {
+      column.style.setProperty(varName, '0px');
+      return;
+    }
+
+    const update = () => {
+      column.style.setProperty(
+        varName,
+        `${el.getBoundingClientRect().height}px`,
+      );
+    };
+
+    update();
+
+    if (typeof ResizeObserver === 'undefined') return;
+
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+
+    return () => {
+      ro.disconnect();
+      column.style.setProperty(varName, '0px');
+    };
+  }, [columnRef, rowRef, varName, enabled]);
+}
+
 function AppShellInset({
   className,
   style,
@@ -1756,47 +1800,22 @@ function AppShellInset({
 
   const columnRef = React.useRef<HTMLDivElement>(null);
   const topRef = React.useRef<HTMLDivElement>(null);
+  const bottomRef = React.useRef<HTMLDivElement>(null);
 
-  // Publish the pinned top row's height on the column so the sticky Header
-  // inside the panel docks below the fixed row instead of overlapping it
-  // (same pattern the AnnouncementBanner uses with the global
-  // `--announcement-height`). Known SSR window: the variable only exists
-  // after this client effect runs, so statically-rendered HTML painted with
-  // a restored scroll position can show the Header behind the row until
-  // hydration — unavoidable without a server-side measurement.
-  React.useLayoutEffect(() => {
-    const column = columnRef.current;
-    if (!column) return;
-
-    const el = topRef.current;
-
-    if (!top || !el) {
-      column.style.setProperty('--inset-top-height', '0px');
-      return;
-    }
-
-    const update = () => {
-      // getBoundingClientRect over offsetHeight: the row's real height can be
-      // fractional (zoom, non-16px root font); rounding it up would open a
-      // hairline gap between the row and the docked Header.
-      column.style.setProperty(
-        '--inset-top-height',
-        `${el.getBoundingClientRect().height}px`,
-      );
-    };
-
-    update();
-
-    if (typeof ResizeObserver === 'undefined') return;
-
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-
-    return () => {
-      ro.disconnect();
-      column.style.setProperty('--inset-top-height', '0px');
-    };
-  }, [top]);
+  // Publish each pinned row's height on the column: the top so the sticky
+  // Header docks below it (same pattern as the AnnouncementBanner's global
+  // `--announcement-height`), the bottom so the panel's rounded-bottom cap
+  // parks just above it. Known SSR window: the variables only exist after this
+  // client effect runs, so statically-rendered HTML painted with a restored
+  // scroll position can show the Header behind the row until hydration —
+  // unavoidable without a server-side measurement.
+  useMeasuredRowHeight(columnRef, topRef, '--inset-top-height', Boolean(top));
+  useMeasuredRowHeight(
+    columnRef,
+    bottomRef,
+    '--inset-bottom-height',
+    Boolean(bottom),
+  );
 
   // Opaque shell-background behind the pinned rows so the panel scrolling
   // beneath them never shows through.
@@ -1899,6 +1918,33 @@ function AppShellInset({
           >
             {children}
           </div>
+
+          {/* Rounded-bottom cap. The page scrolls under the pinned bottom row,
+              so the panel's real rounded-b corner is off-screen and its content
+              meets the row in a hard square line. This mirrors the sticky
+              rounded-top Header: a zero-height sticky sled parked just above the
+              row paints two concave shell-background corners over the panel's
+              bottom edge, so it reads as rounded there at any scroll position.
+              Desktop only (mobile is full-bleed, no rounding). */}
+          {bottom ? (
+            <div
+              aria-hidden
+              className="pointer-events-none sticky bottom-(--inset-bottom-height,0px) z-20 hidden h-0 shrink-0 lg:block"
+            >
+              <div
+                className={cn(
+                  'absolute bottom-0 left-0 size-4 [-webkit-mask:radial-gradient(1rem_at_100%_0,#0000_98%,#000)] [mask:radial-gradient(1rem_at_100%_0,#0000_98%,#000)]',
+                  pinnedRowBackground,
+                )}
+              />
+              <div
+                className={cn(
+                  'absolute bottom-0 right-0 size-4 [-webkit-mask:radial-gradient(1rem_at_0_0,#0000_98%,#000)] [mask:radial-gradient(1rem_at_0_0,#0000_98%,#000)]',
+                  pinnedRowBackground,
+                )}
+              />
+            </div>
+          ) : null}
         </div>
 
         {right ? (
@@ -1916,6 +1962,7 @@ function AppShellInset({
 
       {bottom ? (
         <div
+          ref={bottomRef}
           data-slot="app-shell-inset-bottom"
           className={cn(
             // Pinned at the viewport bottom: the page scrolls under it.
