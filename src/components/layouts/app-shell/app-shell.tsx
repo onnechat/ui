@@ -6,6 +6,8 @@ import * as React from 'react';
 
 import { AnimatePresence, motion } from 'motion/react';
 
+import { Menu as MenuPrimitive } from '@base-ui/react/menu';
+
 import { cn } from '@/lib/cn';
 
 import { ANIMATION } from '@/constants/animations';
@@ -1214,51 +1216,64 @@ function AppShellSidebarItem({
         data-disabled={isDisabled}
         className="relative flex list-none flex-col items-center group/menu-item data-[disabled=true]:opacity-50 data-[disabled=true]:pointer-events-none"
       >
-        <DropdownMenu>
-          <DropdownMenu.Trigger
-            type="button"
-            disabled={isDisabled}
-            data-active={isActive}
-            aria-label={item.title}
-            className={cn(
-              buttonClassName,
-              // `buttonClassName`'s `justify-center` relies on flex, which the
-              // MenuButton got from its own variant — the raw trigger needs it.
-              'flex items-center justify-center rounded-lg',
-            )}
-          >
-            {icon}
-          </DropdownMenu.Trigger>
-
-          <DropdownMenu.Content side="right" align="start" sideOffset={8}>
-            {item.items?.map((child, childIndex) => (
-              <DropdownMenu.Item
-                key={`${child.title}-${childIndex}`}
-                asChild
-                disabled={child.disabled || child.soon}
+        <Tooltip>
+          <DropdownMenu>
+            {/* One button is BOTH the menu trigger (click → flyout) and the
+                tooltip trigger (hover → label). It has to be the RAW Base UI
+                `Menu.Trigger` (forwardRef) so `Tooltip.Trigger asChild` can take
+                its ref — the lib's `DropdownMenu.Trigger`/`Tooltip.Trigger` are
+                plain function components, and stacking those two drops the ref
+                on React 18 ("Function components cannot be given refs"). */}
+            <Tooltip.Trigger asChild>
+              <MenuPrimitive.Trigger
+                type="button"
+                disabled={isDisabled}
+                data-active={isActive}
+                aria-label={item.title}
+                className={cn(
+                  buttonClassName,
+                  // `buttonClassName`'s `justify-center` relies on flex, which
+                  // the MenuButton got from its own variant — the raw trigger
+                  // needs it.
+                  'flex items-center justify-center rounded-lg',
+                )}
               >
-                <a
-                  href={
-                    child.href && !child.disabled && !child.soon
-                      ? child.href
-                      : '#'
-                  }
-                  target={child.external ? '_blank' : undefined}
-                  rel={child.external ? 'noopener noreferrer' : undefined}
-                  onClick={child.onClick}
-                >
-                  {typeof child.icon === 'string' ? (
-                    <Icon name={child.icon as IconType} />
-                  ) : (
-                    child.icon
-                  )}
+                {icon}
+              </MenuPrimitive.Trigger>
+            </Tooltip.Trigger>
 
-                  <span className="truncate">{child.title}</span>
-                </a>
-              </DropdownMenu.Item>
-            ))}
-          </DropdownMenu.Content>
-        </DropdownMenu>
+            <DropdownMenu.Content side="right" align="start" sideOffset={8}>
+              {item.items?.map((child, childIndex) => (
+                <DropdownMenu.Item
+                  key={`${child.title}-${childIndex}`}
+                  asChild
+                  disabled={child.disabled || child.soon}
+                >
+                  <a
+                    href={
+                      child.href && !child.disabled && !child.soon
+                        ? child.href
+                        : '#'
+                    }
+                    target={child.external ? '_blank' : undefined}
+                    rel={child.external ? 'noopener noreferrer' : undefined}
+                    onClick={child.onClick}
+                  >
+                    {typeof child.icon === 'string' ? (
+                      <Icon name={child.icon as IconType} />
+                    ) : (
+                      child.icon
+                    )}
+
+                    <span className="truncate">{child.title}</span>
+                  </a>
+                </DropdownMenu.Item>
+              ))}
+            </DropdownMenu.Content>
+          </DropdownMenu>
+
+          <Tooltip.Content side="right">{item.title}</Tooltip.Content>
+        </Tooltip>
       </motion.li>
     );
   }
