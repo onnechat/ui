@@ -6,6 +6,8 @@ import * as React from 'react';
 
 import { AnimatePresence, motion } from 'motion/react';
 
+import { Menu as MenuPrimitive } from '@base-ui/react/menu';
+
 import { cn } from '@/lib/cn';
 
 import { ANIMATION } from '@/constants/animations';
@@ -14,6 +16,7 @@ import { Icon, type IconType } from '@/components/icon';
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
+import { type KbdKey } from '@/components/ui/kbd';
 import { Loader } from '@/components/ui/loader';
 import { Sidebar, SIDEBAR_WIDTH } from '@/components/ui/sidebar';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -169,6 +172,8 @@ type AppShellSidebarContextValue = {
   setSidebarWidth: (width: string) => void;
   maxWidth?: number;
   collapsible: AppShellSidebarCollapsible;
+  /** When true the state is frozen: no toggle, rail, resize or shortcut. */
+  locked: boolean;
 };
 
 const AppShellLeftSidebarContext =
@@ -236,15 +241,24 @@ function SidebarSideProvider({
   defaultOpen = true,
   maxWidth,
   collapsible = 'offcanvas',
+  locked = false,
+  shortcut,
   children,
 }: {
   side: AppShellSidebarSide;
   defaultOpen?: boolean;
   maxWidth?: number;
   collapsible?: AppShellSidebarCollapsible;
+  locked?: boolean;
+  shortcut?: KbdKey | null;
   children: React.ReactNode;
 }) {
   const config = SIDEBAR_SIDE_CONFIG[side];
+
+  // `undefined` → the side's default (`[`/`]`); a key → that key; `null` →
+  // no shortcut. Matched against `KeyboardEvent.key`.
+  const activeShortcut =
+    shortcut === undefined ? config.keyboardShortcut : shortcut;
 
   const [open, _setOpen] = React.useState(defaultOpen);
   const [sidebarWidth, setSidebarWidth] = React.useState<string>(
@@ -253,16 +267,19 @@ function SidebarSideProvider({
 
   const setOpen = React.useCallback(
     (value: boolean) => {
+      // Locked sidebars stay in their configured state — ignore all changes.
+      if (locked) return;
       _setOpen(value);
       Cookies.set(config.stateCookie, String(value), {
         expires: SIDEBAR_COOKIE_TTL_DAYS,
         path: '/',
       });
     },
-    [config.stateCookie],
+    [config.stateCookie, locked],
   );
 
   const toggleSidebar = React.useCallback(() => {
+    if (locked) return;
     _setOpen(open => {
       Cookies.set(config.stateCookie, String(!open), {
         expires: SIDEBAR_COOKIE_TTL_DAYS,
@@ -270,19 +287,25 @@ function SidebarSideProvider({
       });
       return !open;
     });
-  }, [config.stateCookie]);
+  }, [config.stateCookie, locked]);
 
   React.useLayoutEffect(() => {
-    const savedOpen = Cookies.get(config.stateCookie);
-    if (savedOpen !== undefined) _setOpen(savedOpen === 'true');
+    // Locked sidebars ignore the persisted cookie so they always open in their
+    // configured `defaultOpen` state (the whole point of locking).
+    if (!locked) {
+      const savedOpen = Cookies.get(config.stateCookie);
+      if (savedOpen !== undefined) _setOpen(savedOpen === 'true');
+    }
 
     const savedWidth = Cookies.get(config.widthCookie);
     if (savedWidth) setSidebarWidth(savedWidth);
-  }, [config.stateCookie, config.widthCookie]);
+  }, [config.stateCookie, config.widthCookie, locked]);
 
   React.useEffect(() => {
+    if (locked || !activeShortcut) return;
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== config.keyboardShortcut) return;
+      if (event.key !== activeShortcut) return;
       if (isEditableTarget(event.target)) return;
 
       event.preventDefault();
@@ -291,7 +314,7 @@ function SidebarSideProvider({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleSidebar, config.keyboardShortcut]);
+  }, [toggleSidebar, activeShortcut, locked]);
 
   const state = open ? 'expanded' : 'collapsed';
 
@@ -306,6 +329,7 @@ function SidebarSideProvider({
       setSidebarWidth,
       maxWidth,
       collapsible,
+      locked,
     }),
     [
       side,
@@ -316,6 +340,7 @@ function SidebarSideProvider({
       sidebarWidth,
       maxWidth,
       collapsible,
+      locked,
     ],
   );
 
@@ -357,6 +382,19 @@ type AppShellSidebarProp =
        * as tooltips on hover).
        */
       collapsible?: AppShellSidebarCollapsible;
+      /**
+       * Freezes the sidebar in its `defaultOpen` state: no header toggle, rail
+       * click, resize drag or keyboard shortcut can change it. Pair with
+       * `collapsible: 'icon'` + `defaultOpen: false` for a permanent icon rail.
+       */
+      locked?: boolean;
+      /**
+       * Keyboard shortcut that toggles the sidebar, matched against
+       * `KeyboardEvent.key`. Typed as `KbdKey` (the same key vocabulary as the
+       * `Kbd` component). Defaults to `[` (left) / `]` (right); pass another key
+       * to rebind, or `null` to disable the shortcut.
+       */
+      shortcut?: KbdKey | null;
     };
 
 /**
@@ -385,6 +423,8 @@ function OptionalSidebarProvider({
       defaultOpen={typeof config === 'object' ? config.defaultOpen : undefined}
       maxWidth={typeof config === 'object' ? config.maxWidth : undefined}
       collapsible={typeof config === 'object' ? config.collapsible : undefined}
+      locked={typeof config === 'object' ? config.locked : undefined}
+      shortcut={typeof config === 'object' ? config.shortcut : undefined}
     >
       {children}
     </SidebarSideProvider>
@@ -438,6 +478,7 @@ function SidebarSidePanel({
     setSidebarWidth,
     maxWidth: maxSidebarWidth,
     collapsible,
+    locked,
   } = context;
 
   // Dragging toward the shell center collapses; away from it expands.
@@ -714,29 +755,35 @@ function SidebarSidePanel({
         </div>
       </div>
 
-      <button
-        type="button"
-        tabIndex={-1}
-        onClick={handleRailClick}
-        onMouseDown={handleResizeMouseDown}
-        onFocus={e => e.currentTarget.blur()}
-        data-sidebar="rail"
-        data-slot={side === 'left' ? 'left-sidebar-rail' : 'right-sidebar-rail'}
-        aria-label="Resize sidebar"
-        className={cn(
-          'fixed inset-y-0 z-20 hidden w-4 sm:flex',
-          'cursor-col-resize max-h-32 items-center justify-center top-1/2 -translate-y-1/2 px-4',
-          'group-data-[collapsible=offcanvas]:translate-x-0',
-          'after:absolute after:inset-y-0 after:w-1 after:rounded-full after:transition-transform',
-          'hover:after:translate-x-0 hover:after:bg-sidebar-border',
-          'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring bg-transparent!',
-          side === 'left'
-            ? 'left-(--left-sidebar-width) group-data-[collapsible=offcanvas]:left-0 group-data-[collapsible=icon]:left-14 -translate-x-1/2 after:left-1/2 after:-translate-x-1/2 transition-[left,transform]'
-            : 'right-(--right-sidebar-width) group-data-[collapsible=offcanvas]:right-0 group-data-[collapsible=icon]:right-14 translate-x-1/2 after:right-1/2 after:translate-x-1/2 transition-[right,transform]',
-          SIDEBAR_ANIMATION_DURATION,
-          isDragging && 'after:translate-x-0 after:bg-sidebar-border',
-        )}
-      />
+      {/* Resize/collapse rail — omitted when the sidebar is locked (no toggle,
+          no resize). */}
+      {!locked && (
+        <button
+          type="button"
+          tabIndex={-1}
+          onClick={handleRailClick}
+          onMouseDown={handleResizeMouseDown}
+          onFocus={e => e.currentTarget.blur()}
+          data-sidebar="rail"
+          data-slot={
+            side === 'left' ? 'left-sidebar-rail' : 'right-sidebar-rail'
+          }
+          aria-label="Resize sidebar"
+          className={cn(
+            'fixed inset-y-0 z-20 hidden w-4 sm:flex',
+            'cursor-col-resize max-h-32 items-center justify-center top-1/2 -translate-y-1/2 px-4',
+            'group-data-[collapsible=offcanvas]:translate-x-0',
+            'after:absolute after:inset-y-0 after:w-1 after:rounded-full after:transition-transform',
+            'hover:after:translate-x-0 hover:after:bg-sidebar-border',
+            'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:border-ring bg-transparent!',
+            side === 'left'
+              ? 'left-(--left-sidebar-width) group-data-[collapsible=offcanvas]:left-0 group-data-[collapsible=icon]:left-14 -translate-x-1/2 after:left-1/2 after:-translate-x-1/2 transition-[left,transform]'
+              : 'right-(--right-sidebar-width) group-data-[collapsible=offcanvas]:right-0 group-data-[collapsible=icon]:right-14 translate-x-1/2 after:right-1/2 after:translate-x-1/2 transition-[right,transform]',
+            SIDEBAR_ANIMATION_DURATION,
+            isDragging && 'after:translate-x-0 after:bg-sidebar-border',
+          )}
+        />
+      )}
     </aside>
   );
 }
@@ -787,7 +834,10 @@ function SidebarSideTrigger({
     );
   }
 
-  const { toggleSidebar, state } = context;
+  const { toggleSidebar, state, locked } = context;
+
+  // A locked sidebar can't change state, so its trigger would be a dead button.
+  if (locked) return null;
 
   const resolvedIcon = typeof icon === 'function' ? icon(state) : icon;
 
@@ -1214,51 +1264,64 @@ function AppShellSidebarItem({
         data-disabled={isDisabled}
         className="relative flex list-none flex-col items-center group/menu-item data-[disabled=true]:opacity-50 data-[disabled=true]:pointer-events-none"
       >
-        <DropdownMenu>
-          <DropdownMenu.Trigger
-            type="button"
-            disabled={isDisabled}
-            data-active={isActive}
-            aria-label={item.title}
-            className={cn(
-              buttonClassName,
-              // `buttonClassName`'s `justify-center` relies on flex, which the
-              // MenuButton got from its own variant — the raw trigger needs it.
-              'flex items-center justify-center rounded-lg',
-            )}
-          >
-            {icon}
-          </DropdownMenu.Trigger>
-
-          <DropdownMenu.Content side="right" align="start" sideOffset={8}>
-            {item.items?.map((child, childIndex) => (
-              <DropdownMenu.Item
-                key={`${child.title}-${childIndex}`}
-                asChild
-                disabled={child.disabled || child.soon}
+        <Tooltip>
+          <DropdownMenu>
+            {/* One button is BOTH the menu trigger (click → flyout) and the
+                tooltip trigger (hover → label). It has to be the RAW Base UI
+                `Menu.Trigger` (forwardRef) so `Tooltip.Trigger asChild` can take
+                its ref — the lib's `DropdownMenu.Trigger`/`Tooltip.Trigger` are
+                plain function components, and stacking those two drops the ref
+                on React 18 ("Function components cannot be given refs"). */}
+            <Tooltip.Trigger asChild>
+              <MenuPrimitive.Trigger
+                type="button"
+                disabled={isDisabled}
+                data-active={isActive}
+                aria-label={item.title}
+                className={cn(
+                  buttonClassName,
+                  // `buttonClassName`'s `justify-center` relies on flex, which
+                  // the MenuButton got from its own variant — the raw trigger
+                  // needs it.
+                  'flex items-center justify-center rounded-lg',
+                )}
               >
-                <a
-                  href={
-                    child.href && !child.disabled && !child.soon
-                      ? child.href
-                      : '#'
-                  }
-                  target={child.external ? '_blank' : undefined}
-                  rel={child.external ? 'noopener noreferrer' : undefined}
-                  onClick={child.onClick}
-                >
-                  {typeof child.icon === 'string' ? (
-                    <Icon name={child.icon as IconType} />
-                  ) : (
-                    child.icon
-                  )}
+                {icon}
+              </MenuPrimitive.Trigger>
+            </Tooltip.Trigger>
 
-                  <span className="truncate">{child.title}</span>
-                </a>
-              </DropdownMenu.Item>
-            ))}
-          </DropdownMenu.Content>
-        </DropdownMenu>
+            <DropdownMenu.Content side="right" align="start" sideOffset={8}>
+              {item.items?.map((child, childIndex) => (
+                <DropdownMenu.Item
+                  key={`${child.title}-${childIndex}`}
+                  asChild
+                  disabled={child.disabled || child.soon}
+                >
+                  <a
+                    href={
+                      child.href && !child.disabled && !child.soon
+                        ? child.href
+                        : '#'
+                    }
+                    target={child.external ? '_blank' : undefined}
+                    rel={child.external ? 'noopener noreferrer' : undefined}
+                    onClick={child.onClick}
+                  >
+                    {typeof child.icon === 'string' ? (
+                      <Icon name={child.icon as IconType} />
+                    ) : (
+                      child.icon
+                    )}
+
+                    <span className="truncate">{child.title}</span>
+                  </a>
+                </DropdownMenu.Item>
+              ))}
+            </DropdownMenu.Content>
+          </DropdownMenu>
+
+          <Tooltip.Content side="right">{item.title}</Tooltip.Content>
+        </Tooltip>
       </motion.li>
     );
   }
@@ -1557,14 +1620,16 @@ function AppShellHeader({
 
   const resolvedLeftTrigger =
     leftSidebarTrigger === undefined
-      ? leftSidebar && (
+      ? leftSidebar &&
+        !leftSidebar.locked && (
           <AppShellLeftSidebarTrigger label={leftSidebarToggleLabel} />
         )
       : leftSidebarTrigger;
 
   const resolvedRightTrigger =
     rightSidebarTrigger === undefined
-      ? rightSidebar && (
+      ? rightSidebar &&
+        !rightSidebar.locked && (
           <AppShellRightSidebarTrigger label={rightSidebarToggleLabel} />
         )
       : rightSidebarTrigger;
@@ -1700,6 +1765,50 @@ function AppShellNavbarItem({
  * Inset / loading
  * ---------------------------------------------------------------------- */
 
+/**
+ * Publishes a pinned inset row's live height as a CSS var on the column, so
+ * sticky siblings (the Header, the rounded-bottom cap) can offset against it.
+ * `getBoundingClientRect` over `offsetHeight`: the row's real height can be
+ * fractional (zoom, non-16px root), and rounding would open a hairline gap.
+ */
+function useMeasuredRowHeight(
+  columnRef: React.RefObject<HTMLDivElement | null>,
+  rowRef: React.RefObject<HTMLDivElement | null>,
+  varName: string,
+  enabled: boolean,
+) {
+  React.useLayoutEffect(() => {
+    const column = columnRef.current;
+    if (!column) return;
+
+    const el = rowRef.current;
+
+    if (!enabled || !el) {
+      column.style.setProperty(varName, '0px');
+      return;
+    }
+
+    const update = () => {
+      column.style.setProperty(
+        varName,
+        `${el.getBoundingClientRect().height}px`,
+      );
+    };
+
+    update();
+
+    if (typeof ResizeObserver === 'undefined') return;
+
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+
+    return () => {
+      ro.disconnect();
+      column.style.setProperty(varName, '0px');
+    };
+  }, [columnRef, rowRef, varName, enabled]);
+}
+
 function AppShellInset({
   className,
   style,
@@ -1756,47 +1865,22 @@ function AppShellInset({
 
   const columnRef = React.useRef<HTMLDivElement>(null);
   const topRef = React.useRef<HTMLDivElement>(null);
+  const bottomRef = React.useRef<HTMLDivElement>(null);
 
-  // Publish the pinned top row's height on the column so the sticky Header
-  // inside the panel docks below the fixed row instead of overlapping it
-  // (same pattern the AnnouncementBanner uses with the global
-  // `--announcement-height`). Known SSR window: the variable only exists
-  // after this client effect runs, so statically-rendered HTML painted with
-  // a restored scroll position can show the Header behind the row until
-  // hydration — unavoidable without a server-side measurement.
-  React.useLayoutEffect(() => {
-    const column = columnRef.current;
-    if (!column) return;
-
-    const el = topRef.current;
-
-    if (!top || !el) {
-      column.style.setProperty('--inset-top-height', '0px');
-      return;
-    }
-
-    const update = () => {
-      // getBoundingClientRect over offsetHeight: the row's real height can be
-      // fractional (zoom, non-16px root font); rounding it up would open a
-      // hairline gap between the row and the docked Header.
-      column.style.setProperty(
-        '--inset-top-height',
-        `${el.getBoundingClientRect().height}px`,
-      );
-    };
-
-    update();
-
-    if (typeof ResizeObserver === 'undefined') return;
-
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-
-    return () => {
-      ro.disconnect();
-      column.style.setProperty('--inset-top-height', '0px');
-    };
-  }, [top]);
+  // Publish each pinned row's height on the column: the top so the sticky
+  // Header docks below it (same pattern as the AnnouncementBanner's global
+  // `--announcement-height`), the bottom so the panel's rounded-bottom cap
+  // parks just above it. Known SSR window: the variables only exist after this
+  // client effect runs, so statically-rendered HTML painted with a restored
+  // scroll position can show the Header behind the row until hydration —
+  // unavoidable without a server-side measurement.
+  useMeasuredRowHeight(columnRef, topRef, '--inset-top-height', Boolean(top));
+  useMeasuredRowHeight(
+    columnRef,
+    bottomRef,
+    '--inset-bottom-height',
+    Boolean(bottom),
+  );
 
   // Opaque shell-background behind the pinned rows so the panel scrolling
   // beneath them never shows through.
@@ -1899,6 +1983,33 @@ function AppShellInset({
           >
             {children}
           </div>
+
+          {/* Rounded-bottom cap. The page scrolls under the pinned bottom row,
+              so the panel's real rounded-b corner is off-screen and its content
+              meets the row in a hard square line. This mirrors the sticky
+              rounded-top Header: a zero-height sticky sled parked just above the
+              row paints two concave shell-background corners over the panel's
+              bottom edge, so it reads as rounded there at any scroll position.
+              Desktop only (mobile is full-bleed, no rounding). */}
+          {bottom ? (
+            <div
+              aria-hidden
+              className="pointer-events-none sticky bottom-(--inset-bottom-height,0px) z-20 hidden h-0 shrink-0 lg:block"
+            >
+              <div
+                className={cn(
+                  'absolute bottom-0 left-0 size-4 [-webkit-mask:radial-gradient(1rem_at_100%_0,#0000_98%,#000)] [mask:radial-gradient(1rem_at_100%_0,#0000_98%,#000)]',
+                  pinnedRowBackground,
+                )}
+              />
+              <div
+                className={cn(
+                  'absolute bottom-0 right-0 size-4 [-webkit-mask:radial-gradient(1rem_at_0_0,#0000_98%,#000)] [mask:radial-gradient(1rem_at_0_0,#0000_98%,#000)]',
+                  pinnedRowBackground,
+                )}
+              />
+            </div>
+          ) : null}
         </div>
 
         {right ? (
@@ -1916,6 +2027,7 @@ function AppShellInset({
 
       {bottom ? (
         <div
+          ref={bottomRef}
           data-slot="app-shell-inset-bottom"
           className={cn(
             // Pinned at the viewport bottom: the page scrolls under it.

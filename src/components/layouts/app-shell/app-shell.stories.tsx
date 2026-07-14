@@ -9,7 +9,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Bubble } from '@/components/ui/bubble';
 import { Button } from '@/components/ui/button';
 import { Chat } from '@/components/blocks/chat';
-import { Kbd } from '@/components/ui/kbd';
+import { Kbd, type KbdKey } from '@/components/ui/kbd';
 import { OnnebookLogo } from '@/components/ui/logo';
 import { Marker } from '@/components/ui/marker';
 import { Message } from '@/components/ui/message';
@@ -409,6 +409,7 @@ type TriggerMode = 'automático' | 'customizado' | 'oculto';
 type PlaygroundArgs = {
   leftSidebar: boolean;
   rightSidebar: boolean;
+  leftShortcut: KbdKey;
   header: boolean;
   title: string;
   leftTrigger: TriggerMode;
@@ -466,6 +467,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   args: {
     leftSidebar: true,
     rightSidebar: true,
+    leftShortcut: '[',
     header: true,
     title: 'Visão Geral',
     leftTrigger: 'automático',
@@ -490,6 +492,12 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       control: 'boolean',
       description:
         'Habilita a sidebar direita (painel, toggle no header e atalho `]`).',
+      table: { category: 'Sidebars' },
+    },
+    leftShortcut: {
+      control: 'text',
+      description:
+        'Atalho (prop `shortcut` do `leftSidebar`) que alterna a sidebar esquerda — casado com `KeyboardEvent.key`. Padrão `[`; troque a tecla para rebindar, ou deixe vazio para desativar.',
       table: { category: 'Sidebars' },
     },
     header: {
@@ -591,7 +599,9 @@ export const Playground: StoryObj<PlaygroundArgs> = {
         }
       >
         <AppShell
-          leftSidebar={args.leftSidebar}
+          leftSidebar={
+            args.leftSidebar ? { shortcut: args.leftShortcut || null } : false
+          }
           rightSidebar={args.rightSidebar}
         >
           {args.leftSidebar && (
@@ -1451,11 +1461,148 @@ const DEMO_CHAT_REPLIES = [
 ];
 
 /**
+ * Corpo do exemplo de chat, parametrizado por `locked` — as duas stories
+ * abaixo (alternável e travada) reusam o mesmo layout.
+ */
+function ChatLayoutDemo({ locked = false }: { locked?: boolean }) {
+  const [messages, setMessages] = React.useState<DemoChatMsg[]>([
+    { id: 'd0', role: 'them', text: 'Oi! Conseguiu ver a proposta?' },
+    { id: 'd1', role: 'me', text: 'Consegui sim, tô revisando agora.' },
+    { id: 'd2', role: 'them', text: 'Perfeito. Qualquer ajuste é só falar.' },
+  ]);
+  const [typing, setTyping] = React.useState(false);
+  const idRef = React.useRef(3);
+  const replyRef = React.useRef(0);
+
+  const send = (text: string) => {
+    setMessages(prev => [
+      ...prev,
+      { id: `m${idRef.current++}`, role: 'me', text },
+    ]);
+    setTyping(true);
+    window.setTimeout(() => {
+      const reply =
+        DEMO_CHAT_REPLIES[replyRef.current % DEMO_CHAT_REPLIES.length];
+      replyRef.current += 1;
+      setTyping(false);
+      setMessages(prev => [
+        ...prev,
+        { id: `t${idRef.current++}`, role: 'them', text: reply },
+      ]);
+    }, 1600);
+  };
+
+  const groups = groupChatMessages(messages);
+  const themAvatar = (
+    <Avatar className="size-7">
+      <Avatar.Fallback className="bg-card text-card-foreground text-xs">
+        ML
+      </Avatar.Fallback>
+    </Avatar>
+  );
+
+  return (
+    <AppShell
+      leftSidebar={{ collapsible: 'icon', defaultOpen: false, locked }}
+      rightSidebar={{ defaultOpen: true }}
+    >
+      <AppShell.LeftSidebar>
+        <DemoLeftSidebarContent />
+      </AppShell.LeftSidebar>
+
+      <AppShell.Inset left={<DemoConversationList activeId="marina" />}>
+        <Chat
+          autoScroll
+          className="h-full max-w-none rounded-none border-0 bg-transparent shadow-none"
+        >
+          <Chat.Header>
+            <Chat.Identity
+              title="Marina Lopes"
+              subtitle="online"
+              avatar={
+                <Avatar>
+                  <Avatar.Fallback className="bg-card text-card-foreground">
+                    ML
+                  </Avatar.Fallback>
+                </Avatar>
+              }
+            />
+            <Chat.HeaderActions>
+              <AppShell.RightSidebarTrigger
+                icon="SidebarToggle"
+                className="scale-x-[-1]"
+              />
+            </Chat.HeaderActions>
+          </Chat.Header>
+
+          <Chat.Body>
+            <Marker>
+              <Marker.Icon>
+                <Icon name="ShieldCheck" />
+              </Marker.Icon>
+              <Marker.Content>
+                As mensagens desta conversa são protegidas
+              </Marker.Content>
+            </Marker>
+
+            <Marker variant="separator">
+              <Marker.Content>Hoje</Marker.Content>
+            </Marker>
+
+            {groups.map(group => {
+              const isMe = group.role === 'me';
+              return (
+                <MessageScroller.Item
+                  key={group.id}
+                  messageId={group.id}
+                  scrollAnchor={isMe}
+                >
+                  <Message align={isMe ? 'end' : 'start'}>
+                    {!isMe && <Message.Avatar>{themAvatar}</Message.Avatar>}
+                    <Message.Content>
+                      <Message.Group>
+                        {group.messages.map(message => (
+                          <Bubble
+                            key={message.id}
+                            variant={isMe ? 'outgoing' : 'incoming'}
+                          >
+                            <Bubble.Content>{message.text}</Bubble.Content>
+                          </Bubble>
+                        ))}
+                      </Message.Group>
+                    </Message.Content>
+                  </Message>
+                </MessageScroller.Item>
+              );
+            })}
+          </Chat.Body>
+
+          {typing && <Chat.Typing>Marina está digitando</Chat.Typing>}
+
+          <Chat.Composer
+            onSend={send}
+            actions={
+              <Button variant="ghost" size="icon-sm" aria-label="Anexar">
+                <Icon name="Plus" />
+              </Button>
+            }
+          />
+        </Chat>
+      </AppShell.Inset>
+
+      <AppShell.RightSidebar>
+        <DemoContactDetails />
+      </AppShell.RightSidebar>
+    </AppShell>
+  );
+}
+
+/**
  * Exemplo de composição real: uma tela de mensagens montada só com componentes
  * da lib. O `left` inset lista as conversas, o painel é o bloco `Chat` (a
  * thread ativa) e a sidebar direita traz os detalhes do contato — a sidebar
- * esquerda vira um icon rail (navegação principal). É a resposta ao "faça uma
- * listagem de chats do jeito certo": nada de recriar tela à mão.
+ * esquerda vira um icon rail (navegação principal). Aqui o rail é alternável:
+ * o toggle e o atalho `[` colapsam/expandem.
  */
 export const ChatLayout: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement, withLeftSidebarReset],
@@ -1464,142 +1611,32 @@ export const ChatLayout: StoryObj<typeof meta> = {
     docs: {
       description: {
         story:
-          'Um app de mensagens montado com o AppShell: icon rail (nav) + `left` inset (lista de conversas) + painel (bloco `Chat`) + sidebar direita (detalhes do contato). O painel rola só a thread; a lista e os detalhes ficam fixos.',
+          'Um app de mensagens montado com o AppShell: icon rail (nav) + `left` inset (lista de conversas) + painel (bloco `Chat`) + sidebar direita (detalhes do contato). O painel rola só a thread; a lista e os detalhes ficam fixos. O rail alterna normalmente.',
       },
     },
   },
-  render: function ChatLayoutRender() {
-    const [messages, setMessages] = React.useState<DemoChatMsg[]>([
-      { id: 'd0', role: 'them', text: 'Oi! Conseguiu ver a proposta?' },
-      { id: 'd1', role: 'me', text: 'Consegui sim, tô revisando agora.' },
-      { id: 'd2', role: 'them', text: 'Perfeito. Qualquer ajuste é só falar.' },
-    ]);
-    const [typing, setTyping] = React.useState(false);
-    const idRef = React.useRef(3);
-    const replyRef = React.useRef(0);
+  render: () => <ChatLayoutDemo />,
+};
 
-    const send = (text: string) => {
-      setMessages(prev => [
-        ...prev,
-        { id: `m${idRef.current++}`, role: 'me', text },
-      ]);
-      setTyping(true);
-      window.setTimeout(() => {
-        const reply =
-          DEMO_CHAT_REPLIES[replyRef.current % DEMO_CHAT_REPLIES.length];
-        replyRef.current += 1;
-        setTyping(false);
-        setMessages(prev => [
-          ...prev,
-          { id: `t${idRef.current++}`, role: 'them', text: reply },
-        ]);
-      }, 1600);
-    };
-
-    const groups = groupChatMessages(messages);
-    const themAvatar = (
-      <Avatar className="size-7">
-        <Avatar.Fallback className="bg-card text-card-foreground text-xs">
-          ML
-        </Avatar.Fallback>
-      </Avatar>
-    );
-
-    return (
-      <AppShell
-        leftSidebar={{ collapsible: 'icon', defaultOpen: false }}
-        rightSidebar={{ defaultOpen: true }}
-      >
-        <AppShell.LeftSidebar>
-          <DemoLeftSidebarContent />
-        </AppShell.LeftSidebar>
-
-        <AppShell.Inset left={<DemoConversationList activeId="marina" />}>
-          <Chat
-            autoScroll
-            className="h-full max-w-none rounded-none border-0 bg-transparent shadow-none"
-          >
-            <Chat.Header>
-              <Chat.Identity
-                title="Marina Lopes"
-                subtitle="online"
-                avatar={
-                  <Avatar>
-                    <Avatar.Fallback className="bg-card text-card-foreground">
-                      ML
-                    </Avatar.Fallback>
-                  </Avatar>
-                }
-              />
-              <Chat.HeaderActions>
-                <AppShell.RightSidebarTrigger
-                  icon="SidebarToggle"
-                  className="scale-x-[-1]"
-                />
-              </Chat.HeaderActions>
-            </Chat.Header>
-
-            <Chat.Body>
-              <Marker>
-                <Marker.Icon>
-                  <Icon name="ShieldCheck" />
-                </Marker.Icon>
-                <Marker.Content>
-                  As mensagens desta conversa são protegidas
-                </Marker.Content>
-              </Marker>
-
-              <Marker variant="separator">
-                <Marker.Content>Hoje</Marker.Content>
-              </Marker>
-
-              {groups.map(group => {
-                const isMe = group.role === 'me';
-                return (
-                  <MessageScroller.Item
-                    key={group.id}
-                    messageId={group.id}
-                    scrollAnchor={isMe}
-                  >
-                    <Message align={isMe ? 'end' : 'start'}>
-                      {!isMe && <Message.Avatar>{themAvatar}</Message.Avatar>}
-                      <Message.Content>
-                        <Message.Group>
-                          {group.messages.map(message => (
-                            <Bubble
-                              key={message.id}
-                              variant={isMe ? 'outgoing' : 'incoming'}
-                            >
-                              <Bubble.Content>{message.text}</Bubble.Content>
-                            </Bubble>
-                          ))}
-                        </Message.Group>
-                      </Message.Content>
-                    </Message>
-                  </MessageScroller.Item>
-                );
-              })}
-            </Chat.Body>
-
-            {typing && <Chat.Typing>Marina está digitando</Chat.Typing>}
-
-            <Chat.Composer
-              onSend={send}
-              actions={
-                <Button variant="ghost" size="icon-sm" aria-label="Anexar">
-                  <Icon name="Plus" />
-                </Button>
-              }
-            />
-          </Chat>
-        </AppShell.Inset>
-
-        <AppShell.RightSidebar>
-          <DemoContactDetails />
-        </AppShell.RightSidebar>
-      </AppShell>
-    );
+/**
+ * Mesma tela, mas com a sidebar **esquerda travada** (`locked: true`): o rail
+ * fica permanentemente em ícones — sem toggle, sem clique no rail, sem resize
+ * e sem o atalho `[`. A sidebar **direita** (detalhes do contato) segue normal,
+ * colapsável pelo toggle e pelo `]`. É o modo para uma navegação principal que
+ * nunca muda de forma, com um painel de contexto que ainda pode ser recolhido.
+ */
+export const ChatLayoutLocked: StoryObj<typeof meta> = {
+  decorators: [withoutAnnouncement],
+  parameters: {
+    ...componentA11yTodo,
+    docs: {
+      description: {
+        story:
+          'Variante do `ChatLayout` com a sidebar esquerda `locked: true`: o icon rail fica fixo (sem toggle/rail/resize/atalho `[`). A sidebar direita continua colapsável normalmente.',
+      },
+    },
   },
+  render: () => <ChatLayoutDemo locked />,
 };
 
 /**
