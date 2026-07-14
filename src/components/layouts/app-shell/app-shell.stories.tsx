@@ -1504,7 +1504,7 @@ function ChatLayoutDemo({ locked = false }: { locked?: boolean }) {
   return (
     <AppShell
       leftSidebar={{ collapsible: 'icon', defaultOpen: false, locked }}
-      rightSidebar={{ defaultOpen: true, locked }}
+      rightSidebar={{ defaultOpen: true }}
     >
       <AppShell.LeftSidebar>
         <DemoLeftSidebarContent />
@@ -1619,10 +1619,11 @@ export const ChatLayout: StoryObj<typeof meta> = {
 };
 
 /**
- * Mesma tela, mas com as sidebars **travadas** (`locked: true`): o rail fica
- * fixo em ícones e o painel de contato sempre aberto — sem toggle no header,
- * sem clique no rail, sem resize e sem os atalhos `[`/`]`. É o modo para uma
- * navegação que nunca deve mudar de forma.
+ * Mesma tela, mas com a sidebar **esquerda travada** (`locked: true`): o rail
+ * fica permanentemente em ícones — sem toggle, sem clique no rail, sem resize
+ * e sem o atalho `[`. A sidebar **direita** (detalhes do contato) segue normal,
+ * colapsável pelo toggle e pelo `]`. É o modo para uma navegação principal que
+ * nunca muda de forma, com um painel de contexto que ainda pode ser recolhido.
  */
 export const ChatLayoutLocked: StoryObj<typeof meta> = {
   decorators: [withoutAnnouncement],
@@ -1631,7 +1632,7 @@ export const ChatLayoutLocked: StoryObj<typeof meta> = {
     docs: {
       description: {
         story:
-          'Variante travada do `ChatLayout` — `leftSidebar`/`rightSidebar` com `locked: true`. A sidebar esquerda fica permanentemente em icon rail e a direita sempre aberta; toggle, rail, resize e atalhos `[`/`]` ficam desativados.',
+          'Variante do `ChatLayout` com a sidebar esquerda `locked: true`: o icon rail fica fixo (sem toggle/rail/resize/atalho `[`). A sidebar direita continua colapsável normalmente.',
       },
     },
   },
