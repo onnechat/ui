@@ -16,6 +16,7 @@ import { Icon, type IconType } from '@/components/icon';
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
+import { type KbdKey } from '@/components/ui/kbd';
 import { Loader } from '@/components/ui/loader';
 import { Sidebar, SIDEBAR_WIDTH } from '@/components/ui/sidebar';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -241,6 +242,7 @@ function SidebarSideProvider({
   maxWidth,
   collapsible = 'offcanvas',
   locked = false,
+  shortcut,
   children,
 }: {
   side: AppShellSidebarSide;
@@ -248,9 +250,15 @@ function SidebarSideProvider({
   maxWidth?: number;
   collapsible?: AppShellSidebarCollapsible;
   locked?: boolean;
+  shortcut?: KbdKey | null;
   children: React.ReactNode;
 }) {
   const config = SIDEBAR_SIDE_CONFIG[side];
+
+  // `undefined` → the side's default (`[`/`]`); a key → that key; `null` →
+  // no shortcut. Matched against `KeyboardEvent.key`.
+  const activeShortcut =
+    shortcut === undefined ? config.keyboardShortcut : shortcut;
 
   const [open, _setOpen] = React.useState(defaultOpen);
   const [sidebarWidth, setSidebarWidth] = React.useState<string>(
@@ -294,10 +302,10 @@ function SidebarSideProvider({
   }, [config.stateCookie, config.widthCookie, locked]);
 
   React.useEffect(() => {
-    if (locked) return;
+    if (locked || !activeShortcut) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== config.keyboardShortcut) return;
+      if (event.key !== activeShortcut) return;
       if (isEditableTarget(event.target)) return;
 
       event.preventDefault();
@@ -306,7 +314,7 @@ function SidebarSideProvider({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleSidebar, config.keyboardShortcut, locked]);
+  }, [toggleSidebar, activeShortcut, locked]);
 
   const state = open ? 'expanded' : 'collapsed';
 
@@ -380,6 +388,13 @@ type AppShellSidebarProp =
        * `collapsible: 'icon'` + `defaultOpen: false` for a permanent icon rail.
        */
       locked?: boolean;
+      /**
+       * Keyboard shortcut that toggles the sidebar, matched against
+       * `KeyboardEvent.key`. Typed as `KbdKey` (the same key vocabulary as the
+       * `Kbd` component). Defaults to `[` (left) / `]` (right); pass another key
+       * to rebind, or `null` to disable the shortcut.
+       */
+      shortcut?: KbdKey | null;
     };
 
 /**
@@ -409,6 +424,7 @@ function OptionalSidebarProvider({
       maxWidth={typeof config === 'object' ? config.maxWidth : undefined}
       collapsible={typeof config === 'object' ? config.collapsible : undefined}
       locked={typeof config === 'object' ? config.locked : undefined}
+      shortcut={typeof config === 'object' ? config.shortcut : undefined}
     >
       {children}
     </SidebarSideProvider>

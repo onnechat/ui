@@ -9,7 +9,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Bubble } from '@/components/ui/bubble';
 import { Button } from '@/components/ui/button';
 import { Chat } from '@/components/blocks/chat';
-import { Kbd } from '@/components/ui/kbd';
+import { Kbd, type KbdKey } from '@/components/ui/kbd';
 import { OnnebookLogo } from '@/components/ui/logo';
 import { Marker } from '@/components/ui/marker';
 import { Message } from '@/components/ui/message';
@@ -409,6 +409,7 @@ type TriggerMode = 'automático' | 'customizado' | 'oculto';
 type PlaygroundArgs = {
   leftSidebar: boolean;
   rightSidebar: boolean;
+  leftShortcut: KbdKey;
   header: boolean;
   title: string;
   leftTrigger: TriggerMode;
@@ -466,6 +467,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   args: {
     leftSidebar: true,
     rightSidebar: true,
+    leftShortcut: '[',
     header: true,
     title: 'Visão Geral',
     leftTrigger: 'automático',
@@ -490,6 +492,12 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       control: 'boolean',
       description:
         'Habilita a sidebar direita (painel, toggle no header e atalho `]`).',
+      table: { category: 'Sidebars' },
+    },
+    leftShortcut: {
+      control: 'text',
+      description:
+        'Atalho (prop `shortcut` do `leftSidebar`) que alterna a sidebar esquerda — casado com `KeyboardEvent.key`. Padrão `[`; troque a tecla para rebindar, ou deixe vazio para desativar.',
       table: { category: 'Sidebars' },
     },
     header: {
@@ -591,7 +599,9 @@ export const Playground: StoryObj<PlaygroundArgs> = {
         }
       >
         <AppShell
-          leftSidebar={args.leftSidebar}
+          leftSidebar={
+            args.leftSidebar ? { shortcut: args.leftShortcut || null } : false
+          }
           rightSidebar={args.rightSidebar}
         >
           {args.leftSidebar && (
